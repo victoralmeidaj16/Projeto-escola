@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Criador de Posts - School Intelligence OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="../creative_pedagogy/design-system.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="../config.js"></script>
+<script src="preset_images.js"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "surface-bright": "#fbf9f8", "on-tertiary-fixed": "#3f0019", "primary-fixed-dim": "#ffb2bf",
+          "secondary-fixed": "#ffdad7", "on-secondary-container": "#fffbff", "primary-container": "#df005d",
+          "inverse-primary": "#ffb2bf", "on-error": "#ffffff", "surface-container-low": "#f6f3f2",
+          "primary": "#b10048", "outline": "#906f73", "background": "#fbf9f8", "surface-tint": "#bc004d",
+          "surface-container-high": "#eae8e7", "surface-variant": "#e4e2e1", "on-surface": "#1b1c1c",
+          "surface-dim": "#dcd9d9", "primary-fixed": "#ffd9de", "on-tertiary": "#ffffff",
+          "tertiary-fixed": "#ffd9e0", "tertiary": "#ad1054", "on-primary-container": "#fff4f4",
+          "on-background": "#1b1c1c", "on-secondary": "#ffffff", "error": "#ba1a1a",
+          "tertiary-fixed-dim": "#ffb1c3", "on-primary-fixed": "#3f0015", "on-primary": "#ffffff",
+          "secondary-container": "#e02830", "on-tertiary-container": "#fff5f5", "on-surface-variant": "#5c3f44",
+          "on-secondary-fixed": "#410004", "surface-container-lowest": "#ffffff", "secondary": "#bb001b",
+          "on-tertiary-fixed-variant": "#8f0042", "inverse-on-surface": "#f3f0f0", "tertiary-container": "#cf316c",
+          "on-secondary-fixed-variant": "#930013", "secondary-fixed-dim": "#ffb3ad",
+          "outline-variant": "#e4bdc2", "surface-container": "#f0eded", "surface-container-highest": "#e4e2e1",
+          "inverse-surface": "#303030", "surface": "#fbf9f8", "error-container": "#ffdad6",
+          "on-primary-fixed-variant": "#900039", "on-error-container": "#93000a"
+        },
+        borderRadius: { DEFAULT: "1rem", lg: "2rem", xl: "3rem", full: "9999px" },
+        fontFamily: { headline: ["Plus Jakarta Sans"], body: ["Lexend"], label: ["Plus Jakarta Sans"], display: ["Plus Jakarta Sans"] }
+      }
+    }
+  };
+</script>
+<style>
+  /* Mobile Responsive Overrides */
+  @media (max-width: 767px) {
+    main.app-main-offset,
+    .app-main-offset {
+      margin-left: 0 !important;
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+      padding-top: 1.5rem !important;
+      width: 100% !important;
+    }
+    
+    header.app-main-offset {
+      display: none !important; /* Hide desktop header on mobile */
+    }
+    
+    /* Force grids to single column on mobile */
+    .grid:not(.grid-cols-3):not(.grid-cols-4):not(.flex) {
+      grid-template-columns: 1fr !important;
+    }
+    
+    /* Make sure form layout works on mobile */
+    #project-form, #planner-form, form {
+      padding: 1.25rem !important;
+      border-radius: 1.5rem !important;
+    }
+    
+    /* Sidebar as mobile drawer */
+    .standard-sidebar {
+      display: flex !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      height: 100vh !important;
+      width: 280px !important;
+      transform: translateX(-100%) !important;
+      transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+      z-index: 9999 !important;
+      box-shadow: 20px 0 50px rgba(0, 0, 0, 0.15) !important;
+      border-radius: 0 2rem 2rem 0 !important;
+    }
+    
+    .standard-sidebar.mobile-open {
+      transform: translateX(0) !important;
+    }
+    
+    /* Hide standard desktop toggle button on mobile */
+    #standard-sidebar-toggle,
+    .standard-sidebar-toggle {
+      display: none !important;
+    }
+    
+    /* Prevent iOS auto-zoom on form inputs */
+    .input-field, select, textarea, input {
+      font-size: 16px !important;
+    }
+  }
+
+  /* Format chip — CSS-only selection via :checked */
+  .format-chip input:checked + .chip-inner {
+    border-color: #b10048 !important;
+    background: #fff0f5 !important;
+    color: #b10048;
+  }
+  .format-chip input:checked + .chip-inner .material-symbols-outlined { color: #b10048; }
+  .format-chip .chip-inner .material-symbols-outlined { color: #5c3f44; }
+  .chip-soon { position: relative; }
+  .idea-card { cursor: pointer; transition: all 0.18s; border: 2px solid transparent; }
+  .idea-card:hover { border-color: #b10048; transform: translateY(-2px); }
+  .idea-card.selected { border-color: #b10048; background: #fff0f5; box-shadow: 0 0 0 3px rgba(177,0,72,0.12); }
+  .idea-card.selected .idea-num { background: #b10048; color: #fff; }
+  .result-card { animation: reveal 0.36s ease both; }
+  .prompt-card { animation: reveal 0.36s ease both; }
+  @keyframes reveal { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+  .img-skeleton { background: linear-gradient(90deg,#f0eded 25%,#e4e2e1 50%,#f0eded 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; border-radius:1rem; }
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+  .generated-img { border-radius:1rem; width:100%; display:block; transition:opacity 0.3s; }
+  .prompt-textarea { width:100%; font-size:0.82rem; line-height:1.6; border:1.5px solid #e4bdc2; border-radius:0.75rem; padding:0.6rem 0.8rem; resize:vertical; min-height:80px; font-family:'Lexend',sans-serif; background:#fff; color:#1b1c1c; outline:none; transition:border-color 0.15s; }
+  .prompt-textarea:focus { border-color:#b10048; }
+  .standard-sidebar, .standard-sidebar-toggle, .app-main-offset {
+    transition: margin-left 260ms ease, transform 260ms ease, left 260ms ease, width 260ms ease, opacity 160ms ease;
+  }
+  .standard-nav-link.active { background:#ffffff; color:#b10048; box-shadow:0 1px 2px rgba(0,0,0,0.06); }
+  .standard-nav-link.active .material-symbols-outlined { font-variation-settings:'FILL' 1; }
+  @media (min-width:768px) {
+    .app-main-offset { margin-left:16rem!important; width:calc(100% - 16rem)!important; }
+    body.sidebar-collapsed .standard-sidebar { transform:translateX(-100%); }
+    body.sidebar-collapsed .app-main-offset { margin-left:0!important; width:100%!important; }
+    body.sidebar-collapsed .standard-sidebar-toggle { left:.75rem; opacity:.55; }
+    body.sidebar-collapsed .standard-sidebar-toggle-icon { transform:rotate(180deg); }
+  }
+  .standard-sidebar-toggle-icon { transition:transform 260ms ease; }
+  body { opacity:1; transform:translateY(0); transition:opacity 180ms ease,transform 180ms ease; }
+  body.page-leaving { opacity:0; transform:translateY(4px); }
+  @media (prefers-reduced-motion:reduce) { body,body.page-leaving { opacity:1; transform:none; transition:none; } }
+
+  /* Step indicator */
+  .step-dot { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; font-family:'Plus Jakarta Sans',sans-serif; flex-shrink:0; }
+  .step-dot.done { background:#b10048; color:#fff; }
+  .step-dot.active { background:#ffd9de; color:#b10048; border:2px solid #b10048; }
+  .step-dot.idle { background:#e4e2e1; color:#906f73; }
+  .step-line { flex:1; height:2px; background:#e4e2e1; }
+  .step-line.done { background:#b10048; }
+  .brand-info-block {
+    border: 1px solid #f0d6db;
+    border-radius: 1rem;
+    background: #fffafb;
+    padding: 0.85rem 1rem;
+    color: #5c3f44;
+    font-size: 0.78rem;
+    line-height: 1.65;
+    white-space: pre-line;
+  }
+</style>
+</head>
+<body class="min-h-screen text-on-surface">
+
+<!-- Mobile Navigation Header -->
+<header id="mobile-navigation-bar" class="md:hidden sticky top-0 z-50 flex items-center justify-between px-5 py-3.5 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/50 dark:border-zinc-800/50">
+  <div class="flex items-center gap-3">
+    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white font-bold shadow-sm">
+      <span class="material-symbols-outlined text-lg">auto_awesome</span>
+    </div>
+    <div>
+      <h1 class="text-sm font-bold text-primary font-headline tracking-tight">School Intelligence OS</h1>
+      <p class="text-[9px] text-on-surface-variant font-medium">EdTech Suite</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <button id="mobile-theme-toggle" class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors" aria-label="Alternar tema">
+      <span class="material-symbols-outlined text-xl">dark_mode</span>
+    </button>
+    <button id="mobile-menu-toggle" class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors" aria-label="Abrir menu">
+      <span class="material-symbols-outlined text-2xl">menu</span>
+    </button>
+  </div>
+</header>
+<div id="sidebar-backdrop" class="fixed inset-0 bg-black/40 z-[9990] hidden opacity-0 transition-opacity duration-300"></div>
+
+
+
+<!-- SIDEBAR -->
+<nav id="standard-sidebar" class="standard-sidebar hidden md:flex fixed left-0 top-0 w-64 h-full flex-col py-8 bg-zinc-50 dark:bg-zinc-900 rounded-r-[3rem] overflow-hidden z-40">
+<div class="px-8 mb-12 flex items-center gap-4">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white font-bold shadow-md">
+  <span class="material-symbols-outlined text-xl">auto_awesome</span>
+</div>
+<div>
+<h1 class="text-lg font-bold text-primary font-headline tracking-tight">School Intelligence OS</h1>
+<p class="text-xs text-on-surface-variant font-medium">EdTech Suite</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 flex-grow px-4 font-['Lexend'] font-medium overflow-y-auto scrollbar-hide">
+<a data-nav-target="student_dashboard_1/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../student_dashboard_1/code.html">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span>Painel</span>
+</a>
+<a data-nav-target="gerador_projetos/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../gerador_projetos/code.html">
+      <span class="material-symbols-outlined text-xl">account_tree</span><span>Projeto BNCC Integrado</span>
+    </a>
+<a data-nav-target="chat/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../chat/code.html">
+<span class="material-symbols-outlined text-xl">psychology</span>
+<span>Chat IA</span>
+</a>
+<a data-nav-target="criador_posts/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../criador_posts/code.html">
+<span class="material-symbols-outlined text-xl">campaign</span>
+<span>Criador de Posts</span>
+</a>
+<a data-nav-target="pareceres_relatorios/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../pareceres_relatorios/code.html">
+<span class="material-symbols-outlined text-xl">assignment</span>
+<span>Pareceres</span>
+</a>
+<a data-nav-target="comunicados_familia/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../comunicados_familia/code.html">
+<span class="material-symbols-outlined text-xl">forum</span>
+<span>Comunicados</span>
+</a>
+<a data-nav-target="turma_alfabetizacao/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../turma_alfabetizacao/code.html">
+<span class="material-symbols-outlined text-xl">groups</span>
+<span>Turma</span>
+</a>
+
+<a data-nav-target="resource_library/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../resource_library/code.html">
+<span class="material-symbols-outlined text-xl">book_4</span>
+<span>Coleções</span>
+</a>
+
+
+
+</div>
+<div class="px-6 mt-auto">
+<div class="p-6 rounded-3xl bg-gradient-to-br from-tertiary-fixed to-primary-fixed relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
+<h3 class="font-headline font-bold text-on-surface mb-2 relative z-10">Vá Mais Longe</h3>
+<p class="text-sm text-on-surface-variant mb-4 relative z-10">Desbloqueie todos os recursos premium.</p>
+<button class="w-full py-3 px-4 bg-primary text-white rounded-full font-semibold text-sm hover:bg-primary-container transition-colors shadow-lg shadow-primary/20 relative z-10">Atualizar para Pro</button>
+</div>
+</div>
+</nav>
+<button id="standard-sidebar-toggle" aria-label="Esconder menu lateral" aria-expanded="true" class="standard-sidebar-toggle hidden md:flex fixed left-[15.25rem] top-24 z-50 h-8 w-8 items-center justify-center rounded-full bg-white/80 text-zinc-500 shadow-sm border border-zinc-200 hover:bg-white hover:text-primary active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px] standard-sidebar-toggle-icon">chevron_left</span>
+</button>
+
+<main class="app-main-offset grid min-h-screen gap-8 px-6 py-10 md:px-10 xl:grid-cols-[380px_minmax(0,1fr)]">
+
+  <!-- LEFT: brand config -->
+  <aside class="flex flex-col gap-5 xl:sticky xl:top-8 xl:h-fit">
+    <section class="overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary to-primary-container p-7 text-white rose-shadow">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="font-headline text-xs font-black uppercase tracking-[0.24em] text-primary-fixed">Conteúdo para Instagram</p>
+          <h1 class="mt-4 font-display text-4xl font-black leading-tight tracking-tight">Criador de Posts</h1>
+        </div>
+        <span class="hidden h-14 w-14 shrink-0 items-center justify-center rounded-3xl bg-white/16 backdrop-blur md:flex">
+          <span class="material-symbols-outlined text-3xl" style="font-variation-settings:'FILL' 1;">campaign</span>
+        </span>
+      </div>
+      <p class="mt-4 text-sm leading-7 text-white/82">Escolha o formato → receba ideias → selecione uma → gere o conteúdo e os prompts de imagem.</p>
+    </section>
+
+    <!-- Brand VIEW mode -->
+    <section class="rounded-[2rem] bg-surface-container-lowest soft-shadow overflow-hidden" id="brand-view">
+      <!-- Header strip -->
+      <div class="p-5 flex items-center justify-between gap-3" style="background:linear-gradient(135deg,#ffd9de,#fff0f5);">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:#b10048;">
+            <span class="material-symbols-outlined text-white text-xl" style="font-variation-settings:'FILL' 1;">storefront</span>
+          </div>
+          <div>
+            <p class="text-xs font-black uppercase tracking-[0.2em] text-primary">Identidade da marca</p>
+            <h2 class="font-headline font-black text-base text-on-surface" id="bv-name">School Intelligence OS</h2>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="brand-status" class="rounded-full bg-primary-fixed px-2.5 py-1 text-xs font-bold text-on-primary-fixed">Padrão</span>
+          <button onclick="toggleBrandEdit(true)" class="rounded-full bg-white px-3 py-1.5 text-xs font-bold text-primary soft-shadow hover:bg-primary-fixed transition-colors flex items-center gap-1">
+            <span class="material-symbols-outlined text-[14px]">edit</span>Editar
+          </button>
+        </div>
+      </div>
+
+      <div class="p-5 grid gap-4">
+        <!-- Nome público -->
+        <div>
+          <p class="field-label mb-1">Nome público</p>
+          <div class="brand-info-block" id="bv-name-details"></div>
+        </div>
+
+        <!-- Proposta -->
+        <div>
+          <p class="field-label mb-1">Proposta</p>
+          <div class="brand-info-block" id="bv-offer"></div>
+        </div>
+
+        <!-- Voz -->
+        <div>
+          <p class="field-label mb-2">Voz e estilo</p>
+          <div class="brand-info-block" id="bv-voice"></div>
+        </div>
+
+        <!-- Pilares -->
+        <div>
+          <p class="field-label mb-2">Pilares editoriais</p>
+          <div class="brand-info-block" id="bv-pillars"></div>
+        </div>
+
+        <!-- Hashtags -->
+        <div>
+          <p class="field-label mb-2">Hashtags</p>
+          <div class="brand-info-block" id="bv-hashtags"></div>
+        </div>
+
+        <!-- Diretrizes -->
+        <div>
+          <p class="field-label mb-1">Diretrizes para IA</p>
+          <div class="brand-info-block" id="bv-guidelines"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Brand EDIT mode (hidden by default) -->
+    <section class="rounded-[2rem] bg-surface-container-lowest p-5 soft-shadow hidden" id="brand-edit">
+      <div class="flex items-center justify-between gap-3 mb-4">
+        <div>
+          <p class="field-label">Editar identidade da marca</p>
+          <h2 class="mt-1 font-headline text-lg font-black">School Intelligence OS</h2>
+        </div>
+        <button onclick="toggleBrandEdit(false)" class="rounded-full border border-outline-variant px-3 py-1.5 text-xs font-semibold text-on-surface-variant hover:bg-surface-container-low transition-colors flex items-center gap-1">
+          <span class="material-symbols-outlined text-[14px]">close</span>Fechar
+        </button>
+      </div>
+      <div class="grid gap-4">
+        <label><span class="field-label">Nome público</span><textarea id="brand-name" class="input-field mt-2 min-h-[60px] text-sm"></textarea></label>
+        <label><span class="field-label">Proposta da marca</span><textarea id="brand-offer" class="input-field mt-2 min-h-[80px] text-sm"></textarea></label>
+        <label><span class="field-label">Voz e estilo</span><textarea id="brand-voice" class="input-field mt-2 min-h-[80px] text-sm"></textarea></label>
+        <label><span class="field-label">Pilares editoriais</span><textarea id="brand-pillars" class="input-field mt-2 min-h-[96px] text-sm"></textarea></label>
+        <label><span class="field-label">Hashtags base</span><textarea id="brand-hashtags" class="input-field mt-2 min-h-[70px] text-sm"></textarea></label>
+        <label><span class="field-label">Diretrizes extras para IA</span><textarea id="brand-guidelines" class="input-field mt-2 min-h-[80px] text-sm"></textarea></label>
+      </div>
+      <div class="mt-5 flex flex-wrap gap-2">
+        <button class="btn-primary !py-3 text-sm" onclick="saveBrand()" type="button"><span class="material-symbols-outlined text-[18px]">save</span>Salvar</button>
+        <button class="btn-secondary !py-3 text-sm" onclick="resetBrand()" type="button">Restaurar padrão</button>
+      </div>
+    </section>
+  </aside>
+
+  <!-- RIGHT: 3-step flow -->
+  <section class="flex flex-col gap-6">
+
+    <!-- Step indicator -->
+    <div class="flex items-center gap-2 px-1">
+      <div class="step-dot active" id="dot-1">1</div>
+      <div class="step-line" id="line-1"></div>
+      <div class="step-dot idle" id="dot-2">2</div>
+      <div class="step-line" id="line-2"></div>
+      <div class="step-dot idle" id="dot-3">3</div>
+      <span class="ml-3 text-xs text-on-surface-variant font-semibold" id="step-label">Configure o conteúdo</span>
+    </div>
+
+    <!-- ── STEP 1: Form ── -->
+    <form class="rounded-[2.5rem] bg-surface-container-lowest p-5 soft-shadow md:p-8" id="content-form">
+      <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p class="field-label">Passo 1 — Configurar</p>
+          <h2 class="mt-2 font-display text-3xl font-black tracking-tight">Gerar ideias de posts</h2>
+          <p class="mt-2 text-sm text-on-surface-variant">A IA cria ideias específicas para o formato escolhido.</p>
+        </div>
+        <button class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-br from-primary to-primary-container px-6 py-4 font-headline font-black text-white rose-shadow transition-transform hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed" id="generate-ideas-btn" type="submit">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">lightbulb</span>
+          Gerar ideias
+        </button>
+      </div>
+
+      <div class="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <label class="md:col-span-2 xl:col-span-3">
+          <span class="field-label">Tema do conteúdo</span>
+          <input id="topic" class="input-field mt-2" placeholder="Ex.: planejamento de aula com IA, alfabetização, BNCC na prática..." required type="text"/>
+        </label>
+
+        <!-- Formato — destaque visual -->
+        <label class="md:col-span-2 xl:col-span-3">
+          <span class="field-label">Formato do post</span>
+          <div class="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-6" id="format-chips">
+            <!-- Disponíveis -->
+            <label class="format-chip">
+              <input type="radio" name="formato" value="post_unico" class="sr-only" checked/>
+              <span class="chip-inner flex flex-col items-center gap-1 rounded-2xl bg-surface-container-low p-3 cursor-pointer transition-all border-2 border-transparent text-center">
+                <span class="material-symbols-outlined text-2xl">image</span>
+                <span class="text-xs font-bold">Post único</span>
+              </span>
+            </label>
+            <label class="format-chip">
+              <input type="radio" name="formato" value="carrossel" class="sr-only"/>
+              <span class="chip-inner flex flex-col items-center gap-1 rounded-2xl bg-surface-container-low p-3 cursor-pointer transition-all border-2 border-transparent text-center">
+                <span class="material-symbols-outlined text-2xl">view_carousel</span>
+                <span class="text-xs font-bold">Carrossel</span>
+              </span>
+            </label>
+            <label class="format-chip">
+              <input type="radio" name="formato" value="story" class="sr-only"/>
+              <span class="chip-inner flex flex-col items-center gap-1 rounded-2xl bg-surface-container-low p-3 cursor-pointer transition-all border-2 border-transparent text-center">
+                <span class="material-symbols-outlined text-2xl">add_circle</span>
+                <span class="text-xs font-bold">Story</span>
+              </span>
+            </label>
+            <label class="format-chip">
+              <input type="radio" name="formato" value="capa_reels" class="sr-only"/>
+              <span class="chip-inner flex flex-col items-center gap-1 rounded-2xl bg-surface-container-low p-3 cursor-pointer transition-all border-2 border-transparent text-center">
+                <span class="material-symbols-outlined text-2xl">movie</span>
+                <span class="text-xs font-bold">Capa de Reels</span>
+              </span>
+            </label>
+            <div class="chip-soon relative flex flex-col items-center gap-1 rounded-2xl bg-surface-container-low p-3 text-center opacity-50 cursor-not-allowed select-none">
+              <span class="material-symbols-outlined text-2xl text-on-surface-variant">chat_bubble</span>
+              <span class="text-xs font-bold text-on-surface-variant">Legenda</span>
+              <span class="absolute -top-1.5 -right-1.5 rounded-full px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-white" style="background:#906f73;">Em breve</span>
+            </div>
+            <div class="chip-soon relative flex flex-col items-center gap-1 rounded-2xl bg-surface-container-low p-3 text-center opacity-50 cursor-not-allowed select-none">
+              <span class="material-symbols-outlined text-2xl text-on-surface-variant">calendar_month</span>
+              <span class="text-xs font-bold text-on-surface-variant">Calendário</span>
+              <span class="absolute -top-1.5 -right-1.5 rounded-full px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-white" style="background:#906f73;">Em breve</span>
+            </div>
+          </div>
+        </label>
+
+        <label>
+          <span class="field-label">Público</span>
+          <select id="audience" class="input-field mt-2">
+            <option>professores</option>
+            <option>coordenadores pedagógicos</option>
+            <option>pais de alunos</option>
+            <option>gestores escolares</option>
+          </select>
+        </label>
+        <label>
+          <span class="field-label">Tom</span>
+          <select id="tone" class="input-field mt-2">
+            <option>didático</option>
+            <option>provocativo</option>
+            <option>acolhedor</option>
+            <option>especialista</option>
+            <option>vendedor</option>
+          </select>
+        </label>
+        <label>
+          <span class="field-label">Objetivo</span>
+          <select id="goal" class="input-field mt-2">
+            <option>gerar autoridade</option>
+            <option>engajar</option>
+            <option>educar</option>
+            <option>vender</option>
+            <option>divulgar recurso</option>
+          </select>
+        </label>
+        <label class="md:col-span-2 xl:col-span-3">
+          <span class="field-label">Observações opcionais</span>
+          <textarea id="notes" class="input-field mt-2 min-h-[72px]" placeholder="Ex.: foco em professores sem tempo, incluir CTA para salvar..."></textarea>
+        </label>
+      </div>
+
+      <!-- Quick topics -->
+      <div class="mt-5 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+        <button class="rounded-2xl bg-surface-container-low p-3 text-left transition-transform hover:-translate-y-0.5" onclick="fillTopic('planejamento de aula com IA')" type="button">
+          <strong class="font-headline text-sm text-on-surface">Planejamento com IA</strong>
+          <span class="mt-0.5 block text-xs text-on-surface-variant">Autoridade e prática</span>
+        </button>
+        <button class="rounded-2xl bg-surface-container-low p-3 text-left transition-transform hover:-translate-y-0.5" onclick="fillTopic('BNCC na prática para professores')" type="button">
+          <strong class="font-headline text-sm text-on-surface">BNCC na prática</strong>
+          <span class="mt-0.5 block text-xs text-on-surface-variant">Post educativo e salvável</span>
+        </button>
+        <button class="rounded-2xl bg-surface-container-low p-3 text-left transition-transform hover:-translate-y-0.5" onclick="fillTopic('alfabetização criativa com poucos recursos')" type="button">
+          <strong class="font-headline text-sm text-on-surface">Alfabetização</strong>
+          <span class="mt-0.5 block text-xs text-on-surface-variant">Ideias para sala</span>
+        </button>
+        <button class="rounded-2xl bg-surface-container-low p-3 text-left transition-transform hover:-translate-y-0.5" onclick="fillTopic('professor sem tempo para planejar')" type="button">
+          <strong class="font-headline text-sm text-on-surface">Professor sem tempo</strong>
+          <span class="mt-0.5 block text-xs text-on-surface-variant">Gancho de dor</span>
+        </button>
+      </div>
+    </form>
+
+    <!-- Loading ideias -->
+    <div class="hidden rounded-[2rem] bg-white p-6 text-center soft-shadow" id="loading-ideas">
+      <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary-fixed text-primary">
+        <span class="material-symbols-outlined animate-pulse text-4xl" style="font-variation-settings:'FILL' 1;">lightbulb</span>
+      </div>
+      <h3 class="mt-4 font-headline text-xl font-black">Gerando ideias...</h3>
+      <p class="mt-1 text-sm text-on-surface-variant">A IA está criando ideias para o formato selecionado.</p>
+    </div>
+
+    <!-- ── STEP 2: Ideas ── -->
+    <div class="hidden rounded-[2.5rem] bg-surface-container-lowest p-5 soft-shadow md:p-8" id="ideas-section">
+      <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+        <div>
+          <p class="field-label">Passo 2 — Escolher</p>
+          <h2 class="mt-2 font-display text-3xl font-black tracking-tight">Selecione uma ideia</h2>
+          <p class="mt-1 text-sm text-on-surface-variant" id="ideas-subtitle">Clique na ideia que você quer desenvolver.</p>
+        </div>
+        <button onclick="document.getElementById('content-form').scrollIntoView({behavior:'smooth'})" class="shrink-0 rounded-full border border-outline-variant px-4 py-2 text-sm font-semibold text-on-surface-variant hover:bg-surface-container-low transition-colors" type="button">
+          ← Alterar configurações
+        </button>
+      </div>
+      <div class="mt-5 grid gap-3" id="ideas-grid"></div>
+      <div class="mt-5 hidden" id="generate-content-wrap">
+        <button onclick="generateContent()" class="inline-flex items-center gap-2 rounded-full bg-gradient-to-br from-primary to-primary-container px-7 py-4 font-headline font-black text-white rose-shadow transition-transform hover:scale-[1.02]" type="button">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
+          Gerar conteúdo + prompts de imagem
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading content -->
+    <div class="hidden rounded-[2rem] bg-white p-6 text-center soft-shadow" id="loading-content">
+      <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary-fixed text-primary">
+        <span class="material-symbols-outlined animate-pulse text-4xl" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
+      </div>
+      <h3 class="mt-4 font-headline text-xl font-black">Gerando conteúdo e prompts de imagem...</h3>
+      <p class="mt-1 text-sm text-on-surface-variant">A IA está montando o post completo com a voz do School Intelligence OS.</p>
+    </div>
+
+    <!-- ── STEP 3: Content + Image Prompts ── -->
+    <div class="hidden flex flex-col gap-5" id="result-section">
+      <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between rounded-[2rem] bg-surface-container-lowest p-5 soft-shadow md:p-6">
+        <div>
+          <p class="field-label">Passo 3 — Resultado</p>
+          <h2 class="mt-1 font-display text-3xl font-black tracking-tight">Conteúdo gerado</h2>
+          <p class="text-sm text-on-surface-variant mt-1" id="result-subtitle"></p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button class="rounded-full bg-white px-4 py-2 text-sm font-bold text-primary soft-shadow hover:bg-surface-container-low transition-colors" id="copy-btn" onclick="copyResult()" type="button">Copiar tudo</button>
+          <button class="rounded-full bg-primary px-4 py-2 text-sm font-bold text-white soft-shadow hover:bg-primary-container transition-colors" id="save-btn" onclick="saveDraft()" type="button">Salvar rascunho</button>
+          <button onclick="resetFlow()" class="rounded-full border border-outline-variant px-4 py-2 text-sm font-semibold text-on-surface-variant hover:bg-surface-container-low transition-colors" type="button">Recomeçar</button>
+        </div>
+      </div>
+      <div class="grid gap-5" id="result-grid"></div>
+      <div class="rounded-[2rem] bg-white p-6 soft-shadow" id="prompts-section">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-fixed text-primary">
+            <span class="material-symbols-outlined">image</span>
+          </span>
+          <div>
+            <h3 class="font-headline text-xl font-black">Prompts de geração de imagem</h3>
+            <p class="text-xs text-on-surface-variant">Use no Midjourney, DALL-E, Adobe Firefly ou Canva AI</p>
+          </div>
+        </div>
+        <div class="grid gap-3" id="prompts-grid"></div>
+      </div>
+    </div>
+
+    <!-- Drafts -->
+    <section class="rounded-[2.5rem] bg-surface-container-lowest p-5 soft-shadow md:p-8">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p class="field-label">Biblioteca local</p>
+          <h2 class="mt-2 font-display text-2xl font-black tracking-tight">Rascunhos salvos</h2>
+        </div>
+        <button class="rounded-full bg-surface-container-low px-4 py-2 text-sm font-bold text-on-surface-variant hover:bg-surface-container-high transition-colors" onclick="clearDrafts()" type="button">Limpar rascunhos</button>
+      </div>
+      <div class="mt-5 grid gap-4 md:grid-cols-2" id="drafts-grid"></div>
+    </section>
+  </section>
+</main>
+
+<script>
+  const BRAND_KEY = "cp_brand_v2";
+  const DRAFTS_KEY = "cp_post_drafts_v2";
+  const GEMINI_MODEL = "gemini-2.5-flash";
+  const GEMINI_API = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+  let API_KEY = window.APP_CONFIG?.GEMINI_API_KEY || localStorage.getItem("gemini_api_key") || "";
+
+  let selectedIdeaIndex = null;
+  let currentIdeas = [];
+  let currentFormData = null;
+  let currentResult = null;
+  let currentPlainText = "";
+
+  const FORMAT_LABELS = {
+    post_unico: "Post único",
+    carrossel: "Carrossel",
+    reels: "Reels",
+    story: "Story",
+    capa_reels: "Capa de Reels",
+    legenda: "Legenda",
+    calendario: "Calendário semanal"
+  };
+
+  const defaultBrand = {
+    name: `School Intelligence OS
+
+Uso recomendado:
+Exemplo de voz:
+“Prof, eu sei como é difícil encontrar uma atividade pronta, criativa e que realmente funcione. Por isso preparei esse material para facilitar sua semana e encantar seus alunos.”
+
+Estilo visual e comunicacional:
+Use frases curtas, chamadas fortes, linguagem emocional e benefício direto. A estética deve ser vibrante, pedagógica, limpa e amigável, com foco em criatividade estruturada, utilidade visual e sensação de material pronto para transformar a aula. O brandbook define a voz com valores como inovação, criatividade, praticidade, compromisso com a educação e ludicidade.`,
+    pillars: `1. Economia de tempo para professores
+Conteúdos que mostram como a marca resolve a dor de planejamento, busca de atividades e preparação de aula.
+
+2. Atividades criativas e prontas para usar
+Posts demonstrando materiais, kits, atividades 3D, lembrancinhas, datas comemorativas e recursos imprimíveis.
+
+3. Encantamento e aprendizagem lúdica
+Conteúdos que mostram alunos mais engajados, aulas mais bonitas e experiências pedagógicas mais memoráveis.
+
+4. Organização pedagógica
+Materiais para rotina, planejamento, coordenação, decoração de sala, alfabetização e estruturação das aulas.
+
+5. Educação com propósito
+Conteúdos sobre transformação, desenvolvimento socioemocional, inclusão, alfabetização e impacto na vida das crianças.
+
+6. Bastidores e autoridade da Katiuscia
+A fundadora aparece como rosto humano da marca: professora, criadora, orientadora e referência confiável para a comunidade docente.
+
+Esses pilares conversam diretamente com os subnichos estratégicos da marca: educação infantil, ensino fundamental, alfabetização, inclusão, datas comemorativas, organização docente, decoração de sala e coordenação pedagógica.`,
+    hashtags: `Sugestão de hashtags fixas e adaptáveis:
+
+Institucionais
+#SchoolIntelligenceOS
+#EdTechSuite
+#InteligenciaPedagogica
+#KatiusciaHoepers
+#AtividadesCriativas
+#RecursosPedagogicos
+
+Para professoras
+#ProfessoraCriativa
+#ProfessorasDoBrasil
+#VidaDeProfessora
+#PlanejamentoEscolar
+#AtividadesParaProfessores
+
+Produto e nicho
+#AtividadesPedagogicas
+#AtividadesImprimiveis
+#Alfabetizacao
+#EducacaoInfantil
+#EnsinoFundamental
+#LembrancinhasEscolares
+#DatasComemorativas
+#MateriaisPedagogicos
+
+Emocionais/comerciais
+#AulasCriativas
+#AprendizagemLudica
+#EncanteSeusAlunos
+#FaciliteSuaRotina
+#ProfessorSemTempo`,
+    guidelines: `Ao gerar textos, posts, anúncios, legendas, roteiros ou páginas para o School Intelligence OS, a IA deve seguir estas regras:
+
+Sempre falar com a professora de forma direta e empática.
+Use termos como “prof”, “professora”, “sua aula”, “seus alunos”, “sua rotina”.
+Começar pela dor ou desejo.
+Exemplos: falta de tempo, cansaço de procurar atividades, necessidade de encantar os alunos, dificuldade em planejar datas comemorativas.
+Prometer praticidade, não complexidade.
+A marca vende facilidade. Evitar linguagem técnica demais.
+Valorizar o benefício visual e emocional.
+Mostrar que o material é bonito, criativo, organizado, pronto para usar e capaz de deixar a aula mais encantadora.
+Usar chamadas fortes e simples.
+Exemplos:
+“Cansada de perder tempo procurando atividades?”
+“Pronto para imprimir e usar.”
+“Uma aula mais criativa em poucos minutos.”
+“Encante seus alunos sem complicar sua rotina.”
+Manter o tom positivo e acolhedor.
+Nunca culpar a professora por estar cansada ou desorganizada. A marca deve acolher e ajudar.
+Priorizar clareza comercial.
+Todo conteúdo de venda deve deixar claro: o que é o material, para quem serve, when usar, o que vem incluso e qual transformação entrega.
+Respeitar a identidade visual.
+Priorizar magenta/cardinal red, branco, preto/onyx e vermelho cereja. Usar Poppins ou fonte sans-serif semelhante. Manter layout limpo, com boa hierarquia, bastante contraste e sensação de material pedagógico moderno.`
+  };
+
+  // ── Brand ──
+  function getBrand() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(BRAND_KEY) || "{}");
+      return Object.fromEntries(
+        Object.entries(defaultBrand).map(([key, fallback]) => {
+          const value = saved[key];
+          return [key, typeof value === "string" && value.trim() ? value : fallback];
+        })
+      );
+    }
+    catch (_) { return defaultBrand; }
+  }
+  function loadBrand() {
+    const b = getBrand();
+    document.getElementById("brand-name").value = b.name;
+    document.getElementById("brand-offer").value = b.offer;
+    document.getElementById("brand-voice").value = b.voice;
+    document.getElementById("brand-pillars").value = b.pillars;
+    document.getElementById("brand-hashtags").value = b.hashtags;
+    document.getElementById("brand-guidelines").value = b.guidelines;
+    updateBrandStatus();
+    renderBrandView(b);
+  }
+
+  function toggleBrandEdit(open) {
+    document.getElementById("brand-view").classList.toggle("hidden", open);
+    document.getElementById("brand-edit").classList.toggle("hidden", !open);
+  }
+
+  function renderBrandView(b) {
+    // Name (first line only)
+    const firstName = (b.name || "").split("\n")[0].trim();
+    const nameEl = document.getElementById("bv-name");
+    if (nameEl) nameEl.textContent = firstName;
+
+    const fields = {
+      "bv-name-details": b.name,
+      "bv-offer": b.offer,
+      "bv-voice": b.voice,
+      "bv-pillars": b.pillars,
+      "bv-hashtags": b.hashtags,
+      "bv-guidelines": b.guidelines
+    };
+
+    Object.entries(fields).forEach(([id, value]) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = (value || "").trim();
+    });
+  }
+  function collectBrand() {
+    return {
+      name: document.getElementById("brand-name").value.trim() || defaultBrand.name,
+      offer: document.getElementById("brand-offer").value.trim() || defaultBrand.offer,
+      voice: document.getElementById("brand-voice").value.trim() || defaultBrand.voice,
+      pillars: document.getElementById("brand-pillars").value.trim() || defaultBrand.pillars,
+      hashtags: document.getElementById("brand-hashtags").value.trim() || defaultBrand.hashtags,
+      guidelines: document.getElementById("brand-guidelines").value.trim() || defaultBrand.guidelines
+    };
+  }
+  function saveBrand() {
+    const b = collectBrand();
+    localStorage.setItem(BRAND_KEY, JSON.stringify(b));
+    updateBrandStatus("Salva ✓");
+    renderBrandView(b);
+    toggleBrandEdit(false);
+  }
+  function resetBrand() { localStorage.removeItem(BRAND_KEY); loadBrand(); updateBrandStatus("Padrão restaurado"); toggleBrandEdit(false); }
+  function updateBrandStatus(text) {
+    document.getElementById("brand-status").textContent = text || (localStorage.getItem(BRAND_KEY) ? "Salva" : "Padrão");
+  }
+
+  // ── Form data ──
+  function getFormData() {
+    return {
+      topic: document.getElementById("topic").value.trim(),
+      formato: document.querySelector('input[name="formato"]:checked')?.value || "post_unico",
+      audience: document.getElementById("audience").value,
+      tone: document.getElementById("tone").value,
+      goal: document.getElementById("goal").value,
+      notes: document.getElementById("notes").value.trim()
+    };
+  }
+  function fillTopic(v) { document.getElementById("topic").value = v; }
+
+  // ── STEP 1: Generate Ideas ──
+  document.getElementById("content-form").addEventListener("submit", async e => {
+    e.preventDefault();
+    currentFormData = getFormData();
+    if (!currentFormData.topic) return;
+
+    setLoading("ideas", true);
+    selectedIdeaIndex = null;
+    document.getElementById("ideas-section").classList.add("hidden");
+    document.getElementById("result-section").classList.add("hidden");
+
+    try {
+      const brand = collectBrand();
+      const resp = await callGemini(buildIdeasPrompt(brand, currentFormData));
+      currentIdeas = resp.ideias || [];
+      renderIdeas(currentIdeas, currentFormData);
+      setStep(2);
+    } catch (err) {
+      currentIdeas = fallbackIdeas(currentFormData);
+      renderIdeas(currentIdeas, currentFormData, "Fallback: " + err.message);
+      setStep(2);
+    } finally {
+      setLoading("ideas", false);
+    }
+  });
+
+  function buildIdeasPrompt(brand, data) {
+    const formatDesc = {
+      post_unico: "um post estático único (imagem + legenda), focado em um único ponto de valor",
+      carrossel: "um carrossel de múltiplos slides educativos (4-8 slides), cada um com texto e direção visual",
+      reels: "um vídeo curto Reels (30-60s) com gancho, roteiro em cenas e CTA",
+      story: "uma sequência de 3-5 stories interativos com enquete, caixinha ou deslize",
+      legenda: "uma legenda longa para post existente, com storytelling, CTA e hashtags",
+      calendario: "um calendário semanal de 5 posts com temas, formatos e CTAs diferentes por dia"
+    };
+
+    return `Você é estrategista de conteúdo para Instagram da marca "${brand.name}".
+
+CONTEXTO DA MARCA:
+Proposta: ${brand.offer}
+Voz e estilo: ${brand.voice}
+Pilares editoriais: ${brand.pillars}
+Hashtags base: ${brand.hashtags}
+Diretrizes: ${brand.guidelines}
+
+PEDIDO:
+Tema geral: ${data.topic}
+Público: ${data.audience}
+Formato solicitado: ${formatDesc[data.formato] || data.formato}
+Tom: ${data.tone}
+Objetivo: ${data.goal}
+Observações: ${data.notes || "nenhuma"}
+
+Gere EXATAMENTE 6 ideias de ${FORMAT_LABELS[data.formato] || data.formato} para Instagram sobre esse tema.
+Cada ideia deve ser específica, criativa e adaptada ao formato solicitado.
+NÃO misture formatos — todas as ideias devem ser para o formato "${FORMAT_LABELS[data.formato] || data.formato}".
+
+Responda APENAS JSON válido sem markdown:
+{
+  "ideias": [
+    { "titulo": "string curto e impactante", "descricao": "2-3 frases explicando o conceito e por que funciona para o formato" }
+  ]
+}`;
+  }
+
+  function fallbackIdeas(data) {
+    const fmt = FORMAT_LABELS[data.formato] || data.formato;
+    return [
+      { titulo: `5 formas de aplicar ${data.topic} hoje`, descricao: `${fmt} didático mostrando aplicação prática imediata. Funciona bem porque é salvável e objetivo.` },
+      { titulo: `O erro mais comum sobre ${data.topic}`, descricao: `${fmt} que usa inversão de expectativa como gancho. Alta probabilidade de compartilhamento.` },
+      { titulo: `Antes e depois: aula sem vs. com ${data.topic}`, descricao: `${fmt} comparativo que valida a dor do professor e apresenta a solução de forma visual.` },
+      { titulo: `Checklist rápido de ${data.topic} para professores`, descricao: `${fmt} prático que professores salvam para usar no planejamento. Ótimo para autoridade.` },
+      { titulo: `Mito ou verdade sobre ${data.topic}?`, descricao: `${fmt} interativo que gera engajamento por curiosidade e debate nos comentários.` },
+      { titulo: `Passo a passo para começar com ${data.topic}`, descricao: `${fmt} educativo que guia do zero quem ainda não usa. CTA natural para a plataforma.` }
+    ];
+  }
+
+  function renderIdeas(ideas, data, warning) {
+    const subtitle = `${ideas.length} ideias de ${FORMAT_LABELS[data.formato] || data.formato} sobre "${data.topic}"`;
+    document.getElementById("ideas-subtitle").textContent = subtitle;
+    document.getElementById("ideas-section").classList.remove("hidden");
+    document.getElementById("generate-content-wrap").classList.add("hidden");
+    selectedIdeaIndex = null;
+
+    const grid = document.getElementById("ideas-grid");
+    grid.innerHTML = (warning ? `<div class="rounded-2xl bg-primary-fixed p-3 text-xs font-bold text-on-primary-fixed">${escapeHtml(warning)}</div>` : "") +
+      ideas.map((idea, i) => `
+        <div class="idea-card rounded-2xl bg-white p-4 soft-shadow flex gap-3 items-start" onclick="selectIdea(${i})">
+          <span class="idea-num step-dot idle text-sm">${i + 1}</span>
+          <div class="flex-1 min-w-0">
+            <p class="font-headline font-bold text-base text-on-surface">${escapeHtml(idea.titulo)}</p>
+            <p class="mt-1 text-sm text-on-surface-variant leading-6">${escapeHtml(idea.descricao)}</p>
+          </div>
+          <span class="material-symbols-outlined text-outline mt-0.5 flex-shrink-0">arrow_forward_ios</span>
+        </div>`).join("");
+
+    grid.querySelectorAll('.idea-card').forEach((card, i) => {
+      card.onclick = () => selectIdea(i);
+    });
+  }
+
+  function selectIdea(index) {
+    selectedIdeaIndex = index;
+    document.querySelectorAll('.idea-card').forEach((card, i) => {
+      card.classList.toggle('selected', i === index);
+    });
+    document.getElementById("generate-content-wrap").classList.remove("hidden");
+    document.getElementById("generate-content-wrap").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  // ── STEP 2: Generate Content + Image Prompts ──
+  async function generateContent() {
+    if (selectedIdeaIndex === null || !currentIdeas.length) return;
+    const idea = currentIdeas[selectedIdeaIndex];
+    const brand = collectBrand();
+
+    setLoading("content", true);
+    document.getElementById("result-section").classList.add("hidden");
+
+    try {
+      const resp = await callGemini(buildContentPrompt(brand, currentFormData, idea));
+      currentResult = resp;
+      currentPlainText = resultToText(resp, idea, currentFormData);
+      renderResult(resp, idea, currentFormData);
+      setStep(3);
+    } catch (err) {
+      currentResult = fallbackContent(currentFormData, idea);
+      currentPlainText = resultToText(currentResult, idea, currentFormData);
+      renderResult(currentResult, idea, currentFormData, "Fallback: " + err.message);
+      setStep(3);
+    } finally {
+      setLoading("content", false);
+    }
+  }
+
+  function buildContentPrompt(brand, data, idea) {
+    const formatInstructions = {
+      post_unico: `Gere:
+- "legenda": texto completo da legenda com storytelling, quebras de linha, CTA e hashtags
+- "cta": a chamada principal destacada`,
+      carrossel: `Gere:
+- "slides": array de objetos { "slide": número, "tipo": "HOOK/DOR/SOLUÇÃO/EXEMPLO/CTA", "titulo": "string", "texto": "string", "direcaoVisual": "orientação para designer" }
+- "legenda": legenda do carrossel com CTA e hashtags
+- "cta": chamada principal`,
+      reels: `Gere:
+- "gancho": frase de abertura dos primeiros 3 segundos
+- "roteiro": array de cenas {"tempo": "0-5s", "acao": "string", "fala": "string"}
+- "cta": chamada final
+- "legenda": legenda do reel com hashtags`,
+      capa_reels: `Gere:
+- "sugestaoTituloCapa": o título ou frase curta impactante (3-5 palavras) que deve ser colocado em texto gigante no design da capa do Reels
+- "legenda": legenda do Reels complementar com parágrafos, CTA e hashtags
+- "cta": chamada para ação final na legenda`,
+      story: `Gere:
+- "sequencia": array de stories {"numero": 1, "tipo": "enquete/caixinha/deslize/texto", "texto": "string", "interacao": "string"}`,
+      legenda: `Gere:
+- "legenda": legenda longa completa com storytelling, parágrafos, emojis estratégicos, CTA e hashtags
+- "cta": chamada principal`,
+      calendario: `Gere:
+- "semana": array de {"dia": "string", "formato": "string", "titulo": "string", "tema": "string", "cta": "string", "dica": "string"}`
+    };
+
+
+    let promptsCount = 0;
+    if (data.formato === "carrossel") {
+      promptsCount = 5;
+    } else if (["post_unico", "capa_reels", "story"].includes(data.formato)) {
+      promptsCount = 1;
+    }
+
+    let extraImageInstructions = "";
+    if (promptsCount > 0) {
+      extraImageInstructions = `
+ALÉM DO CONTEÚDO, gere OBRIGATORIAMENTE o array "promptsImagem" com EXATAMENTE ${promptsCount} objeto(s). Cada objeto deve ser: {"descricao": "string explicativa", "prompt": "prompt detalhado em inglês"}.
+
+Para cada item em "promptsImagem", crie o prompt detalhado em inglês para Midjourney/DALL-E/Firefly adaptando o modelo abaixo com os assuntos e elementos específicos desta postagem ("${idea.titulo}"):
+
+MODELO DE PROMPT DE ALTA RETENÇÃO:
+- ESTILO VISUAL: a HIGH-RETENTION cinematic social media cover design. The design must feel like a premium viral social media thumbnail mixed with a modern cinematic poster.
+- ESTILO GERAL: cinematic lighting, modern social media thumbnail aesthetics, premium personal branding, emotional visual hierarchy, dark luxury atmosphere, floating symbolic elements related to education/pedagogy, dramatic depth. Optimized to STOP SCROLL instantly.
+- COMPOSIÇÃO: ${data.formato === 'post_unico' ? 'Square (1:1)' : 'Vertical (9:16)'}.
+- ÁREA CENTRAL (CENTER AREA): a charismatic professional Brazilian woman with shoulder-length light brown hair, smiling and confident, representing the teacher Katiusa, highly expressive face, direct eye contact with the camera, occupying 40% to 55% of the composition. Sharp focus on eyes, shallow depth of field.
+- ILUMINAÇÃO (LIGHTING): soft key light on the face, magenta rim light (#b10048) behind the subject, warm pink light leaks, soft glow.
+- PLANO DE FUNDO (BACKGROUND): dark premium blurred study setup, classroom, bookshelves, or modern office with warm background lighting.
+- ELEMENTOS FLUTUANTES (FLOATING ELEMENTS): floating 3D school supplies, books, glowing lightbulbs, or letters related to "${idea.titulo}" orbiting the subject with subtle motion blur.
+- SISTEMA DE CORES: magenta #b10048, pink, warm dark luxury tones.
+
+${data.formato === 'carrossel' ? 'Para o carrossel, o slide 1 deve seguir a capa acima, e os slides seguintes (2 a 5) devem ser prompts consistentes de apoio com o mesmo estilo e paleta de cores.' : ''}
+`;
+    }
+
+    return `Você é estrategista de conteúdo para Instagram da marca "${brand.name}".
+
+CONTEXTO DA MARCA:
+Proposta: ${brand.offer}
+Voz: ${brand.voice}
+Pilares: ${brand.pillars}
+Hashtags: ${brand.hashtags}
+Diretrizes: ${brand.guidelines}
+
+A usuária escolheu a seguinte ideia para desenvolver:
+Formato: ${FORMAT_LABELS[data.formato] || data.formato}
+Ideia escolhida: "${idea.titulo}"
+Descrição: ${idea.descricao}
+Tema: ${data.topic}
+Público: ${data.audience}
+Tom: ${data.tone}
+Objetivo: ${data.goal}
+Observações: ${data.notes || "nenhuma"}
+
+DESENVOLVA APENAS ESTE FORMATO. ${formatInstructions[data.formato] || "Gere o conteúdo no formato solicitado."}
+
+${extraImageInstructions}
+
+Responda APENAS JSON válido sem markdown:
+{
+  ${formatFields(data.formato)}${promptsCount > 0 ? ',\n  "promptsImagem": [{ "descricao": "string", "prompt": "string in English" }]' : ''}
+}`;
+  }
+
+  function formatFields(fmt) {
+    const fields = {
+      post_unico: '"legenda": "string", "cta": "string", "promptsImagem": []',
+      carrossel: '"slides": [], "legenda": "string", "cta": "string", "promptsImagem": []',
+      reels: '"gancho": "string", "roteiro": [], "cta": "string", "legenda": "string"',
+      capa_reels: '"sugestaoTituloCapa": "string", "legenda": "string", "cta": "string", "promptsImagem": []',
+      story: '"sequencia": [], "promptsImagem": []',
+      legenda: '"legenda": "string", "cta": "string"',
+      calendario: '"semana": []'
+    };
+    return fields[fmt] || '"conteudo": "string"';
+  }
+
+  function fallbackContent(data, idea) {
+    const singlePrompt = {
+      descricao: "Capa de Alto Impacto (Katiusa)",
+      prompt: `a HIGH-RETENTION cinematic ${data.formato === 'post_unico' ? 'square' : 'vertical'} social media cover design for Instagram. The design must feel like a premium viral social media thumbnail mixed with a modern cinematic poster. Topic: "${idea.titulo}". CORE STYLE: cinematic lighting, premium personal branding, dark luxury atmosphere, high-contrast typography, floating symbolic elements related to education, dramatic depth. COMPOSITION: ${data.formato === 'post_unico' ? 'square 1:1' : 'vertical 9:16'}. CENTER AREA: charismatic professional woman, highly expressive face, occupying 45% of composition, representing Katiusa. LIGHTING: soft key light, magenta rim light #b10048 behind subject, warm pink light leaks. BACKGROUND: dark premium blurred study setup. TYPOGRAPHY: HUGE bold uppercase sans serif. FLOATING ELEMENTS: floating 3D school supplies, soft depth blur. COLOR SYSTEM: magenta #b10048, pink, warm dark tones.`
+    };
+
+    if (data.formato === "capa_reels") {
+      return {
+        sugestaoTituloCapa: idea.titulo.toUpperCase(),
+        legenda: `Quer dominar ${data.topic} de uma vez por todas?\n\nAssista a este Reels até o final para ver o passo a passo completo.\n\nSalve para não perder!\n\n${defaultBrand.hashtags}`,
+        cta: "Assista ao Reels completo e salve!",
+        promptsImagem: [singlePrompt]
+      };
+    }
+    if (data.formato === "post_unico") {
+      return {
+        legenda: `${idea.titulo}\n\nProfessora, ${idea.descricao}\n\nSalve este post e teste amanhã.\n\n${defaultBrand.hashtags}`,
+        cta: "Salve e teste amanhã",
+        promptsImagem: [singlePrompt]
+      };
+    }
+    if (data.formato === "story") {
+      return {
+        sequencia: [
+          { numero: 1, tipo: "enquete", texto: "Você tem dificuldade com esse assunto?", interacao: "Sim / Não" },
+          { numero: 2, tipo: "deslize", texto: "Olha só essa dica que preparei para você...", interacao: "Barra de emoji" },
+          { numero: 3, tipo: "caixinha", texto: "Qual a sua maior dúvida sobre isso?", interacao: "Caixa de texto" }
+        ],
+        promptsImagem: [singlePrompt]
+      };
+    }
+    if (data.formato === "carrossel") {
+      const slides = [
+        { slide: 1, tipo: "HOOK", titulo: idea.titulo, texto: "Você conhece esse erro que quase todos os professores cometem?", direcaoVisual: "Título grande, fundo claro, detalhe magenta" },
+        { slide: 2, tipo: "DOR", titulo: "O problema", texto: `Professores gastam horas com ${data.topic} sem resultado efetivo.`, direcaoVisual: "Ícone de relógio, tom mais sério" },
+        { slide: 3, tipo: "SOLUÇÃO", titulo: "A solução", texto: `Com a abordagem certa de ${data.topic}, você economiza tempo e engaja mais.`, direcaoVisual: "Checklist visual, cores mais vibrantes" },
+        { slide: 4, tipo: "EXEMPLO", titulo: "Na prática", texto: `Veja como aplicar ${data.topic} ainda nesta semana com passos simples.`, direcaoVisual: "Lista com ícones, cores quentes" },
+        { slide: 5, tipo: "CTA", titulo: "Próximo passo", texto: "Salve este post e teste hoje na sua próxima aula.", direcaoVisual: "CTA centralizado, ícone de salvar" }
+      ];
+      const carouselPrompts = slides.map((s, i) => ({
+        descricao: `Slide ${s.slide} — ${s.tipo}: ${s.titulo}`,
+        prompt: `Educational Instagram carousel slide ${s.slide} of 5 for Brazilian teachers, topic "${idea.titulo}", slide type "${s.tipo}", magenta accent color #b10048, warm editorial aesthetic, clean modern layout, soft pink and white tones, professional photography style, no text overlay, square format, ${s.direcaoVisual}`
+      }));
+      return {
+        slides,
+        legenda: `Você já parou para pensar como ${data.topic} pode transformar sua rotina docente?\n\nSalve para usar no próximo planejamento.\n\n${defaultBrand.hashtags}`,
+        cta: "Salve para usar no planejamento",
+        promptsImagem: carouselPrompts
+      };
+    }
+    return { legenda: `${idea.titulo}\n\nProfessora, ${idea.descricao}\n\nSalve este post e teste amanhã.\n\n${defaultBrand.hashtags}`, cta: "Salve e teste amanhã" };
+  }
+
+  function renderResult(result, idea, data, warning) {
+    const rs = document.getElementById("result-section");
+    rs.classList.remove("hidden");
+    document.getElementById("result-subtitle").textContent = `"${idea.titulo}" — ${FORMAT_LABELS[data.formato] || data.formato}`;
+
+    const grid = document.getElementById("result-grid");
+    grid.innerHTML = (warning ? `<div class="rounded-2xl bg-primary-fixed p-3 text-xs font-bold text-on-primary-fixed">${escapeHtml(warning)}</div>` : "")
+      + renderFormatContent(result, data.formato);
+
+    // Reset reference images
+    referenceImages = {};
+
+    // Image prompts — shown for allowed formats
+    const promptsSection = document.getElementById('prompts-section');
+    const allowedFormats = ['carrossel', 'post_unico', 'capa_reels', 'story'];
+    const prompts = allowedFormats.includes(data.formato) ? (result.promptsImagem || []) : [];
+    promptsSection.style.display = (allowedFormats.includes(data.formato) && prompts.length) ? '' : 'none';
+    document.getElementById("prompts-grid").innerHTML = prompts.length
+      ? prompts.map((p, i) => `
+        <div class="prompt-card rounded-2xl bg-surface-container-low p-4" id="prompt-card-${i}">
+          <p class="text-xs font-black uppercase tracking-[0.1em] text-primary mb-1">Imagem ${i + 1}</p>
+          <p class="text-xs font-semibold text-on-surface-variant mb-2">${escapeHtml(p.descricao || "")}</p>
+          <textarea id="prompt-text-${i}" class="prompt-textarea mb-3">${escapeHtml(p.prompt || "")}</textarea>
+          
+          <!-- Imagem de referência (opcional) -->
+          <div class="mt-2 mb-4">
+            <span class="block text-xs font-bold text-on-surface-variant mb-1.5">Imagem de referência</span>
+            <div class="grid grid-cols-4 gap-2">
+              <label class="flex flex-col items-center justify-center p-1.5 rounded-xl border border-outline-variant bg-white cursor-pointer hover:bg-surface-container-low transition-all text-center relative" id="ref-opt-none-${i}">
+                <input type="radio" name="ref-type-${i}" value="none" class="sr-only" onchange="selectPresetReference(${i}, 'none')" />
+                <span class="material-symbols-outlined text-[20px] text-on-surface-variant mb-1">block</span>
+                <span class="text-[10px] font-bold text-on-surface">Nenhuma</span>
+              </label>
+              <label class="flex flex-col items-center p-1.5 rounded-xl border border-outline-variant bg-white cursor-pointer hover:bg-surface-container-low transition-all text-center relative" id="ref-opt-0-${i}">
+                <input type="radio" name="ref-type-${i}" value="katiusa" class="sr-only" onchange="selectPresetReference(${i}, 'katiusa')" />
+                <img src="Katiusa.png" class="h-10 w-10 object-cover rounded-lg mb-1" />
+                <span class="text-[10px] font-bold text-on-surface">Katiusa (Bonecos)</span>
+              </label>
+              <label class="flex flex-col items-center p-1.5 rounded-xl border border-outline-variant bg-white cursor-pointer hover:bg-surface-container-low transition-all text-center relative" id="ref-opt-1-${i}">
+                <input type="radio" name="ref-type-${i}" value="katiusa1" class="sr-only" onchange="selectPresetReference(${i}, 'katiusa1')" />
+                <img src="Katiusa1.png" class="h-10 w-10 object-cover rounded-lg mb-1" />
+                <span class="text-[10px] font-bold text-on-surface">Katiusa (Logo)</span>
+              </label>
+              <div class="flex flex-col items-center justify-center p-1.5 rounded-xl border border-outline-variant bg-white cursor-pointer hover:bg-surface-container-low transition-all text-center relative" id="ref-opt-custom-${i}" onclick="triggerCustomUpload(${i})">
+                <input type="radio" name="ref-type-${i}" value="custom" class="sr-only" />
+                <span class="material-symbols-outlined text-[20px] text-on-surface-variant mb-1">upload_file</span>
+                <span class="text-[10px] font-bold text-on-surface">Customizada</span>
+                <input type="file" id="ref-file-${i}" accept="image/*" class="sr-only" onchange="handleReferenceImage(${i}, this)" />
+              </div>
+            </div>
+            
+            <div id="ref-preview-wrap-${i}" class="hidden mt-2 flex items-center gap-2 bg-white rounded-xl p-1 pr-3 border border-outline-variant">
+              <img id="ref-preview-${i}" class="h-8 w-8 object-cover rounded-lg" />
+              <span class="text-xs font-medium text-on-surface truncate max-w-[120px]" id="ref-filename-${i}"></span>
+              <button onclick="removeReferenceImage(${i})" class="material-symbols-outlined text-[16px] text-error hover:text-red-700 ml-1" title="Limpar">close</button>
+            </div>
+          </div>
+
+          <div class="flex gap-2 flex-wrap">
+            <button onclick="generateImage(${i})" id="btn-gen-${i}" class="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-bold text-white transition" style="background:#b10048;" onmouseover="this.style.background='#8f003a'" onmouseout="this.style.background='#b10048'">
+              <span class="material-symbols-outlined text-[16px]">image</span>Gerar imagem
+            </button>
+            <button onclick="copyPrompt(${i})" id="btn-copy-${i}" class="rounded-xl bg-white px-4 py-2 text-sm font-bold text-primary soft-shadow hover:bg-primary-fixed transition-colors">Copiar prompt</button>
+          </div>
+          <div id="img-wrap-${i}" class="mt-4 hidden">
+            <div id="img-skeleton-${i}" class="img-skeleton w-full hidden" style="aspect-ratio:1/1;"></div>
+            <img id="img-result-${i}" class="generated-img hidden" alt="Imagem gerada" />
+            <p id="img-error-${i}" class="hidden mt-2 text-xs text-error font-semibold"></p>
+            <div id="img-actions-${i}" class="hidden mt-3 flex gap-2">
+              <a id="img-download-${i}" download="imagem-post.png" class="inline-flex items-center gap-1.5 rounded-xl bg-white px-4 py-2 text-sm font-bold text-primary soft-shadow hover:bg-primary-fixed transition-colors">
+                <span class="material-symbols-outlined text-[16px]">download</span>Baixar imagem
+              </a>
+              <button onclick="generateImage(${i})" class="rounded-xl border border-outline-variant px-4 py-2 text-sm font-semibold text-on-surface-variant hover:bg-surface-container-low transition-colors">Gerar novamente</button>
+            </div>
+          </div>
+        </div>`).join("")
+      : `<p class="text-sm text-on-surface-variant">Nenhum prompt gerado.</p>`;
+
+    // Select default reference images
+    if (prompts.length) {
+      prompts.forEach((p, i) => {
+        const defaultType = (i % 2 === 0) ? 'katiusa' : 'katiusa1';
+        selectPresetReference(i, defaultType);
+      });
+    }
+
+    rs.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function renderFormatContent(result, fmt) {
+    if (fmt === "capa_reels") {
+      return `<article class="result-card rounded-[2rem] bg-white p-6 soft-shadow">
+        <p class="field-label mb-2">Capa do Reels</p>
+        ${result.sugestaoTituloCapa ? `<div class="rounded-2xl bg-primary-fixed p-4 mb-3"><p class="text-xs font-black uppercase tracking-wider text-primary mb-1">Título sugerido para a Capa</p><p class="font-headline font-bold text-lg">"${escapeHtml(result.sugestaoTituloCapa)}"</p></div>` : ""}
+        ${result.legenda ? `<div class="mt-4 rounded-2xl bg-surface-container-low p-4 text-sm leading-7 whitespace-pre-wrap">${escapeHtml(result.legenda)}</div>` : ""}
+        ${result.cta ? `<p class="mt-3 text-sm font-bold text-primary">CTA final: ${escapeHtml(result.cta)}</p>` : ""}
+      </article>`;
+    }
+    if (fmt === "carrossel" && result.slides?.length) {
+      const slides = result.slides.map(s => `
+        <div class="rounded-2xl bg-surface-container-low p-4">
+          <p class="text-xs font-black uppercase tracking-[0.1em] text-primary">Slide ${s.slide} — ${escapeHtml(s.tipo || "")}</p>
+          ${s.titulo ? `<p class="mt-1 font-headline font-bold text-base">${escapeHtml(s.titulo)}</p>` : ""}
+          <p class="mt-1 text-sm leading-6">${escapeHtml(s.texto || "")}</p>
+          ${s.direcaoVisual ? `<p class="mt-2 text-xs text-on-surface-variant italic">Visual: ${escapeHtml(s.direcaoVisual)}</p>` : ""}
+        </div>`).join("");
+      return `<article class="result-card rounded-[2rem] bg-white p-6 soft-shadow">
+        <p class="field-label mb-3">Slides do Carrossel</p>
+        <div class="grid gap-3">${slides}</div>
+        ${result.legenda ? `<div class="mt-4 rounded-2xl bg-surface-container-low p-4 text-sm leading-7 whitespace-pre-wrap">${escapeHtml(result.legenda)}</div>` : ""}
+        ${result.cta ? `<p class="mt-2 text-sm font-bold text-primary">CTA: ${escapeHtml(result.cta)}</p>` : ""}
+      </article>`;
+    }
+    if (fmt === "reels") {
+      const cenas = (result.roteiro || []).map(c => `
+        <div class="rounded-2xl bg-surface-container-low p-3">
+          ${c.tempo ? `<p class="text-xs font-black text-primary uppercase tracking-wider mb-1">${escapeHtml(c.tempo)}</p>` : ""}
+          ${c.acao ? `<p class="text-xs text-on-surface-variant mb-1">${escapeHtml(c.acao)}</p>` : ""}
+          ${c.fala ? `<p class="text-sm font-semibold">"${escapeHtml(c.fala)}"</p>` : `<p class="text-sm">${escapeHtml(typeof c === "string" ? c : "")}</p>`}
+        </div>`).join("");
+      return `<article class="result-card rounded-[2rem] bg-white p-6 soft-shadow">
+        <p class="field-label mb-2">Roteiro do Reels</p>
+        ${result.gancho ? `<div class="rounded-2xl bg-primary-fixed p-4 mb-3"><p class="text-xs font-black uppercase tracking-wider text-primary mb-1">Gancho (0-3s)</p><p class="font-headline font-bold text-lg">"${escapeHtml(result.gancho)}"</p></div>` : ""}
+        <div class="grid gap-2">${cenas}</div>
+        ${result.cta ? `<p class="mt-3 text-sm font-bold text-primary">CTA final: ${escapeHtml(result.cta)}</p>` : ""}
+        ${result.legenda ? `<div class="mt-4 rounded-2xl bg-surface-container-low p-4 text-sm leading-7 whitespace-pre-wrap">${escapeHtml(result.legenda)}</div>` : ""}
+      </article>`;
+    }
+    if (fmt === "story" && result.sequencia?.length) {
+      const stories = result.sequencia.map(s => `
+        <div class="rounded-2xl bg-surface-container-low p-4">
+          <p class="text-xs font-black uppercase tracking-[0.1em] text-primary">Story ${s.numero || ""} — ${escapeHtml(s.tipo || "")}</p>
+          <p class="mt-1 text-sm leading-6 font-semibold">${escapeHtml(s.texto || "")}</p>
+          ${s.interacao ? `<p class="mt-1 text-xs text-on-surface-variant">Interação: ${escapeHtml(s.interacao)}</p>` : ""}
+        </div>`).join("");
+      return `<article class="result-card rounded-[2rem] bg-white p-6 soft-shadow">
+        <p class="field-label mb-3">Sequência de Stories</p>
+        <div class="grid gap-3">${stories}</div>
+      </article>`;
+    }
+    if (fmt === "calendario" && result.semana?.length) {
+      const rows = result.semana.map(d => `<tr class="border-b border-outline-variant/20">
+        <td class="py-3 pr-3 font-bold capitalize">${escapeHtml(d.dia || "")}</td>
+        <td class="py-3 pr-3 text-xs">${escapeHtml(d.formato || "")}</td>
+        <td class="py-3 pr-3">${escapeHtml(d.titulo || d.tema || "")}</td>
+        <td class="py-3 pr-3 text-xs text-primary font-semibold">${escapeHtml(d.cta || "")}</td>
+        <td class="py-3 text-xs text-on-surface-variant">${escapeHtml(d.dica || "")}</td>
+      </tr>`).join("");
+      return `<article class="result-card rounded-[2rem] bg-white p-6 soft-shadow overflow-x-auto">
+        <p class="field-label mb-3">Calendário Semanal</p>
+        <table class="w-full text-left text-sm min-w-[500px]">
+          <thead class="text-xs uppercase tracking-[0.1em] text-on-surface-variant">
+            <tr><th class="pb-2 pr-3">Dia</th><th class="pb-2 pr-3">Formato</th><th class="pb-2 pr-3">Título</th><th class="pb-2 pr-3">CTA</th><th class="pb-2">Dica</th></tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </article>`;
+    }
+    // legenda / post_unico / default
+    return `<article class="result-card rounded-[2rem] bg-white p-6 soft-shadow">
+      <p class="field-label mb-3">${FORMAT_LABELS[fmt] || "Conteúdo"}</p>
+      ${result.legenda ? `<div class="rounded-2xl bg-surface-container-low p-5 text-sm leading-7 whitespace-pre-wrap">${escapeHtml(result.legenda)}</div>` : ""}
+      ${result.cta ? `<p class="mt-3 text-sm font-bold text-primary">CTA: ${escapeHtml(result.cta)}</p>` : ""}
+      ${result.conteudo ? `<div class="rounded-2xl bg-surface-container-low p-5 text-sm leading-7 whitespace-pre-wrap">${escapeHtml(typeof result.conteudo === "string" ? result.conteudo : JSON.stringify(result.conteudo, null, 2))}</div>` : ""}
+    </article>`;
+  }
+
+  // ── Gemini ──
+  async function callGemini(prompt) {
+    const response = await fetch(`${GEMINI_API}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-goog-api-key": API_KEY },
+      body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig: { temperature: 0.6, topP: 0.9, maxOutputTokens: 3000 } })
+    });
+    if (!response.ok) {
+      let msg = "Erro na API Gemini";
+      try { const err = await response.json(); msg = err.error?.message || msg; } catch (_) {}
+      throw new Error(msg);
+    }
+    const payload = await response.json();
+    const text = payload.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    return parseJsonResponse(text);
+  }
+
+  function parseJsonResponse(text) {
+    let c = String(text || "").trim().replace(/^```json/i,"").replace(/^```/i,"").replace(/```$/i,"").trim();
+    try { return JSON.parse(c); }
+    catch (_) {
+      const s = c.indexOf("{"), e = c.lastIndexOf("}");
+      if (s >= 0 && e > s) return JSON.parse(c.slice(s, e + 1));
+      throw new Error("A IA retornou um formato inesperado.");
+    }
+  }
+
+  // ── UI helpers ──
+  function setLoading(type, on) {
+    document.getElementById(type === "ideas" ? "loading-ideas" : "loading-content").classList.toggle("hidden", !on);
+    document.getElementById("generate-ideas-btn").disabled = on;
+  }
+
+  function setStep(step) {
+    const dots = ["dot-1","dot-2","dot-3"];
+    const lines = ["line-1","line-2"];
+    const labels = ["Configure o conteúdo", "Escolha uma ideia", "Conteúdo + prompts de imagem"];
+    dots.forEach((id, i) => {
+      const el = document.getElementById(id);
+      el.className = "step-dot " + (i + 1 < step ? "done" : i + 1 === step ? "active" : "idle");
+    });
+    lines.forEach((id, i) => {
+      document.getElementById(id).classList.toggle("done", i + 1 < step);
+    });
+    document.getElementById("step-label").textContent = labels[step - 1] || "";
+  }
+
+  function resetFlow() {
+    selectedIdeaIndex = null;
+    currentIdeas = [];
+    currentResult = null;
+    document.getElementById("ideas-section").classList.add("hidden");
+    document.getElementById("result-section").classList.add("hidden");
+    setStep(1);
+    document.getElementById("content-form").scrollIntoView({ behavior: "smooth" });
+  }
+
+  // ── Copy ──
+  function resultToText(result, idea, data) {
+    const lines = [`IDEIA: ${idea.titulo}`, `FORMATO: ${FORMAT_LABELS[data.formato] || data.formato}`, ""];
+    if (result.sugestaoTituloCapa) lines.push(`TÍTULO DA CAPA: ${result.sugestaoTituloCapa}`, "");
+    if (result.gancho) lines.push(`GANCHO: ${result.gancho}`, "");
+    if (result.legenda) lines.push("LEGENDA:", result.legenda, "");
+    if (result.cta) lines.push(`CTA: ${result.cta}`, "");
+    if (result.slides?.length) { lines.push("SLIDES:"); result.slides.forEach(s => lines.push(`[Slide ${s.slide} - ${s.tipo}] ${s.titulo || ""}: ${s.texto || ""}`, `Visual: ${s.direcaoVisual || ""}`)); lines.push(""); }
+    if (result.roteiro?.length) { lines.push("ROTEIRO:"); result.roteiro.forEach(c => lines.push(typeof c === "string" ? c : `[${c.tempo}] ${c.fala || c.acao}`)); lines.push(""); }
+    if (result.sequencia?.length) { lines.push("STORIES:"); result.sequencia.forEach(s => lines.push(`Story ${s.numero}: ${s.texto}`)); lines.push(""); }
+    if (result.semana?.length) { lines.push("CALENDÁRIO:"); result.semana.forEach(d => lines.push(`${d.dia}: ${d.formato} — ${d.titulo || d.tema}`)); lines.push(""); }
+    if (result.promptsImagem?.length) { lines.push("PROMPTS DE IMAGEM:"); result.promptsImagem.forEach((p, i) => lines.push(`Prompt ${i+1} (${p.descricao}):`, p.prompt, "")); }
+    return lines.join("\n");
+  }
+
+  async function copyResult() {
+    if (!currentPlainText) return;
+    try { await navigator.clipboard.writeText(currentPlainText); }
+    catch (_) { const t = document.createElement("textarea"); t.value = currentPlainText; t.style.position="fixed"; t.style.opacity="0"; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); }
+    const btn = document.getElementById("copy-btn"); const old = btn.textContent;
+    btn.textContent = "Copiado!"; setTimeout(() => btn.textContent = old, 1300);
+  }
+
+  async function copyPrompt(index) {
+    const ta = document.getElementById(`prompt-text-${index}`);
+    const text = ta ? ta.value : (currentResult?.promptsImagem?.[index]?.prompt || "");
+    if (!text) return;
+    try { await navigator.clipboard.writeText(text); }
+    catch (_) { const t = document.createElement("textarea"); t.value = text; t.style.position="fixed"; t.style.opacity="0"; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); }
+    const btn = document.getElementById(`btn-copy-${index}`);
+    if (btn) { const old = btn.textContent; btn.textContent = "Copiado!"; setTimeout(() => btn.textContent = old, 1300); }
+  }
+
+  let referenceImages = {};
+
+  function handleReferenceImage(index, input) {
+    const file = input.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const dataUrl = e.target.result;
+      const commaIdx = dataUrl.indexOf(",");
+      if (commaIdx === -1) return;
+      referenceImages[index] = {
+        mimeType: file.type,
+        data: dataUrl.substring(commaIdx + 1)
+      };
+      
+      selectPresetReference(index, 'custom');
+      
+      document.getElementById(`ref-preview-${index}`).src = dataUrl;
+      document.getElementById(`ref-filename-${index}`).textContent = file.name;
+      document.getElementById(`ref-preview-wrap-${index}`).classList.remove("hidden");
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeReferenceImage(index) {
+    selectPresetReference(index, 'none');
+    const fileInput = document.getElementById(`ref-file-${index}`);
+    if (fileInput) fileInput.value = "";
+  }
+
+  function triggerCustomUpload(index) {
+    const fileInput = document.getElementById(`ref-file-${index}`);
+    if (fileInput) fileInput.click();
+  }
+
+  function selectPresetReference(index, type) {
+    const optNone = document.getElementById(`ref-opt-none-${index}`);
+    const opt0 = document.getElementById(`ref-opt-0-${index}`);
+    const opt1 = document.getElementById(`ref-opt-1-${index}`);
+    const optCustom = document.getElementById(`ref-opt-custom-${index}`);
+    
+    if (!optNone || !opt0 || !opt1 || !optCustom) return;
+
+    const normalClass = "flex flex-col items-center p-1.5 rounded-xl border border-outline-variant bg-white cursor-pointer hover:bg-surface-container-low transition-all text-center relative";
+    const normalCustomClass = "flex flex-col items-center justify-center p-1.5 rounded-xl border border-outline-variant bg-white cursor-pointer hover:bg-surface-container-low transition-all text-center relative";
+    
+    optNone.className = normalCustomClass;
+    opt0.className = normalClass;
+    opt1.className = normalClass;
+    optCustom.className = normalCustomClass;
+
+    const previewWrap = document.getElementById(`ref-preview-wrap-${index}`);
+    if (previewWrap) previewWrap.classList.add("hidden");
+
+    if (type === 'none') {
+      optNone.className = "flex flex-col items-center justify-center p-1.5 rounded-xl border-2 border-primary bg-primary-fixed/30 cursor-pointer hover:bg-surface-container-low transition-all text-center relative";
+      const radio = optNone.querySelector('input[type="radio"]');
+      if (radio) radio.checked = true;
+      delete referenceImages[index];
+    } else if (type === 'katiusa') {
+      opt0.className = "flex flex-col items-center p-1.5 rounded-xl border-2 border-primary bg-primary-fixed/30 cursor-pointer hover:bg-surface-container-low transition-all text-center relative";
+      const radio = opt0.querySelector('input[type="radio"]');
+      if (radio) radio.checked = true;
+      
+      if (window.PRESET_IMAGES?.katiusa) {
+        referenceImages[index] = {
+          mimeType: "image/png",
+          data: window.PRESET_IMAGES.katiusa
+        };
+      }
+    } else if (type === 'katiusa1') {
+      opt1.className = "flex flex-col items-center p-1.5 rounded-xl border-2 border-primary bg-primary-fixed/30 cursor-pointer hover:bg-surface-container-low transition-all text-center relative";
+      const radio = opt1.querySelector('input[type="radio"]');
+      if (radio) radio.checked = true;
+      
+      if (window.PRESET_IMAGES?.katiusa1) {
+        referenceImages[index] = {
+          mimeType: "image/png",
+          data: window.PRESET_IMAGES.katiusa1
+        };
+      }
+    } else if (type === 'custom') {
+      optCustom.className = "flex flex-col items-center justify-center p-1.5 rounded-xl border-2 border-primary bg-primary-fixed/30 cursor-pointer hover:bg-surface-container-low transition-all text-center relative";
+      const radio = optCustom.querySelector('input[type="radio"]');
+      if (radio) radio.checked = true;
+    }
+  }
+
+  async function generateImage(index) {
+    const ta = document.getElementById(`prompt-text-${index}`);
+    const prompt = ta ? ta.value.trim() : "";
+    if (!prompt) return;
+
+    const btnGen  = document.getElementById(`btn-gen-${index}`);
+    const wrap    = document.getElementById(`img-wrap-${index}`);
+    const skel    = document.getElementById(`img-skeleton-${index}`);
+    const imgEl   = document.getElementById(`img-result-${index}`);
+    const errEl   = document.getElementById(`img-error-${index}`);
+    const actions = document.getElementById(`img-actions-${index}`);
+    const dlLink  = document.getElementById(`img-download-${index}`);
+
+    // Reset state
+    wrap.classList.remove("hidden");
+    skel.classList.remove("hidden");
+    imgEl.classList.add("hidden");
+    errEl.classList.add("hidden");
+    actions.classList.add("hidden");
+    btnGen.disabled = true;
+    btnGen.textContent = "Gerando...";
+
+    try {
+      const IMAGE_MODEL = "gemini-3.1-flash-image-preview";
+      const IMAGE_API = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL}:generateContent`;
+
+      const parts = [{ text: prompt }];
+      if (referenceImages[index]) {
+        parts.push({
+          inlineData: {
+            mimeType: referenceImages[index].mimeType,
+            data: referenceImages[index].data
+          }
+        });
+      }
+
+      const res = await fetch(`${IMAGE_API}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-goog-api-key": API_KEY },
+        body: JSON.stringify({
+          contents: [{ parts: parts }],
+          generationConfig: { responseModalities: ["IMAGE"] }
+        })
+      });
+
+      if (!res.ok) {
+        let msg = `Erro ${res.status}`;
+        try { const err = await res.json(); msg = err.error?.message || msg; } catch (_) {}
+        throw new Error(msg);
+      }
+
+      const data = await res.json();
+      // Find image part in response
+      const responseParts = data.candidates?.[0]?.content?.parts || [];
+      const imgPart = responseParts.find(p => p.inlineData?.mimeType?.startsWith("image/"));
+      if (!imgPart) throw new Error("A API não retornou uma imagem. Verifique se o modelo está disponível na sua conta.");
+
+      const mimeType = imgPart.inlineData.mimeType;
+      const b64 = imgPart.inlineData.data;
+      const src = `data:${mimeType};base64,${b64}`;
+
+      imgEl.src = src;
+      imgEl.classList.remove("hidden");
+      dlLink.href = src;
+      actions.classList.remove("hidden");
+
+    } catch (err) {
+      errEl.textContent = "Erro: " + err.message;
+      errEl.classList.remove("hidden");
+    } finally {
+      skel.classList.add("hidden");
+      btnGen.disabled = false;
+      btnGen.innerHTML = '<span class="material-symbols-outlined text-[16px]">image</span>Gerar imagem';
+    }
+  }
+
+  // ── Drafts ──
+  function saveDraft() {
+    if (!currentResult || !currentFormData) return;
+    const drafts = getDrafts();
+    drafts.unshift({ id: String(Date.now()), createdAt: new Date().toLocaleString("pt-BR"), topic: currentFormData.topic, formato: currentFormData.formato, ideaTitulo: currentIdeas[selectedIdeaIndex]?.titulo || "", result: currentResult, plainText: currentPlainText });
+    localStorage.setItem(DRAFTS_KEY, JSON.stringify(drafts.slice(0, 24)));
+    renderDrafts();
+  }
+  function getDrafts() { try { return JSON.parse(localStorage.getItem(DRAFTS_KEY) || "[]"); } catch (_) { return []; } }
+  function renderDrafts() {
+    const grid = document.getElementById("drafts-grid");
+    const drafts = getDrafts();
+    if (!drafts.length) { grid.innerHTML = `<div class="rounded-2xl bg-surface-container-low p-5 text-sm text-on-surface-variant">Nenhum rascunho salvo ainda.</div>`; return; }
+    grid.innerHTML = drafts.map(d => `<article class="draft-card rounded-2xl bg-surface-container-low p-5">
+      <p class="text-xs font-bold uppercase tracking-[0.1em] text-primary">${escapeHtml(FORMAT_LABELS[d.formato] || d.formato)} · ${escapeHtml(d.createdAt)}</p>
+      <h3 class="mt-1 font-headline text-base font-black">${escapeHtml(d.ideaTitulo || d.topic)}</h3>
+      <p class="mt-1 text-xs text-on-surface-variant">${escapeHtml(d.topic)}</p>
+      <div class="mt-3 flex gap-2">
+        <button class="rounded-full bg-white px-3 py-1.5 text-xs font-bold text-primary" onclick="loadDraft('${d.id}')" type="button">Abrir</button>
+        <button class="rounded-full bg-white px-3 py-1.5 text-xs font-bold text-on-surface-variant" onclick="deleteDraft('${d.id}')" type="button">Excluir</button>
+      </div>
+    </article>`).join("");
+  }
+  function loadDraft(id) {
+    const d = getDrafts().find(x => x.id === id);
+    if (!d) return;
+    currentResult = d.result;
+    currentPlainText = d.plainText || "";
+    currentFormData = { topic: d.topic, formato: d.formato };
+    currentIdeas = [{ titulo: d.ideaTitulo, descricao: "" }];
+    selectedIdeaIndex = 0;
+    renderResult(d.result, { titulo: d.ideaTitulo || d.topic }, { formato: d.formato });
+    setStep(3);
+    document.getElementById("result-section").scrollIntoView({ behavior: "smooth" });
+  }
+  function deleteDraft(id) { localStorage.setItem(DRAFTS_KEY, JSON.stringify(getDrafts().filter(x => x.id !== id))); renderDrafts(); }
+  function clearDrafts() { localStorage.removeItem(DRAFTS_KEY); renderDrafts(); }
+
+  function escapeHtml(v) {
+    return String(v || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+  }
+
+  loadBrand();
+  renderDrafts();
+</script>
+
+<script>
+  document.getElementById('standard-sidebar-toggle')?.addEventListener('click', () => {
+    const c = document.body.classList.toggle('sidebar-collapsed');
+    document.getElementById('standard-sidebar-toggle').setAttribute('aria-expanded', String(!c));
+  });
+  const currentPath = decodeURIComponent(window.location.pathname).replace(/\\/g, '/');
+  document.querySelectorAll('[data-nav-target]').forEach(link => {
+    if (currentPath.endsWith(link.getAttribute('data-nav-target'))) link.classList.add('active');
+  });
+  document.addEventListener('click', e => {
+    const link = e.target.closest('a[href]');
+    if (!link) return;
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('http') || link.target === '_blank') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    e.preventDefault();
+    document.body.classList.add('page-leaving');
+    setTimeout(() => { window.location.href = link.href; }, 160);
+  });
+</script>
+
+
+<script id="mobile-responsive-script">
+  (function() {
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+    const sidebar = document.getElementById('standard-sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    
+    if (mobileMenuToggle && sidebar && backdrop) {
+      function openMobileMenu() {
+        sidebar.classList.add('mobile-open');
+        backdrop.classList.remove('hidden');
+        setTimeout(() => {
+          backdrop.classList.add('opacity-100');
+        }, 10);
+      }
+      
+      function closeMobileMenu() {
+        sidebar.classList.remove('mobile-open');
+        backdrop.classList.remove('opacity-100');
+        setTimeout(() => {
+          backdrop.classList.add('hidden');
+        }, 300);
+      }
+      
+      mobileMenuToggle.addEventListener('click', openMobileMenu);
+      backdrop.addEventListener('click', closeMobileMenu);
+      
+      sidebar.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+      });
+    }
+
+    if (mobileThemeToggle) {
+      function updateMobileThemeIcon() {
+        const isDark = document.documentElement.classList.contains('dark');
+        const icon = mobileThemeToggle.querySelector('.material-symbols-outlined');
+        if (icon) {
+          icon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        }
+      }
+      
+      updateMobileThemeIcon();
+      
+      mobileThemeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateMobileThemeIcon();
+        
+        const standardIcon = document.getElementById('theme-toggle-icon');
+        if (standardIcon) {
+          standardIcon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        }
+      });
+      
+      const standardToggle = document.getElementById('theme-toggle');
+      if (standardToggle) {
+        standardToggle.addEventListener('click', () => {
+          setTimeout(updateMobileThemeIcon, 50);
+        });
+      }
+    }
+  })();
+</script>
+
+</body>
+</html>

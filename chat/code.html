@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chat IA - School Intelligence OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="../config.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        "primary": "#b10048", "primary-container": "#df005d",
+        "surface": "#fbf9f8", "surface-container": "#f0eded",
+        "surface-container-low": "#f6f3f2", "surface-container-lowest": "#ffffff",
+        "surface-container-high": "#eae8e7", "surface-container-highest": "#e4e2e1",
+        "on-surface": "#1b1c1c", "on-surface-variant": "#5c3f44",
+        "outline-variant": "#e4bdc2", "tertiary-fixed": "#ffd9e0",
+        "on-tertiary-fixed": "#3f0019", "primary-fixed": "#ffd9de",
+        "on-primary-fixed": "#3f0015",
+      },
+      fontFamily: { headline: ["Plus Jakarta Sans"], body: ["Lexend"], label: ["Plus Jakarta Sans"] }
+    }
+  }
+}
+</script>
+<style>
+  /* Mobile Responsive Overrides */
+  @media (max-width: 767px) {
+    main.app-main-offset,
+    .app-main-offset {
+      margin-left: 0 !important;
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+      padding-top: 1.5rem !important;
+      width: 100% !important;
+    }
+    
+    header.app-main-offset {
+      display: none !important; /* Hide desktop header on mobile */
+    }
+    
+    /* Force grids to single column on mobile */
+    .grid:not(.grid-cols-3):not(.grid-cols-4):not(.flex) {
+      grid-template-columns: 1fr !important;
+    }
+    
+    /* Make sure form layout works on mobile */
+    #project-form, #planner-form, form {
+      padding: 1.25rem !important;
+      border-radius: 1.5rem !important;
+    }
+    
+    /* Sidebar as mobile drawer */
+    .standard-sidebar {
+      display: flex !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      height: 100vh !important;
+      width: 280px !important;
+      transform: translateX(-100%) !important;
+      transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+      z-index: 9999 !important;
+      box-shadow: 20px 0 50px rgba(0, 0, 0, 0.15) !important;
+      border-radius: 0 2rem 2rem 0 !important;
+    }
+    
+    .standard-sidebar.mobile-open {
+      transform: translateX(0) !important;
+    }
+    
+    /* Hide standard desktop toggle button on mobile */
+    #standard-sidebar-toggle,
+    .standard-sidebar-toggle {
+      display: none !important;
+    }
+    
+    /* Prevent iOS auto-zoom on form inputs */
+    .input-field, select, textarea, input {
+      font-size: 16px !important;
+    }
+  }
+
+  body { font-family: 'Lexend', sans-serif; }
+  .chat-bubble-user { background: linear-gradient(135deg, #b10048, #df005d); }
+  .chat-bubble-ai { background: #f6f3f2; }
+  #messages::-webkit-scrollbar { width: 4px; }
+  #messages::-webkit-scrollbar-track { background: transparent; }
+  #messages::-webkit-scrollbar-thumb { background: #e4bdc2; border-radius: 2px; }
+  .typing-dot { animation: typing 1.4s infinite; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typing { 0%,80%,100%{transform:scale(0.8);opacity:0.5} 40%{transform:scale(1);opacity:1} }
+  .pdf-loaded { border-color: #b10048 !important; background: #fff0f4 !important; }
+
+        .standard-sidebar,
+        .standard-sidebar-toggle,
+        .app-main-offset {
+            transition: margin-left 260ms ease, transform 260ms ease, left 260ms ease, width 260ms ease, opacity 160ms ease;
+        }
+        .standard-nav-link.active {
+            background: #ffffff;
+            color: #b10048;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+        }
+        .standard-nav-link.active .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1;
+        }
+        @media (min-width: 768px) {
+            .app-main-offset {
+                margin-left: 16rem !important;
+                width: calc(100% - 16rem) !important;
+            }
+            body.sidebar-collapsed .standard-sidebar {
+                transform: translateX(-100%);
+            }
+            body.sidebar-collapsed .app-main-offset {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+            body.sidebar-collapsed .standard-sidebar-toggle {
+                left: 0.75rem;
+                opacity: 0.55;
+            }
+            body.sidebar-collapsed .standard-sidebar-toggle-icon {
+                transform: rotate(180deg);
+            }
+        }
+        .standard-sidebar-toggle-icon {
+            transition: transform 260ms ease;
+        }
+        body {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 180ms ease, transform 180ms ease;
+        }
+        body.page-ready {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        body.page-leaving {
+            opacity: 0;
+            transform: translateY(4px);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            body,
+            body.page-ready,
+            body.page-leaving {
+                opacity: 1;
+                transform: none;
+                transition: none;
+            }
+        }
+</style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+
+<!-- Mobile Navigation Header -->
+<header id="mobile-navigation-bar" class="md:hidden sticky top-0 z-50 flex items-center justify-between px-5 py-3.5 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/50 dark:border-zinc-800/50">
+  <div class="flex items-center gap-3">
+    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white font-bold shadow-sm">
+      <span class="material-symbols-outlined text-lg">auto_awesome</span>
+    </div>
+    <div>
+      <h1 class="text-sm font-bold text-primary font-headline tracking-tight">School Intelligence OS</h1>
+      <p class="text-[9px] text-on-surface-variant font-medium">EdTech Suite</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <button id="mobile-theme-toggle" class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors" aria-label="Alternar tema">
+      <span class="material-symbols-outlined text-xl">dark_mode</span>
+    </button>
+    <button id="mobile-menu-toggle" class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors" aria-label="Abrir menu">
+      <span class="material-symbols-outlined text-2xl">menu</span>
+    </button>
+  </div>
+</header>
+<div id="sidebar-backdrop" class="fixed inset-0 bg-black/40 z-[9990] hidden opacity-0 transition-opacity duration-300"></div>
+
+
+
+<!-- TopNav -->
+<header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-outline-variant/20 shadow-sm">
+  <div class="max-w-screen-2xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
+    <a href="../resource_library/code.html" class="text-xl font-black text-primary font-headline tracking-tight hover:opacity-80 transition-opacity">School Intelligence OS</a>
+    <nav class="hidden md:flex items-center gap-5 font-headline font-bold text-sm">
+      <a href="../resource_library/code.html" class="text-on-surface-variant hover:text-primary transition-colors">Biblioteca</a>
+      <a href="../gerador_projetos/code.html" class="text-on-surface-variant hover:text-primary transition-colors">Projeto BNCC Integrado</a>
+      <a href="../kits_pedag_gicos_foco_em_cole_es/code.html" class="text-on-surface-variant hover:text-primary transition-colors">Kits</a>
+      
+      <a href="../chat/code.html" class="text-primary border-b-2 border-primary pb-0.5">Chat IA</a>
+    </nav>
+    <div id="pdf-status" class="flex items-center gap-2 text-xs font-body">
+      <span id="pdf-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+      <span id="pdf-label" class="text-on-surface-variant">Carregando BNCC...</span>
+    </div>
+  </div>
+</header>
+
+<div class="flex flex-1 max-w-screen-2xl mx-auto w-full gap-0">
+
+  <!-- Sidebar -->
+  <aside class="hidden lg:flex flex-col w-72 shrink-0 border-r border-outline-variant/20 bg-surface-container-low p-6 gap-6">
+    <div>
+      <h2 class="font-headline font-bold text-lg text-on-surface mb-1">Assistente BNCC</h2>
+      <p class="text-xs text-on-surface-variant font-body leading-relaxed">Converse com a IA sobre a Base Nacional Comum Curricular. Tire dúvidas, explore competências e planeje suas aulas.</p>
+    </div>
+
+    <!-- PDF Info -->
+    <div id="pdf-card" class="border-2 border-dashed border-outline-variant rounded-2xl p-4 transition-all duration-300">
+      <div class="flex items-center gap-3 mb-2">
+        <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+          <span class="material-symbols-outlined text-xl">picture_as_pdf</span>
+        </div>
+        <div>
+          <p class="font-headline font-bold text-sm text-on-surface">BNCC 2018</p>
+          <p class="text-xs text-on-surface-variant">Ed. Infantil + Fund.</p>
+        </div>
+      </div>
+      <div id="pdf-progress-wrap" class="mt-2">
+        <div class="flex justify-between text-xs text-on-surface-variant mb-1">
+          <span>Processando PDF...</span>
+          <span id="pdf-pages">0%</span>
+        </div>
+        <div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+          <div id="pdf-bar" class="bg-primary h-full rounded-full transition-all duration-300" style="width:0%"></div>
+        </div>
+      </div>
+      <div id="pdf-done" class="hidden mt-2 flex items-center gap-1.5 text-xs text-primary font-bold">
+        <span class="material-symbols-outlined text-sm">check_circle</span> PDF pronto para consulta
+      </div>
+    </div>
+
+    <!-- Suggestions -->
+    <div>
+      <p class="text-xs font-headline font-bold text-on-surface-variant uppercase tracking-wider mb-3">Sugestões</p>
+      <div class="flex flex-col gap-2">
+        <button onclick="sendSuggestion(this)" class="text-left text-xs bg-surface-container rounded-xl p-3 hover:bg-primary/5 hover:text-primary transition-colors border border-outline-variant/20 font-body leading-relaxed">Quais são as 10 competências gerais da BNCC?</button>
+        <button onclick="sendSuggestion(this)" class="text-left text-xs bg-surface-container rounded-xl p-3 hover:bg-primary/5 hover:text-primary transition-colors border border-outline-variant/20 font-body leading-relaxed">Como a BNCC define os campos de experiência na Ed. Infantil?</button>
+        <button onclick="sendSuggestion(this)" class="text-left text-xs bg-surface-container rounded-xl p-3 hover:bg-primary/5 hover:text-primary transition-colors border border-outline-variant/20 font-body leading-relaxed">Explique as áreas do conhecimento no Ensino Fundamental.</button>
+        <button onclick="sendSuggestion(this)" class="text-left text-xs bg-surface-container rounded-xl p-3 hover:bg-primary/5 hover:text-primary transition-colors border border-outline-variant/20 font-body leading-relaxed">O que são habilidades e competências específicas por área?</button>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="mt-auto">
+      <button onclick="toggleSettings()" class="w-full flex items-center gap-2 text-xs text-on-surface-variant hover:text-primary transition-colors font-body">
+        <span class="material-symbols-outlined text-sm">settings</span> Configurações da API
+      </button>
+      <div id="settings-panel" class="hidden mt-3 p-3 bg-surface-container rounded-xl border border-outline-variant/20">
+        <label class="text-xs font-bold text-on-surface-variant block mb-1">Chave da API Gemini</label>
+        <input id="api-key-input" type="password" class="w-full text-xs rounded-lg border border-outline-variant/30 px-3 py-2 bg-white focus:border-primary focus:outline-none font-body" placeholder="Cole sua nova chave de API aqui"/>
+        <button onclick="saveSettings()" class="mt-2 w-full py-1.5 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary-container transition-colors">Salvar</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Chat Area -->
+  <!-- Standard Side Navigation (Web) -->
+<nav id="standard-sidebar" class="standard-sidebar hidden md:flex fixed left-0 top-0 w-64 h-full flex-col py-8 bg-zinc-50 dark:bg-zinc-900 rounded-r-[3rem] overflow-hidden z-40">
+<div class="px-8 mb-12 flex items-center gap-4">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white font-bold shadow-md">
+  <span class="material-symbols-outlined text-xl">auto_awesome</span>
+</div>
+<div>
+<h1 class="text-lg font-bold text-primary font-headline tracking-tight">School Intelligence OS</h1>
+<p class="text-xs text-on-surface-variant font-medium">EdTech Suite</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 flex-grow px-4 font-['Lexend'] font-medium overflow-y-auto scrollbar-hide">
+<a data-nav-target="student_dashboard_1/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../student_dashboard_1/code.html">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span>Painel</span>
+</a>
+<a data-nav-target="gerador_projetos/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../gerador_projetos/code.html">
+      <span class="material-symbols-outlined text-xl">account_tree</span><span>Projeto BNCC Integrado</span>
+    </a>
+<a data-nav-target="chat/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../chat/code.html">
+<span class="material-symbols-outlined text-xl">psychology</span>
+<span>Chat IA</span>
+</a>
+<a data-nav-target="criador_posts/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../criador_posts/code.html">
+<span class="material-symbols-outlined text-xl">campaign</span>
+<span>Criador de Posts</span>
+</a>
+<a data-nav-target="pareceres_relatorios/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../pareceres_relatorios/code.html">
+<span class="material-symbols-outlined text-xl">assignment</span>
+<span>Pareceres</span>
+</a>
+<a data-nav-target="comunicados_familia/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../comunicados_familia/code.html">
+<span class="material-symbols-outlined text-xl">forum</span>
+<span>Comunicados</span>
+</a>
+<a data-nav-target="turma_alfabetizacao/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../turma_alfabetizacao/code.html">
+<span class="material-symbols-outlined text-xl">groups</span>
+<span>Turma</span>
+</a>
+
+<a data-nav-target="resource_library/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../resource_library/code.html">
+<span class="material-symbols-outlined text-xl">book_4</span>
+<span>Coleções</span>
+</a>
+
+
+
+</div>
+<div class="px-6 mt-auto">
+<div class="p-6 rounded-3xl bg-gradient-to-br from-tertiary-fixed to-primary-fixed relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
+<h3 class="font-headline font-bold text-on-surface mb-2 relative z-10">Vá Mais Longe</h3>
+<p class="text-sm text-on-surface-variant mb-4 relative z-10 font-body">Desbloqueie todos os recursos premium.</p>
+<button class="w-full py-3 px-4 bg-primary text-white rounded-full font-semibold text-sm hover:bg-primary-container transition-colors shadow-lg shadow-primary/20 relative z-10">
+Atualizar para Pro
+</button>
+</div>
+</div>
+</nav>
+<button id="standard-sidebar-toggle" aria-label="Esconder menu lateral" aria-expanded="true" class="standard-sidebar-toggle hidden md:flex fixed left-[15.25rem] top-24 z-50 h-8 w-8 items-center justify-center rounded-full bg-white/80 text-zinc-500 shadow-sm border border-zinc-200 hover:bg-white hover:text-primary hover:opacity-100 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px] standard-sidebar-toggle-icon">chevron_left</span>
+</button>
+<main class="app-main-offset flex flex-col flex-1 min-h-0">
+    <!-- Messages -->
+    <div id="messages" class="flex-1 overflow-y-auto p-6 flex flex-col gap-5" style="max-height: calc(100vh - 160px);">
+      <!-- Welcome -->
+      <div class="flex gap-3 items-start">
+        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white shrink-0">
+          <span class="material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+        </div>
+        <div class="chat-bubble-ai rounded-3xl rounded-tl-sm px-5 py-4 max-w-2xl shadow-sm">
+          <p class="font-headline font-bold text-sm text-on-surface mb-1">Assistente BNCC</p>
+          <p class="text-sm text-on-surface font-body leading-relaxed">Olá! 👋 Sou seu assistente especializado na <strong>Base Nacional Comum Curricular (BNCC)</strong>. Estou carregando o documento completo para responder suas perguntas com precisão. Aguarde um momento enquanto processo o PDF...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="border-t border-outline-variant/20 bg-white/80 backdrop-blur-xl p-4">
+      <div class="max-w-4xl mx-auto flex items-end gap-3">
+        <div class="flex-1 relative">
+          <textarea id="user-input" rows="1" placeholder="Pergunte sobre a BNCC..." 
+            class="w-full resize-none rounded-2xl border border-outline-variant/30 px-5 py-3.5 pr-14 bg-surface-container-lowest text-sm font-body text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all leading-relaxed"
+            style="max-height:140px"
+            oninput="autoResize(this)"
+            onkeydown="handleKey(event)"></textarea>
+          <button id="send-btn" onclick="sendMessage()" 
+            class="absolute right-2 bottom-2 w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-container text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-md shadow-primary/20 disabled:opacity-50">
+            <span class="material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">send</span>
+          </button>
+        </div>
+      </div>
+      <p class="text-center text-xs text-on-surface-variant/50 mt-2 font-body">Respostas baseadas na BNCC 2018 via Gemini AI</p>
+    </div>
+  </main>
+</div>
+
+<script>
+// ── Config ──────────────────────────────────────────────
+let API_KEY = window.APP_CONFIG?.GEMINI_API_KEY || localStorage.getItem("gemini_api_key") || "";
+const GEMINI_MODEL = "gemini-2.5-flash";
+const GEMINI_API = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+const PDF_URL = "https://basenacionalcomum.mec.gov.br/images/BNCC_EI_EF_110518_versaofinal_site.pdf";
+let chatHistory = [];
+let pdfReady = false;
+let pdfContext = "";
+
+// ── PDF Loading & Extraction ──────────────────────────
+if (window.pdfjsLib) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+async function initChat() {
+  document.getElementById("api-key-input").value = localStorage.getItem("gemini_api_key") || "";
+  setPDFStatus("loading");
+  try {
+    if (!window.pdfjsLib) throw new Error("PDF.js não carregou");
+
+    // 1. Fetch PDF via Proxy
+    const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(PDF_URL);
+    const response = await fetch(proxyUrl);
+    if (!response.ok) throw new Error("Erro ao baixar PDF via proxy");
+    
+    const arrayBuffer = await response.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    
+    let fullText = "";
+    const maxPages = Math.min(pdf.numPages, 150); // Limit to 150 pages to keep context manageable
+    
+    for (let i = 1; i <= maxPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const strings = content.items.map(item => item.str);
+      fullText += strings.join(" ") + "\n";
+      
+      // Update progress
+      const progress = Math.round((i / maxPages) * 100);
+      document.getElementById("pdf-bar").style.width = progress + "%";
+      document.getElementById("pdf-pages").textContent = progress + "%";
+    }
+    
+    pdfContext = fullText.substring(0, 100000); // Take first 100k chars (~25k tokens)
+    pdfReady = true;
+    setPDFStatus("done");
+    appendMessage("ai", "📚 **BNCC Carregada!** Processei as principais partes do documento. Estou pronto para responder suas perguntas com base no texto oficial da BNCC 2018. Como posso ajudar?");
+    
+  } catch (error) {
+    console.error("PDF Error:", error);
+    pdfReady = false;
+    setPDFStatus("knowledge");
+    appendMessage("ai", "⚠️ Não consegui carregar o PDF da BNCC devido a restrições de rede. Mas não se preocupe! Tenho conhecimento profundo sobre a BNCC 2018 e posso responder suas dúvidas normalmente.");
+  }
+}
+
+async function callGemini(userMsg) {
+  const systemPrompt = pdfReady 
+    ? `Você é um especialista na BNCC. Use este contexto extraído do PDF para responder: \n\n${pdfContext}\n\nResponda em português de forma clara e pedagógica.`
+    : `Você é um especialista na BNCC 2018. Responda em português de forma clara e pedagógica.`;
+
+  const contents = [];
+  
+  // Add history
+  if (chatHistory.length === 0) {
+    contents.push({ role: "user", parts: [{ text: systemPrompt + "\n\nPergunta: " + userMsg }] });
+  } else {
+    // Initial prompt with context
+    contents.push({ role: "user", parts: [{ text: systemPrompt + "\n\nMinha primeira pergunta foi: " + chatHistory[0].text }] });
+    contents.push({ role: "model", parts: [{ text: chatHistory[1]?.text || "Ok, entendi!" }] });
+    
+    // Remaining history
+    for (let i = 2; i < chatHistory.length; i++) {
+      const h = chatHistory[i];
+      contents.push({ role: h.role === "user" ? "user" : "model", parts: [{ text: h.text }] });
+    }
+    contents.push({ role: "user", parts: [{ text: userMsg }] });
+  }
+
+  const res = await fetch(`${GEMINI_API}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-goog-api-key": API_KEY },
+    body: JSON.stringify({ contents })
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error?.message || "Erro na API");
+  }
+
+  const data = await res.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || "Sem resposta.";
+}
+
+// ── Chat Actions ──────────────────────────────────────────
+async function sendMessage() {
+  const input = document.getElementById("user-input");
+  const text = input.value.trim();
+  if (!text) return;
+  
+  input.value = "";
+  input.style.height = "auto";
+  appendMessage("user", text);
+  chatHistory.push({ role: "user", text });
+  showTyping();
+
+  try {
+    const reply = await callGemini(text);
+    hideTyping();
+    appendMessage("ai", reply);
+    chatHistory.push({ role: "model", text: reply });
+  } catch (error) {
+    hideTyping();
+    appendMessage("ai", "⚠️ Erro: " + error.message);
+  }
+}
+
+function sendSuggestion(btn) {
+  document.getElementById("user-input").value = btn.textContent.trim();
+  sendMessage();
+}
+
+function setPDFStatus(status) {
+  const dot = document.getElementById("pdf-dot");
+  const label = document.getElementById("pdf-label");
+  const card = document.getElementById("pdf-card");
+  const progressWrap = document.getElementById("pdf-progress-wrap");
+  const done = document.getElementById("pdf-done");
+
+  if (status === "done") {
+    dot.className = "w-2 h-2 rounded-full bg-green-500";
+    label.textContent = "BNCC Analisada ✓";
+    card.classList.add("pdf-loaded");
+    progressWrap.classList.add("hidden");
+    done.classList.remove("hidden");
+  } else if (status === "loading") {
+    dot.className = "w-2 h-2 rounded-full bg-amber-400 animate-pulse";
+    label.textContent = "Analisando PDF...";
+  } else if (status === "knowledge") {
+    dot.className = "w-2 h-2 rounded-full bg-blue-400";
+    label.textContent = "Modo Conhecimento";
+    progressWrap.classList.add("hidden");
+    done.classList.remove("hidden");
+    done.innerHTML = '<span class="material-symbols-outlined text-sm text-blue-500">psychology</span> <span class="text-blue-600">Usando IA</span>';
+  }
+}
+
+// ── UI Helpers ────────────────────────────────────────────
+function appendMessage(role, text) {
+  const msgs = document.getElementById("messages");
+  const isUser = role === "user";
+  const div = document.createElement("div");
+  div.className = "flex gap-3 items-start " + (isUser ? "flex-row-reverse" : "");
+
+  const avatar = document.createElement("div");
+  avatar.className = isUser
+    ? "w-9 h-9 rounded-full bg-surface-container-highest flex items-center justify-center shrink-0 border border-outline-variant/30"
+    : "w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white shrink-0";
+  avatar.innerHTML = isUser
+    ? `<span class="material-symbols-outlined text-lg text-on-surface-variant">person</span>`
+    : `<span class="material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">auto_awesome</span>`;
+
+  const bubble = document.createElement("div");
+  bubble.className = isUser
+    ? "chat-bubble-user text-white rounded-3xl rounded-tr-sm px-5 py-3.5 max-w-xl shadow-sm"
+    : "chat-bubble-ai rounded-3xl rounded-tl-sm px-5 py-4 max-w-2xl shadow-sm";
+
+  const formatted = text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br/>');
+
+  bubble.innerHTML = `<p class="text-sm font-body leading-relaxed">${formatted}</p>`;
+  div.appendChild(avatar);
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+let typingEl = null;
+function showTyping() {
+  const msgs = document.getElementById("messages");
+  typingEl = document.createElement("div");
+  typingEl.id = "typing-indicator";
+  typingEl.className = "flex gap-3 items-start";
+  typingEl.innerHTML = `
+    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white shrink-0">
+      <span class="material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+    </div>
+    <div class="chat-bubble-ai rounded-3xl rounded-tl-sm px-5 py-4 shadow-sm flex items-center gap-1.5">
+      <span class="typing-dot w-2 h-2 rounded-full bg-on-surface-variant/40 inline-block"></span>
+      <span class="typing-dot w-2 h-2 rounded-full bg-on-surface-variant/40 inline-block"></span>
+      <span class="typing-dot w-2 h-2 rounded-full bg-on-surface-variant/40 inline-block"></span>
+    </div>`;
+  msgs.appendChild(typingEl);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function hideTyping() {
+  const el = document.getElementById("typing-indicator");
+  if (el) el.remove();
+}
+
+function autoResize(el) {
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 140) + "px";
+}
+
+function handleKey(e) {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function toggleSettings() {
+  document.getElementById("settings-panel").classList.toggle("hidden");
+}
+
+function saveSettings() {
+  API_KEY = document.getElementById("api-key-input").value.trim();
+  if (API_KEY) {
+    localStorage.setItem("gemini_api_key", API_KEY);
+  } else {
+    localStorage.removeItem("gemini_api_key");
+    API_KEY = window.APP_CONFIG?.GEMINI_API_KEY || "";
+  }
+  toggleSettings();
+  initChat();
+}
+
+// ── Init ─────────────────────────────────────────────────
+initChat();
+</script>
+
+<script>
+        const standardSidebarToggle = document.getElementById('standard-sidebar-toggle');
+        standardSidebarToggle?.addEventListener('click', () => {
+            const collapsed = document.body.classList.toggle('sidebar-collapsed');
+            standardSidebarToggle.setAttribute('aria-expanded', String(!collapsed));
+            standardSidebarToggle.setAttribute('aria-label', collapsed ? 'Mostrar menu lateral' : 'Esconder menu lateral');
+        });
+
+        const currentPath = decodeURIComponent(window.location.pathname).replace(/\\/g, '/');
+        const activeAliases = {
+            'student_dashboard_1/code.html': ['student_dashboard_1/code.html', 'student_dashboard_2/code.html'],
+            'planejador_aula_bncc/code.html': ['planejador_aula_bncc/code.html'],
+            'gerador_atividades_bncc/code.html': ['gerador_atividades_bncc/code.html'],
+            'chat/code.html': ['chat/code.html'],
+            'loja_de_recursos_grade_detalhada/code.html': ['loja_de_recursos_grade_detalhada/code.html', 'kits_pedag_gicos_foco_em_cole_es/code.html'],
+            'resource_library/code.html': ['resource_library/code.html'],
+            'biblioteca_de_recursos_pedag_gicos/code.html': ['biblioteca_de_recursos_pedag_gicos/code.html'],
+            'biblioteca_digital_layout_moderno/code.html': ['biblioteca_digital_layout_moderno/code.html'],
+            'apresentacao.html': ['apresentacao.html']
+        };
+        document.querySelectorAll('[data-nav-target]').forEach((link) => {
+            const target = link.getAttribute('data-nav-target');
+            if ((activeAliases[target] || [target]).some((alias) => currentPath.endsWith(alias))) {
+                link.classList.add('active');
+            }
+        });
+
+        window.addEventListener('pageshow', () => {
+            document.body.classList.remove('page-leaving');
+            requestAnimationFrame(() => document.body.classList.add('page-ready'));
+        });
+
+        document.addEventListener('click', (event) => {
+            const link = event.target.closest('a[href]');
+            if (!link) return;
+            const href = link.getAttribute('href');
+            if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto:') || link.target === '_blank') return;
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            event.preventDefault();
+            document.body.classList.add('page-leaving');
+            setTimeout(() => { window.location.href = link.href; }, 160);
+        });
+</script>
+
+
+
+<script id="mobile-responsive-script">
+  (function() {
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+    const sidebar = document.getElementById('standard-sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    
+    if (mobileMenuToggle && sidebar && backdrop) {
+      function openMobileMenu() {
+        sidebar.classList.add('mobile-open');
+        backdrop.classList.remove('hidden');
+        setTimeout(() => {
+          backdrop.classList.add('opacity-100');
+        }, 10);
+      }
+      
+      function closeMobileMenu() {
+        sidebar.classList.remove('mobile-open');
+        backdrop.classList.remove('opacity-100');
+        setTimeout(() => {
+          backdrop.classList.add('hidden');
+        }, 300);
+      }
+      
+      mobileMenuToggle.addEventListener('click', openMobileMenu);
+      backdrop.addEventListener('click', closeMobileMenu);
+      
+      sidebar.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+      });
+    }
+
+    if (mobileThemeToggle) {
+      function updateMobileThemeIcon() {
+        const isDark = document.documentElement.classList.contains('dark');
+        const icon = mobileThemeToggle.querySelector('.material-symbols-outlined');
+        if (icon) {
+          icon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        }
+      }
+      
+      updateMobileThemeIcon();
+      
+      mobileThemeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateMobileThemeIcon();
+        
+        const standardIcon = document.getElementById('theme-toggle-icon');
+        if (standardIcon) {
+          standardIcon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        }
+      });
+      
+      const standardToggle = document.getElementById('theme-toggle');
+      if (standardToggle) {
+        standardToggle.addEventListener('click', () => {
+          setTimeout(updateMobileThemeIcon, 50);
+        });
+      }
+    }
+  })();
+</script>
+
+</body>
+</html>

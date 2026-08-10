@@ -1,0 +1,250 @@
+/* ==========================================================================
+   Design System: The Joyful Archivist (School Intelligence OS)
+   Central Stylesheet & Global Component Tokens
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Lexend:wght@300;400;500;600;700&display=swap');
+
+/* --- Root & Custom Properties (Theme Sync) --- */
+:root {
+  --primary: #b10048;
+  --primary-container: #df005d;
+  --primary-fixed: #ffd9de;
+  --background: #fbf9f8;
+  --on-background: #1b1c1c;
+  --on-surface-variant: #5c3f44;
+  --outline-variant: #e4bdc2;
+  --tertiary-fixed: #ffd9e0;
+  
+  --font-headline: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Lexend", sans-serif;
+}
+
+/* --- Base Enhancements --- */
+body {
+  font-family: var(--font-body);
+  background-color: var(--background);
+  color: var(--on-background);
+  background-image: 
+    radial-gradient(circle at 6% 6%, rgba(255, 217, 224, 0.72), transparent 28rem),
+    radial-gradient(circle at 95% 18%, rgba(255, 218, 215, 0.62), transparent 28rem);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 24;
+}
+
+/* ==========================================================================
+   Utility Classes & Visual Identity Tokens
+   ========================================================================== */
+
+/* The "No-Line" Shadow separation */
+.soft-shadow {
+  box-shadow: 0 18px 60px -34px rgba(27, 28, 28, 0.26);
+}
+
+.rose-shadow {
+  box-shadow: 0 22px 60px -28px rgba(223, 0, 93, 0.36);
+}
+
+/* Toy-like product pop effects */
+.toy-overflow {
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.15));
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.toy-overflow:hover {
+  transform: translateY(-8px) rotate(2deg);
+}
+
+/* The Ghost Border Fallback for accessibility or structure */
+.ghost-border {
+  border: 1px solid rgba(228, 189, 194, 0.15);
+}
+
+/* Glassmorphism token for navigation */
+.glassmorphic {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(228, 189, 194, 0.2);
+}
+
+/* Playful rotations (Do's - leaning into "the tilt") */
+.tilt-left {
+  transform: rotate(-2deg);
+}
+.tilt-right {
+  transform: rotate(2deg);
+}
+.tilt-hover {
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+}
+.tilt-hover:hover {
+  transform: scale(1.025) rotate(1deg);
+}
+
+/* ==========================================================================
+   Reusable UI Components
+   ========================================================================== */
+
+/* 1. Primary Action Pill Button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-container) 100%);
+  color: #ffffff;
+  font-family: var(--font-headline);
+  font-weight: 800;
+  border-radius: 9999px;
+  padding: 1rem 2rem;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+  box-shadow: 0 12px 30px -15px rgba(177, 0, 72, 0.4);
+  border: none;
+  cursor: pointer;
+}
+.btn-primary:hover {
+  transform: scale(1.02);
+  box-shadow: 0 16px 36px -12px rgba(177, 0, 72, 0.55);
+}
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* 2. Secondary Tonal Button */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #e4e2e1; /* surface-container-highest */
+  color: var(--primary);
+  font-family: var(--font-headline);
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 1rem 2rem;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+.btn-secondary:hover {
+  transform: scale(1.02);
+  background-color: #dcd9d9;
+}
+
+/* 3. River-Stone Chips */
+.river-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background-color: var(--tertiary-fixed);
+  color: #3f0019; /* on-tertiary-fixed */
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px; /* full */
+}
+
+/* 4. Elegant Editorial Form Fields */
+.field-label {
+  font-family: var(--font-headline);
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.input-field {
+  width: 100%;
+  border: 0;
+  border-radius: 1.5rem; /* md rounded */
+  background: #ffffff;
+  color: var(--on-background);
+  font-family: var(--font-body);
+  padding: 0.875rem 1.25rem;
+  box-shadow: inset 0 0 0 1px rgba(228, 189, 194, 0.34);
+  transition: box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.input-field:focus {
+  outline: none;
+  background-color: #ffffff;
+  box-shadow: 
+    inset 0 0 0 2px rgba(177, 0, 72, 0.3), 
+    0 0 0 6px rgba(223, 0, 93, 0.08);
+}
+
+/* 5. Asymmetric "Playful Orbit" Container */
+.playful-orbit {
+  position: relative;
+  border-radius: 2rem; /* lg rounded */
+  background-color: #ffffff; /* lowest surface container */
+  padding: 2rem;
+  box-shadow: 0 18px 60px -34px rgba(27, 28, 28, 0.18);
+  margin-top: 2rem;
+}
+.playful-orbit-badge {
+  position: absolute;
+  top: -1.5rem;
+  left: 2rem;
+  transform: rotate(-3deg);
+  background-color: var(--primary-container);
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px;
+  font-family: var(--font-headline);
+  font-weight: 900;
+  font-size: 0.75rem;
+  box-shadow: 0 8px 24px -8px rgba(223, 0, 93, 0.4);
+}
+
+/* ==========================================================================
+   Print Style Template (Brazilian A4 Optimizations)
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4;
+    margin: 1.5cm 1cm 1.5cm 1cm;
+  }
+  
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+  }
+  
+  /* Hide typical interactive layout structures */
+  header, nav, aside, footer, button, form, .no-print {
+    display: none !important;
+  }
+  
+  main {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* Print-optimized cards */
+  .result-card, .playful-orbit {
+    box-shadow: none !important;
+    border: 1px solid #dcd9d9 !important;
+    background: #ffffff !important;
+    page-break-inside: avoid;
+    margin-bottom: 1.2rem !important;
+    border-radius: 12px !important;
+    padding: 1.2rem !important;
+  }
+  
+  h1, h2, h3 {
+    color: #000000 !important;
+    page-break-after: avoid;
+  }
+}

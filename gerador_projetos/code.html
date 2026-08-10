@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Projeto BNCC Integrado — School Intelligence OS</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="../creative_pedagogy/design-system.css" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script src="../config.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-bright": "#fbf9f8",
+            "on-tertiary-fixed": "#3f0019",
+            "primary-fixed-dim": "#ffb2bf",
+            "secondary-fixed": "#ffdad7",
+            "on-secondary-container": "#fffbff",
+            "primary-container": "#df005d",
+            "inverse-primary": "#ffb2bf",
+            "on-error": "#ffffff",
+            "surface-container-low": "#f6f3f2",
+            "primary": "#b10048",
+            "outline": "#906f73",
+            "background": "#fbf9f8",
+            "surface-tint": "#bc004d",
+            "surface-container-high": "#eae8e7",
+            "surface-variant": "#e4e2e1",
+            "on-surface": "#1b1c1c",
+            "surface-dim": "#dcd9d9",
+            "primary-fixed": "#ffd9de",
+            "on-tertiary": "#ffffff",
+            "tertiary-fixed": "#ffd9e0",
+            "tertiary": "#ad1054",
+            "on-primary-container": "#fff4f4",
+            "on-background": "#1b1c1c",
+            "on-secondary": "#ffffff",
+            "error": "#ba1a1a",
+            "tertiary-fixed-dim": "#ffb1c3",
+            "on-primary-fixed": "#3f0015",
+            "on-primary": "#ffffff",
+            "secondary-container": "#e02830",
+            "on-tertiary-container": "#fff5f5",
+            "on-surface-variant": "#5c3f44",
+            "on-secondary-fixed": "#410004",
+            "surface-container-lowest": "#ffffff",
+            "secondary": "#bb001b",
+            "on-tertiary-fixed-variant": "#8f0042",
+            "inverse-on-surface": "#f3f0f0",
+            "tertiary-container": "#cf316c",
+            "on-secondary-fixed-variant": "#930013",
+            "secondary-fixed-dim": "#ffb3ad",
+            "outline-variant": "#e4bdc2",
+            "surface-container": "#f0eded",
+            "surface-container-highest": "#e4e2e1",
+            "inverse-surface": "#303030",
+            "surface": "#fbf9f8",
+            "error-container": "#ffdad6",
+            "on-primary-fixed-variant": "#900039",
+            "on-error-container": "#93000a"
+          },
+          borderRadius: {
+            DEFAULT: "1rem",
+            lg: "2rem",
+            xl: "3rem",
+            full: "9999px"
+          },
+          fontFamily: {
+            headline: ["Plus Jakarta Sans"],
+            body: ["Lexend"],
+            label: ["Plus Jakarta Sans"],
+            display: ["Plus Jakarta Sans"]
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    /* Mobile Responsive Overrides */
+    @media (max-width: 767px) {
+
+      main.app-main-offset,
+      .app-main-offset {
+        margin-left: 0 !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        padding-top: 1.5rem !important;
+        width: 100% !important;
+      }
+
+      header.app-main-offset {
+        display: none !important;
+        /* Hide desktop header on mobile */
+      }
+
+      /* Force grids to single column on mobile */
+      .grid:not(.grid-cols-3):not(.grid-cols-4):not(.flex) {
+        grid-template-columns: 1fr !important;
+      }
+
+      /* Make sure form layout works on mobile */
+      #project-form,
+      #planner-form,
+      form {
+        padding: 1.25rem !important;
+        border-radius: 1.5rem !important;
+      }
+
+      /* Sidebar as mobile drawer */
+      .standard-sidebar {
+        display: flex !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        height: 100vh !important;
+        width: 280px !important;
+        transform: translateX(-100%) !important;
+        transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+        z-index: 9999 !important;
+        box-shadow: 20px 0 50px rgba(0, 0, 0, 0.15) !important;
+        border-radius: 0 2rem 2rem 0 !important;
+      }
+
+      .standard-sidebar.mobile-open {
+        transform: translateX(0) !important;
+      }
+
+      /* Hide standard desktop toggle button on mobile */
+      #standard-sidebar-toggle,
+      .standard-sidebar-toggle {
+        display: none !important;
+      }
+
+      /* Prevent iOS auto-zoom on form inputs */
+      .input-field,
+      select,
+      textarea,
+      input {
+        font-size: 16px !important;
+      }
+    }
+
+    .quick-chip input:checked+span {
+      background: #b10048;
+      color: #ffffff;
+      box-shadow: 0 12px 30px -18px rgba(177, 0, 72, 0.8);
+    }
+
+    .result-card {
+      animation: reveal 0.42s ease both;
+    }
+
+    @keyframes reveal {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .standard-sidebar,
+    .standard-sidebar-toggle,
+    .app-main-offset {
+      transition: margin-left 260ms ease, transform 260ms ease, left 260ms ease, width 260ms ease, opacity 160ms ease;
+    }
+
+    .standard-nav-link.active {
+      background: #ffffff;
+      color: #b10048;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+
+    .standard-nav-link.active .material-symbols-outlined {
+      font-variation-settings: 'FILL' 1;
+    }
+
+    @media (min-width: 768px) {
+      .app-main-offset {
+        margin-left: 16rem !important;
+        width: calc(100% - 16rem) !important;
+      }
+
+      body.sidebar-collapsed .standard-sidebar {
+        transform: translateX(-100%);
+      }
+
+      body.sidebar-collapsed .app-main-offset {
+        margin-left: 0 !important;
+        width: 100% !important;
+      }
+
+      body.sidebar-collapsed .standard-sidebar-toggle {
+        left: 0.75rem;
+        opacity: 0.55;
+      }
+
+      body.sidebar-collapsed .standard-sidebar-toggle-icon {
+        transform: rotate(180deg);
+      }
+    }
+
+    .standard-sidebar-toggle-icon {
+      transition: transform 260ms ease;
+    }
+
+    body {
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    body.page-ready {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    body.page-leaving {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      body,
+      body.page-ready,
+      body.page-leaving {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
+
+    @media print {
+      #print-school-header {
+        display: block !important;
+      }
+
+      #standard-sidebar,
+      #standard-sidebar-toggle,
+      #school-config-modal {
+        display: none !important;
+      }
+
+      .app-main-offset {
+        margin-left: 0 !important;
+        width: 100% !important;
+      }
+
+      body {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+
+      .result-card {
+        animation: none !important;
+      }
+    }
+
+    .secao-card {
+      border-left: 4px solid #b10048;
+    }
+
+    .habilidade-tag {
+      display: inline-block;
+      background: #ffd9de;
+      color: #3f0015;
+      border-radius: 9999px;
+      padding: 2px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 2px 2px 2px 0;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen text-on-surface">
+
+  <!-- Mobile Navigation Header -->
+  <header id="mobile-navigation-bar"
+    class="md:hidden sticky top-0 z-50 flex items-center justify-between px-5 py-3.5 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/50 dark:border-zinc-800/50">
+    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white font-bold shadow-sm">
+      <span class="material-symbols-outlined text-lg">auto_awesome</span>
+    </div>
+    <div>
+      <h1 class="text-sm font-bold text-primary font-headline tracking-tight">School Intelligence OS</h1>
+      <p class="text-[9px] text-on-surface-variant font-medium">EdTech Suite</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="mobile-theme-toggle"
+        class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+        aria-label="Alternar tema">
+        <span class="material-symbols-outlined text-xl">dark_mode</span>
+      </button>
+      <button id="mobile-menu-toggle"
+        class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+        aria-label="Abrir menu">
+        <span class="material-symbols-outlined text-2xl">menu</span>
+      </button>
+    </div>
+  </header>
+  <div id="sidebar-backdrop"
+    class="fixed inset-0 bg-black/40 z-[9990] hidden opacity-0 transition-opacity duration-300"></div>
+
+
+
+  <!-- Print header -->
+  <div id="print-school-header" class="hidden" aria-hidden="true">
+    <div
+      style="border-bottom: 2px solid #b10048; padding-bottom: 10px; margin-bottom: 16px; font-family: 'Plus Jakarta Sans', sans-serif;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+        <div>
+          <div id="psh-school" style="font-size: 15pt; font-weight: 900; color: #1b1c1c;"></div>
+          <div id="psh-teacher"
+            style="font-size: 10pt; color: #5c3f44; margin-top: 3px; font-family: 'Lexend', sans-serif;"></div>
+        </div>
+        <div id="psh-date"
+          style="text-align: right; font-size: 10pt; color: #5c3f44; font-family: 'Lexend', sans-serif; white-space: pre-line;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <nav id="standard-sidebar"
+    class="standard-sidebar hidden md:flex fixed left-0 top-0 w-64 h-full flex-col py-8 bg-zinc-50 dark:bg-zinc-900 rounded-r-[3rem] overflow-hidden z-40">
+    <div class="px-8 mb-12 flex items-center gap-4">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white font-bold shadow-md">
+        <span class="material-symbols-outlined text-xl">auto_awesome</span>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold text-primary font-headline tracking-tight">School Intelligence OS</h1>
+        <p class="text-xs text-on-surface-variant font-medium">EdTech Suite</p>
+      </div>
+    </div>
+    <div class="flex flex-col gap-2 flex-grow px-4 font-['Lexend'] font-medium overflow-y-auto scrollbar-hide">
+      <a data-nav-target="student_dashboard_1/code.html"
+        class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2"
+        href="../student_dashboard_1/code.html">
+        <span class="material-symbols-outlined text-xl">dashboard</span><span>Painel</span>
+      </a>
+      <a data-nav-target="gerador_projetos/code.html"
+        class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2"
+        href="../gerador_projetos/code.html">
+        <span class="material-symbols-outlined text-xl">account_tree</span><span>Projeto BNCC Integrado</span>
+      </a>
+      <a data-nav-target="chat/code.html"
+        class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2"
+        href="../chat/code.html">
+        <span class="material-symbols-outlined text-xl">psychology</span><span>Chat IA</span>
+      </a>
+      <a data-nav-target="criador_posts/code.html"
+        class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2"
+        href="../criador_posts/code.html">
+        <span class="material-symbols-outlined text-xl">campaign</span><span>Criador de Posts</span>
+      </a>
+      <a data-nav-target="pareceres_relatorios/code.html"
+        class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2"
+        href="../pareceres_relatorios/code.html">
+        <span class="material-symbols-outlined text-xl">assignment</span><span>Pareceres</span>
+      </a>
+      <a data-nav-target="comunicados_familia/code.html"
+        class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2"
+        href="../comunicados_familia/code.html">
+        <span class="material-symbols-outlined text-xl">forum</span><span>Comunicados</span>
+      </a>
+      <a data-nav-target="turma_alfabetizacao/code.html"
+        class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2"
+        href="../turma_alfabetizacao/code.html">
+        <span class="material-symbols-outlined text-xl">groups</span><span>Turma</span>
+      </a>
+
+      <a data-nav-target="resource_library/code.html"
+        class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2"
+        href="../resource_library/code.html">
+        <span class="material-symbols-outlined text-xl">book_4</span><span>Coleções</span>
+      </a>
+
+
+
+    </div>
+    <div class="px-6 mt-auto">
+      <div
+        class="p-6 rounded-3xl bg-gradient-to-br from-tertiary-fixed to-primary-fixed relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+        <div
+          class="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500">
+        </div>
+        <h3 class="font-headline font-bold text-on-surface mb-2 relative z-10">Vá Mais Longe</h3>
+        <p class="text-sm text-on-surface-variant mb-4 relative z-10 font-body">Desbloqueie todos os recursos premium.
+        </p>
+        <button
+          class="w-full py-3 px-4 bg-primary text-white rounded-full font-semibold text-sm hover:bg-primary-container transition-colors shadow-lg shadow-primary/20 relative z-10">Atualizar
+          para Pro</button>
+      </div>
+    </div>
+  </nav>
+
+  <button id="standard-sidebar-toggle" aria-label="Esconder menu lateral" aria-expanded="true"
+    class="standard-sidebar-toggle hidden md:flex fixed left-[15.25rem] top-24 z-50 h-8 w-8 items-center justify-center rounded-full bg-white/80 text-zinc-500 shadow-sm border border-zinc-200 hover:bg-white hover:text-primary hover:opacity-100 active:scale-95 transition-all">
+    <span class="material-symbols-outlined text-[18px] standard-sidebar-toggle-icon">chevron_left</span>
+  </button>
+
+  <main
+    class="app-main-offset grid min-h-screen gap-8 px-6 py-10 md:px-10 lg:grid-cols-[360px_minmax(0,1fr)] xl:grid-cols-[400px_minmax(0,1fr)]">
+
+    <!-- Left aside -->
+    <aside class="flex flex-col gap-5 lg:sticky lg:top-8 lg:h-fit">
+
+      <!-- Hero -->
+      <section
+        class="overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary to-primary-container p-7 text-white rose-shadow">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="font-headline text-xs font-black uppercase tracking-[0.24em] text-primary-fixed">Novo</p>
+            <h1 class="mt-4 font-display text-4xl font-black leading-tight tracking-tight">Projeto pedagógico BNCC
+              completo</h1>
+          </div>
+          <span
+            class="hidden h-16 w-16 shrink-0 rotate-6 items-center justify-center rounded-3xl bg-white/16 text-white backdrop-blur md:flex">
+            <span class="material-symbols-outlined text-4xl"
+              style="font-variation-settings:'FILL' 1;">account_tree</span>
+          </span>
+        </div>
+        <p class="mt-5 text-sm leading-7 text-white/82">
+          Informe o tema, a turma e a realidade da aula. A IA gera o projeto, o planejamento BNCC e as atividades no
+          mesmo documento — pronto para imprimir.
+        </p>
+        <div class="mt-6 grid grid-cols-3 gap-3 text-center">
+          <div class="rounded-2xl bg-white/12 p-3 backdrop-blur">
+            <strong class="block font-headline text-xl">BNCC</strong>
+            <span class="text-[11px] text-white/75">alinhado</span>
+          </div>
+          <div class="rounded-2xl bg-white/12 p-3 backdrop-blur">
+            <strong class="block font-headline text-xl">Plano</strong>
+            <span class="text-[11px] text-white/75">integrado</span>
+          </div>
+          <div class="rounded-2xl bg-white/12 p-3 backdrop-blur">
+            <strong class="block font-headline text-xl">Ativ.</strong>
+            <span class="text-[11px] text-white/75">BNCC</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- API config (hidden toggle) -->
+      <section id="api-panel" class="hidden rounded-[2rem] bg-surface-container-lowest p-5 soft-shadow">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <p class="field-label">Configuração Gemini</p>
+            <h2 class="mt-2 font-headline text-xl font-black">Chave da API</h2>
+          </div>
+          <span id="api-status"
+            class="rounded-full bg-primary-fixed px-3 py-1 text-xs font-bold text-on-primary-fixed">Padrão ativo</span>
+        </div>
+        <label class="mt-5 block">
+          <span class="field-label">Gemini API Key</span>
+          <input id="api-key-input" class="input-field mt-2 text-sm" placeholder="Cole sua chave Gemini aqui"
+            type="password" />
+        </label>
+        <div class="mt-4 flex gap-2">
+          <button class="btn-primary flex-1 !py-3 text-sm" onclick="saveApiKey()" type="button">Salvar chave</button>
+          <button class="btn-secondary !py-3 text-sm" onclick="clearApiKey()" type="button">Limpar</button>
+        </div>
+      </section>
+
+      <!-- Quick examples -->
+      <section class="rounded-[2rem] bg-surface-container-low p-5">
+        <p class="field-label">Exemplos rápidos</p>
+        <div class="mt-4 grid gap-3">
+          <button
+            class="rounded-[1.5rem] bg-white p-4 text-left transition-transform hover:-translate-y-0.5 soft-shadow"
+            onclick="fillExample('indigena')" type="button">
+            <strong class="font-headline text-on-surface">Cultura Indígena</strong>
+            <span class="mt-1 block text-sm text-on-surface-variant">Educação Infantil, interdisciplinar — tema: povos
+              indígenas brasileiros.</span>
+          </button>
+          <button
+            class="rounded-[1.5rem] bg-white p-4 text-left transition-transform hover:-translate-y-0.5 soft-shadow"
+            onclick="fillExample('sustentabilidade')" type="button">
+            <strong class="font-headline text-on-surface">Sustentabilidade</strong>
+            <span class="mt-1 block text-sm text-on-surface-variant">3º ano, Ciências e Geografia — meio ambiente e
+              reciclagem.</span>
+          </button>
+          <button
+            class="rounded-[1.5rem] bg-white p-4 text-left transition-transform hover:-translate-y-0.5 soft-shadow"
+            onclick="fillExample('leitura')" type="button">
+            <strong class="font-headline text-on-surface">Leitura e Escrita</strong>
+            <span class="mt-1 block text-sm text-on-surface-variant">1º ano, Português — projeto de incentivo à
+              leitura.</span>
+          </button>
+        </div>
+      </section>
+
+    </aside>
+
+    <!-- Main content -->
+    <section class="flex flex-col gap-8">
+
+      <!-- Form -->
+      <form class="rounded-[2.5rem] bg-surface-container-lowest p-5 soft-shadow md:p-8" id="project-form">
+        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p class="field-label">Entrada do professor</p>
+            <h2 class="mt-2 font-display text-3xl font-black tracking-tight md:text-5xl">Crie o projeto integrado</h2>
+            <p class="mt-3 max-w-2xl text-sm leading-7 text-on-surface-variant">
+              Preencha o tema ou envie uma fotografia. A IA reúne projeto pedagógico, planejamento de aula BNCC e
+              atividades em uma única entrega.
+            </p>
+          </div>
+          <button
+            class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-br from-primary to-primary-container px-6 py-4 font-headline font-black text-white rose-shadow transition-transform hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
+            id="generate-btn" type="submit">
+            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
+            Gerar projeto integrado
+          </button>
+        </div>
+
+        <div class="mt-8 grid gap-5 md:grid-cols-2">
+
+          <!-- Tema — campo principal -->
+          <label class="md:col-span-2">
+            <span class="field-label">Tema do Projeto <span
+                class="text-xs text-on-surface-variant font-normal">(opcional se enviar foto)</span></span>
+            <input class="input-field mt-2 text-base" id="topic"
+              placeholder="Ex.: Cultura indígena, Sustentabilidade, Folclore brasileiro, Alimentação saudável..."
+              type="text" />
+          </label>
+
+          <label class="md:col-span-2">
+            <span class="field-label">Objetivo da atividade <span
+                class="text-xs text-on-surface-variant font-normal">(opcional)</span></span>
+            <textarea class="input-field mt-2 min-h-24 resize-y px-4 py-3 text-base" id="objective"
+              placeholder="Ex.: Que os alunos compreendam a importância da preservação ambiental e desenvolvam senso de responsabilidade coletiva..."></textarea>
+          </label>
+
+          <label class="md:col-span-2">
+            <span class="field-label">Descrição <span
+                class="text-xs text-on-surface-variant font-normal">(opcional)</span></span>
+            <textarea class="input-field mt-2 min-h-28 resize-y px-4 py-3 text-base" id="description"
+              placeholder="Ex.: Quero um projeto com atividades práticas, exposição final, leitura coletiva, brincadeiras e registros no caderno."></textarea>
+          </label>
+
+          <label>
+            <span class="field-label">Duração / Cronograma <span
+                class="text-xs text-on-surface-variant font-normal">(opcional)</span></span>
+            <input class="input-field mt-2 text-base" id="duration"
+              placeholder="Ex.: 2 semanas, 5 aulas de 50 min, projeto mensal..." type="text" />
+          </label>
+
+          <label>
+            <span class="field-label">Realidade da turma <span
+                class="text-xs text-on-surface-variant font-normal">(opcional)</span></span>
+            <select class="input-field mt-2 text-base" id="class-level">
+              <option value="Turma com desenvolvimento esperado para a faixa etária">Desenvolvimento esperado</option>
+              <option value="Turma heterogênea, com diferentes ritmos de aprendizagem">Turma heterogênea</option>
+              <option value="Turma com dificuldade de leitura e escrita">Dificuldade de leitura/escrita</option>
+              <option value="Turma agitada, precisa de alternância e movimento">Turma agitada</option>
+              <option value="Turma com estudantes que precisam de inclusão e adaptações">Precisa de inclusão</option>
+            </select>
+          </label>
+
+          <!-- Anos -->
+          <fieldset class="md:col-span-2 rounded-[2rem] bg-surface-container-low p-5">
+            <legend class="field-label px-1">Ano / Faixa etária <span class="text-primary">*</span> <span
+                class="text-xs text-on-surface-variant font-normal">(selecione um ou mais)</span></legend>
+            <div class="mt-4 flex flex-wrap gap-2" id="grades">
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="Educação Infantil (3–5 anos)" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">Educação
+                  Infantil</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="1º ano do Ensino Fundamental" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">1º
+                  ano</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="2º ano do Ensino Fundamental" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">2º
+                  ano</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="3º ano do Ensino Fundamental" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">3º
+                  ano</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="4º ano do Ensino Fundamental" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">4º
+                  ano</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="5º ano do Ensino Fundamental" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">5º
+                  ano</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="6º ano do Ensino Fundamental" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">6º
+                  ano</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="7º ano do Ensino Fundamental" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">7º
+                  ano</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="8º ano do Ensino Fundamental" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">8º
+                  ano</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="9º ano do Ensino Fundamental" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">9º
+                  ano</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="Ensino Médio" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">Ensino
+                  Médio</span></label>
+            </div>
+          </fieldset>
+
+        </div>
+
+        <div class="mt-6">
+          <span class="field-label">Fotografia da atividade <span
+              class="text-xs text-on-surface-variant font-normal">(opcional)</span></span>
+          <div class="mt-2 rounded-[2rem] bg-surface-container-low p-5">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div class="flex items-center gap-3">
+                <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-primary">
+                  <span class="material-symbols-outlined">add_a_photo</span>
+                </span>
+                <div>
+                  <p class="font-headline text-sm font-black text-on-surface" id="project-photo-name">Nenhuma foto
+                    enviada</p>
+                  <p class="mt-1 text-xs leading-5 text-on-surface-variant">Envie uma foto da folha, quadro ou atividade
+                    para a IA criar o projeto a partir dela.</p>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <input id="project-photo" type="file" accept="image/*"
+                  style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;" tabindex="-1"
+                  aria-hidden="true" />
+                <button type="button" onclick="document.getElementById('project-photo').click()"
+                  class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-bold text-primary soft-shadow transition-transform hover:scale-[1.02]">
+                  <span class="material-symbols-outlined text-[18px]">upload</span>
+                  Enviar foto
+                </button>
+                <button
+                  class="hidden rounded-full bg-surface-container-high px-4 py-3 text-sm font-bold text-on-surface-variant"
+                  id="remove-photo-btn" onclick="clearProjectPhoto()" type="button">Remover</button>
+              </div>
+            </div>
+            <img id="project-photo-preview" alt="Prévia da fotografia enviada"
+              class="mt-4 hidden max-h-64 w-full rounded-2xl border border-outline-variant object-contain bg-white" />
+          </div>
+        </div>
+
+        <!-- Disciplinas -->
+        <div class="mt-6">
+          <fieldset class="rounded-[2rem] bg-surface-container-low p-5">
+            <legend class="field-label px-1">Disciplinas envolvidas <span
+                class="text-xs text-on-surface-variant font-normal">(opcional — deixe em branco para
+                interdisciplinar)</span></legend>
+            <div class="mt-4 flex flex-wrap gap-2" id="subjects">
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox" value="Português" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">Português</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox" value="Matemática" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">Matemática</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox" value="Ciências" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">Ciências</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox" value="História" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">História</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox" value="Geografia" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">Geografia</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox" value="Arte" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">Arte</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="Educação Física" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">Ed.
+                  Física</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox" value="Inglês" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">Inglês</span></label>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="mt-6 grid gap-5 md:grid-cols-2">
+          <fieldset class="rounded-[2rem] bg-surface-container-low p-5">
+            <legend class="field-label px-1">Recursos disponíveis <span
+                class="text-xs text-on-surface-variant font-normal">(opcional)</span></legend>
+            <div class="mt-4 flex flex-wrap gap-2" id="resources">
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="quadro e caderno" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">Quadro/caderno</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="folhas impressas" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">Impressos</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="materiais recicláveis" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">Recicláveis</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="tecnologia ou projetor" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">Tecnologia</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="livros e biblioteca" /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">Livros</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="rounded-[2rem] bg-surface-container-low p-5">
+            <legend class="field-label px-1">Entregas BNCC no projeto</legend>
+            <div class="mt-4 flex flex-wrap gap-2" id="deliverables">
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="planejamento minuto a minuto" checked /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">Planejamento</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="atividades com versões fácil, desafio e inclusiva" checked /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">Atividades</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="rubrica e avaliação processual" checked /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">Avaliação</span></label>
+              <label class="quick-chip cursor-pointer"><input class="sr-only" type="checkbox"
+                  value="adaptações inclusivas para TEA, TDAH e dificuldades de leitura" checked /><span
+                  class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant transition-all">Inclusão</span></label>
+            </div>
+          </fieldset>
+        </div>
+      </form>
+
+      <!-- Result section -->
+      <section class="rounded-[2.5rem] bg-surface-container-low p-5 md:p-8" id="result-section">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p class="field-label">Saída da IA</p>
+            <h2 class="mt-2 font-display text-3xl font-black tracking-tight">Projeto integrado gerado</h2>
+            <p class="mt-2 text-sm text-on-surface-variant" id="result-subtitle">Preencha as informações do formulário e
+              clique em "Gerar projeto integrado" para criar com IA.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button
+              class="hidden rounded-full bg-white px-4 py-2 text-sm font-bold text-primary soft-shadow hover:bg-surface-container-low transition-colors"
+              id="copy-btn" onclick="copyProject()" type="button">Copiar texto</button>
+            <button
+              class="hidden rounded-full bg-primary px-4 py-2 text-sm font-bold text-white soft-shadow hover:bg-primary-container transition-colors flex items-center gap-1.5"
+              id="print-btn" onclick="printDoc()" type="button">
+              <span class="material-symbols-outlined text-[18px]">print</span> Imprimir / PDF
+            </button>
+            <button
+              class="hidden rounded-full bg-white px-4 py-2 text-sm font-bold text-primary soft-shadow hover:bg-surface-container-low transition-colors"
+              id="download-btn" onclick="downloadProject()" type="button">Baixar HTML</button>
+            <button
+              class="rounded-full bg-surface-container-low px-3 py-2 text-sm text-on-surface-variant hover:bg-surface-container-high transition-colors flex items-center gap-1.5"
+              onclick="openSchoolConfig()" type="button" title="Configurar escola para impressão">
+              <span class="material-symbols-outlined text-[18px]">settings</span><span
+                class="text-xs font-semibold">Escola</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Loading -->
+        <div class="mt-6 hidden rounded-[2rem] bg-white p-6 text-center soft-shadow" id="loading-state">
+          <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary-fixed text-primary">
+            <span class="material-symbols-outlined animate-pulse text-4xl"
+              style="font-variation-settings:'FILL' 1;">account_tree</span>
+          </div>
+          <h3 class="mt-4 font-headline text-xl font-black">Criando projeto integrado...</h3>
+          <p class="mt-2 text-sm text-on-surface-variant">Gerando projeto, planejamento BNCC, atividades, adaptações e
+            avaliação.</p>
+        </div>
+
+        <!-- Results -->
+        <div class="mt-6 grid gap-5" id="result-grid">
+          <div class="rounded-[2rem] bg-white p-8 text-center soft-shadow">
+            <span class="material-symbols-outlined text-5xl text-primary">account_tree</span>
+            <h3 class="mt-3 font-headline text-2xl font-black">Nenhum projeto integrado gerado ainda</h3>
+            <p class="mx-auto mt-2 max-w-xl text-sm leading-7 text-on-surface-variant">
+              Informe o tema e o ano da turma. A IA cria um projeto completo com planejamento e atividades BNCC no mesmo
+              documento.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <!-- School config modal -->
+  <div id="school-config-modal" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-[2rem] p-7 max-w-md w-full" style="box-shadow: 0 18px 60px -34px rgba(27,28,28,0.26);">
+      <h2 class="font-headline text-2xl font-black">Configurar escola</h2>
+      <p class="text-sm text-on-surface-variant mt-1">Salvo localmente. Aparece no cabeçalho dos documentos impressos.
+      </p>
+      <div class="mt-5 grid gap-4">
+        <label><span class="field-label">Nome da escola</span><input class="input-field mt-1 px-4 py-3"
+            id="sc-school-name" placeholder="Ex.: E.M. Prof. João Silva" /></label>
+        <label><span class="field-label">Nome da professora</span><input class="input-field mt-1 px-4 py-3"
+            id="sc-teacher-name" placeholder="Ex.: Professora Maria Souza" /></label>
+        <label><span class="field-label">Cargo / turma</span><input class="input-field mt-1 px-4 py-3"
+            id="sc-teacher-role" placeholder="Ex.: Professora regente — 2º ano B" /></label>
+        <label><span class="field-label">Ano letivo</span><input class="input-field mt-1 px-4 py-3" id="sc-school-year"
+            placeholder="Ex.: 2026" /></label>
+      </div>
+      <div class="mt-6 flex gap-3 justify-end">
+        <button onclick="closeSchoolConfig()"
+          class="rounded-full px-5 py-3 text-sm font-bold text-on-surface-variant hover:bg-surface-container-low transition-colors"
+          type="button">Cancelar</button>
+        <button onclick="saveSchoolConfig()"
+          class="rounded-full bg-primary px-5 py-3 text-sm font-bold text-white hover:bg-primary-container transition-colors"
+          type="button">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let API_KEY = window.APP_CONFIG?.GEMINI_API_KEY || localStorage.getItem("gemini_api_key") || "";
+    const GEMINI_MODEL = "gemini-2.5-flash";
+    const GEMINI_API = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+    let currentProject = null;
+    let currentPlainText = "";
+
+    const PROJECT_RESPONSE_SCHEMA = {
+      type: "object",
+      properties: {
+        titulo: { type: "string" },
+        subtitulo: { type: "string" },
+        objetivos_gerais: { type: "string" },
+        competencias_bncc: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              codigo: { type: "string" },
+              descricao: { type: "string" }
+            },
+            required: ["codigo", "descricao"]
+          }
+        },
+        secoes: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              nome: { type: "string" },
+              atividades: { type: "string" },
+              habilidades: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    codigo: { type: "string" },
+                    descricao: { type: "string" }
+                  },
+                  required: ["codigo", "descricao"]
+                }
+              }
+            },
+            required: ["nome", "atividades", "habilidades"]
+          }
+        },
+        campos_experiencia: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              campo: { type: "string" },
+              habilidades: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    codigo: { type: "string" },
+                    descricao: { type: "string" }
+                  },
+                  required: ["codigo", "descricao"]
+                }
+              }
+            },
+            required: ["campo", "habilidades"]
+          }
+        },
+        atividades_interativas: { type: "string" },
+        planejamento_bncc: {
+          type: "object",
+          properties: {
+            objetivo_aprendizagem: { type: "string" },
+            metodologia: { type: "string" },
+            materiais: { type: "array", items: { type: "string" } },
+            roteiro: { type: "array", items: { type: "string" } },
+            adaptacoes: { type: "array", items: { type: "string" } },
+            alerta_professor: { type: "string" }
+          },
+          required: ["objetivo_aprendizagem", "metodologia", "materiais", "roteiro", "adaptacoes", "alerta_professor"]
+        },
+        atividades_bncc: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              titulo: { type: "string" },
+              habilidade_bncc: { type: "string" },
+              exercicio: { type: "string" },
+              versao_facil: { type: "string" },
+              versao_dificil: { type: "string" },
+              versao_inclusiva: { type: "string" },
+              gabarito: { type: "string" }
+            },
+            required: ["titulo", "habilidade_bncc", "exercicio", "versao_facil", "versao_dificil", "versao_inclusiva", "gabarito"]
+          }
+        },
+        avaliacao: {
+          type: "object",
+          properties: {
+            processo: { type: "string" },
+            produto: { type: "string" }
+          },
+          required: ["processo", "produto"]
+        },
+        conclusao: { type: "string" }
+      },
+      required: ["titulo", "subtitulo", "objetivos_gerais", "competencias_bncc", "secoes", "campos_experiencia", "atividades_interativas", "planejamento_bncc", "atividades_bncc", "avaliacao", "conclusao"]
+    };
+
+    const fallbackProject = {
+      titulo: "Aldeia da Diversidade",
+      subtitulo: "Quanta cultura indígena tem no dia de alguém?",
+      objetivos_gerais: "Promover a compreensão e valorização das culturas indígenas, incorporando diversas disciplinas e desenvolvendo competências gerais e específicas da BNCC.",
+      competencias_bncc: [
+        { codigo: "CG8", descricao: "Autoconhecimento e autocuidado: incentivar as crianças a refletirem sobre suas próprias origens e identidades culturais." },
+        { codigo: "CG9", descricao: "Empatia e cooperação: desenvolver a capacidade de se colocar no lugar do outro e trabalhar em equipe, valorizando as diferenças culturais." }
+      ],
+      secoes: [
+        {
+          nome: "Oca do Saber",
+          atividades: "Pesquisa sobre palavras de origem indígena e seu uso no português. Criação de um mural com essas palavras.",
+          habilidades: [
+            { codigo: "EF15LP02", descricao: "Relacionar textos com práticas sociais." },
+            { codigo: "EF15LP03", descricao: "Compreender e produzir oralmente, manifestando atitudes de respeito." }
+          ]
+        },
+        {
+          nome: "Oca do Sabor",
+          atividades: "Exploração de alimentos tradicionais e receitas indígenas. As crianças montarão um painel sobre a origem de certos alimentos.",
+          habilidades: [
+            { codigo: "EF15LP02", descricao: "Relacionamento com práticas sociais." },
+            { codigo: "EI03EO01", descricao: "Atitudes de cuidado e solidariedade." }
+          ]
+        },
+        {
+          nome: "Oca da Criação",
+          atividades: "Criação de artefatos inspirados em técnicas indígenas, como cerâmica ou pintura corporal.",
+          habilidades: [
+            { codigo: "EF15AR01", descricao: "Explorar formas de expressão artística." },
+            { codigo: "EI03TS04", descricao: "Criar composições visuais a partir da observação." }
+          ]
+        }
+      ],
+      campos_experiencia: [
+        {
+          campo: "O Eu, o Outro e o Nós",
+          habilidades: [
+            { codigo: "EI03EO02", descricao: "Demonstrar atitudes de respeito às diferentes expressões culturais." },
+            { codigo: "EI03EO04", descricao: "Compartilhar experiências culturais." }
+          ]
+        },
+        {
+          campo: "Escuta, Fala, Pensamento e Imaginação",
+          habilidades: [
+            { codigo: "EI03EF02", descricao: "Participação em rodas de conversa sobre o que aprenderam." },
+            { codigo: "EI03EF04", descricao: "Expressão através de música, dança e narrativas dos povos indígenas." }
+          ]
+        }
+      ],
+      atividades_interativas: "Painéis e tapetes interativos em cada seção do projeto, onde as crianças colarão figuras e palavras. Feira Cultural final com apresentação do que aprenderam para outros alunos e visitantes.",
+      planejamento_bncc: {
+        objetivo_aprendizagem: "Reconhecer a diversidade dos povos indígenas brasileiros, valorizando seus saberes, línguas, alimentos, artes e modos de vida.",
+        metodologia: "Rodas de conversa, investigação guiada, leitura de imagens, atividades manuais, registro coletivo e socialização das descobertas.",
+        materiais: ["Livros e imagens sobre povos indígenas", "Cartolina", "Lápis de cor", "Materiais recicláveis", "Objetos para exposição"],
+        roteiro: [
+          "Aula 1: levantamento de conhecimentos prévios e roda de conversa.",
+          "Aula 2: pesquisa orientada sobre palavras, alimentos e costumes.",
+          "Aula 3: oficinas de criação e registros no mural.",
+          "Aula 4: preparação da feira cultural.",
+          "Aula 5: apresentação, avaliação coletiva e fechamento."
+        ],
+        adaptacoes: ["Usar imagens e comandos curtos para estudantes com dificuldade de leitura.", "Permitir registro por desenho, oralidade ou colagem.", "Organizar duplas colaborativas com papéis definidos."],
+        alerta_professor: "Evite tratar culturas indígenas como algo único ou folclórico. Valorize a diversidade dos povos e use fontes respeitosas."
+      },
+      atividades_bncc: [
+        {
+          titulo: "Mapa das Palavras Indígenas",
+          habilidade_bncc: "EF15LP02 — Estabelecer expectativas em relação ao texto e relacioná-lo ao contexto de uso.",
+          exercicio: "Os alunos pesquisam palavras de origem indígena presentes no cotidiano, registram significado e ilustram em um painel coletivo.",
+          versao_facil: "Entregar uma lista curta de palavras com imagens para associação.",
+          versao_dificil: "Pedir que os alunos escrevam uma frase contextualizada usando cada palavra.",
+          versao_inclusiva: "Oferecer cartões visuais, leitura em voz alta e possibilidade de resposta por desenho.",
+          gabarito: "Espera-se que os alunos relacionem palavra, significado e uso cotidiano."
+        },
+        {
+          titulo: "Feira Cultural da Aldeia da Diversidade",
+          habilidade_bncc: "EF15AR01 — Identificar e apreciar formas distintas das artes visuais tradicionais e contemporâneas.",
+          exercicio: "Em grupos, os alunos organizam uma pequena exposição com produções visuais, registros e explicações orais sobre o que aprenderam.",
+          versao_facil: "Cada grupo apresenta um único cartaz com apoio do professor.",
+          versao_dificil: "Incluir roteiro de fala e comparação entre diferentes povos pesquisados.",
+          versao_inclusiva: "Permitir apresentação em dupla, uso de imagens-guia e fala curta previamente ensaiada.",
+          gabarito: "A avaliação considera participação, respeito cultural, clareza da apresentação e relação com a pesquisa."
+        }
+      ],
+      avaliacao: {
+        processo: "Observação do envolvimento dos alunos, funcionamento em equipe e reflexão sobre o conteúdo aprendido.",
+        produto: "Criação de artefatos culturais e apresentações na feira."
+      },
+      conclusao: "O projeto promove um entendimento mais profundo sobre as culturas indígenas e integra aprendizagens significativas nas diferentes áreas do conhecimento para enriquecer o currículo escolar."
+    };
+
+    document.getElementById("project-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      await generateProject();
+    });
+
+    document.getElementById("project-photo").addEventListener("change", handleProjectPhotoSelection);
+
+    initApiPanel();
+    applyQueryPrefill();
+
+    function getCheckedValues(containerId) {
+      return Array.from(document.querySelectorAll(`#${containerId} input:checked`)).map(i => i.value);
+    }
+
+    function applyQueryPrefill() {
+      const params = new URLSearchParams(window.location.search);
+      const grade = params.get("grade");
+      const hipotese = params.get("hipotese");
+
+      if (hipotese && !document.getElementById("topic").value.trim()) {
+        document.getElementById("topic").value = `Atividades de alfabetização para ${hipotese}`;
+      }
+
+      if (grade) {
+        const normalizedGrade = grade.toLowerCase();
+        const gradeInput = Array.from(document.querySelectorAll("#grades input")).find(input => {
+          const value = input.value.toLowerCase();
+          return value.includes(normalizedGrade) || normalizedGrade.includes(value);
+        });
+        if (gradeInput) gradeInput.checked = true;
+      }
+    }
+
+    function buildPrompt(data) {
+      const gradeText = data.grades.join(", ");
+      const hasInfantil = data.grades.some(grade => grade.includes("Infantil"));
+      return `Você é um pedagogo especialista na BNCC brasileira.
+Crie um projeto pedagógico completo, prático e aplicável para professor brasileiro.
+
+Dados do projeto:
+- Tema: ${data.topic || "identifique o tema principal a partir da fotografia enviada"}
+- Objetivo da atividade: ${data.objective || "não informado"}
+- Descrição complementar: ${data.description || "não informada"}
+- Ano/Faixa etária: ${gradeText}
+- Disciplinas: ${data.subjects.length ? data.subjects.join(", ") : "interdisciplinar (escolha as mais adequadas ao tema)"}
+- Duração/Cronograma desejado: ${data.duration || "defina conforme a riqueza do tema (sugira 2 a 4 semanas)"}
+- Realidade da turma: ${data.classLevel}
+- Recursos disponíveis: ${data.resources.length ? data.resources.join(", ") : "não informado"}
+- Entregas solicitadas: ${data.deliverables.length ? data.deliverables.join(", ") : "projeto, planejamento BNCC, atividades BNCC, avaliação e adaptações"}
+- Fotografia enviada: ${data.photoName ? `sim (${data.photoName})` : "não"}
+
+Regras obrigatórias:
+1. Responda em português brasileiro.
+2. Use obrigatoriamente as informações preenchidas pelo professor como base do projeto: tema, objetivo da atividade, descrição, anos/faixas etárias, disciplinas e fotografia quando enviada.
+3. Se o campo "Objetivo da atividade" estiver preenchido, ele deve ser o eixo central do campo "objetivos_gerais" e guiar toda a estrutura do projeto — seções, atividades e avaliação devem convergir para esse objetivo.
+4. Não gere um projeto genérico: transforme os dados informados em objetivos, seções, atividades, avaliação e conclusão coerentes.
+5. Ajuste a linguagem e atividades às faixas etárias informadas. Se houver mais de uma, proponha adaptações por ano/faixa dentro das atividades.
+6. Se uma fotografia foi enviada, analise a imagem como referência da atividade: identifique tema, conteúdos, objetivos implícitos, tipo de tarefa e possibilidades de expansão em projeto pedagógico.
+7. Gere entre 3 e 5 seções temáticas criativas (com nomes temáticos relacionados ao projeto, como as "Ocas" do exemplo).
+8. Cada seção deve ter atividades práticas e concretas, além de 2 a 3 habilidades BNCC reais.
+9. ${hasInfantil ? "Como Educação Infantil foi selecionada, inclua campos_experiencia para essa faixa e mantenha as demais habilidades nas seções." : "Como Educação Infantil não foi selecionada, retorne campos_experiencia como array vazio []."}
+10. Inclua planejamento_bncc completo dentro do mesmo projeto, com objetivo de aprendizagem, metodologia, materiais, roteiro por aula ou etapa, adaptações e alerta ao professor.
+11. Inclua atividades_bncc dentro do mesmo projeto. Gere de 2 a 4 atividades prontas para aplicar, cada uma com habilidade BNCC, enunciado, versão fácil, versão difícil, versão inclusiva e gabarito/correção.
+12. As atividades_bncc devem estar diretamente vinculadas ao tema, às habilidades e às seções do projeto, não como atividades soltas.
+13. Use habilidades BNCC plausíveis. Se não tiver certeza, indique "Habilidade BNCC sugerida — " antes do código.
+14. Não use markdown fora do JSON.
+15. Retorne apenas JSON válido no formato abaixo:
+
+{
+  "titulo": "string",
+  "subtitulo": "string — uma frase criativa que resume o projeto",
+  "objetivos_gerais": "string — parágrafo descrevendo os objetivos",
+  "competencias_bncc": [
+    { "codigo": "string (ex: CG8)", "descricao": "string" }
+  ],
+  "secoes": [
+    {
+      "nome": "string — nome temático da seção",
+      "atividades": "string — descrição das atividades desta seção",
+      "habilidades": [
+        { "codigo": "string (ex: EF15LP02)", "descricao": "string — descrição da habilidade" }
+      ]
+    }
+  ],
+  "campos_experiencia": [
+    {
+      "campo": "string — nome do campo de experiência da BNCC",
+      "habilidades": [
+        { "codigo": "string", "descricao": "string" }
+      ]
+    }
+  ],
+  "atividades_interativas": "string — atividade coletiva, produto final ou evento de encerramento",
+  "planejamento_bncc": {
+    "objetivo_aprendizagem": "string",
+    "metodologia": "string",
+    "materiais": ["string"],
+    "roteiro": ["string — etapa ou aula com tempo/duração sugerida"],
+    "adaptacoes": ["string — adaptações práticas para inclusão e diferentes ritmos"],
+    "alerta_professor": "string — cuidado pedagógico importante"
+  },
+  "atividades_bncc": [
+    {
+      "titulo": "string",
+      "habilidade_bncc": "string",
+      "exercicio": "string",
+      "versao_facil": "string",
+      "versao_dificil": "string",
+      "versao_inclusiva": "string",
+      "gabarito": "string"
+    }
+  ],
+  "avaliacao": {
+    "processo": "string — como acompanhar o desenvolvimento",
+    "produto": "string — o que será avaliado como entrega final"
+  },
+  "conclusao": "string — parágrafo de encerramento valorizando o projeto"
+}`;
+    }
+
+    async function generateProject() {
+      const photoFile = document.getElementById("project-photo").files[0];
+      const data = {
+        topic: document.getElementById("topic").value.trim(),
+        objective: document.getElementById("objective").value.trim(),
+        description: document.getElementById("description").value.trim(),
+        grades: getCheckedValues("grades"),
+        subjects: getCheckedValues("subjects"),
+        duration: document.getElementById("duration").value.trim(),
+        classLevel: document.getElementById("class-level").value,
+        resources: getCheckedValues("resources"),
+        deliverables: getCheckedValues("deliverables"),
+        photoName: photoFile?.name || ""
+      };
+
+      if (!data.grades.length) {
+        alert("Selecione pelo menos um ano ou faixa etária.");
+        return;
+      }
+
+      if (!data.topic && !photoFile) {
+        alert("Informe um tema ou envie uma fotografia da atividade.");
+        return;
+      }
+
+      setLoading(true);
+      const oldBanner = document.getElementById("error-banner");
+      if (oldBanner) oldBanner.remove();
+
+      try {
+        const prompt = buildPrompt(data);
+        const photoPart = await getProjectPhotoPart();
+        const reply = await callGemini(prompt, photoPart);
+        const project = await parseProjectWithRepair(reply);
+        renderProject(project, false);
+      } catch (error) {
+        console.error(error);
+        showErrorBanner(error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    function showErrorBanner(msg) {
+      const old = document.getElementById("error-banner");
+      if (old) old.remove();
+      const banner = document.createElement("div");
+      banner.id = "error-banner";
+      banner.className = "mt-4 rounded-[2rem] bg-error-container p-5 soft-shadow";
+      banner.innerHTML = `
+      <div class="flex items-start gap-3">
+        <span class="material-symbols-outlined text-error mt-0.5 shrink-0">error</span>
+        <div>
+          <p class="font-headline font-black text-error">Geração não concluída</p>
+          <p class="mt-1 text-sm text-on-error-container leading-6">${escapeHtml(msg)}</p>
+          <p class="mt-2 text-xs text-on-error-container/70">Verifique a chave da API, atualize a página e tente novamente.</p>
+        </div>
+        <button onclick="document.getElementById('error-banner').remove()" class="ml-auto shrink-0 text-on-error-container/60 hover:text-on-error-container transition-colors">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>`;
+      document.getElementById("result-section").prepend(banner);
+      banner.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    async function callGemini(prompt, photoPart) {
+      const parts = [{ text: prompt }];
+      if (photoPart) parts.push(photoPart);
+
+      const res = await fetch(`${GEMINI_API}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-goog-api-key": API_KEY },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts }],
+          generationConfig: {
+            temperature: 0.55,
+            topP: 0.92,
+            maxOutputTokens: 12000,
+            responseMimeType: "application/json",
+            responseSchema: PROJECT_RESPONSE_SCHEMA
+          }
+        })
+      });
+      if (!res.ok) {
+        let msg = "Erro na API Gemini";
+        try { const e = await res.json(); msg = e.error?.message || msg; } catch (_) { }
+        throw new Error(msg);
+      }
+      const data = await res.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      if (!text) {
+        const finishReason = data.candidates?.[0]?.finishReason;
+        throw new Error(finishReason ? `A IA não retornou texto. Motivo: ${finishReason}` : "A IA não retornou texto.");
+      }
+      return text;
+    }
+
+    async function parseProjectWithRepair(reply) {
+      try {
+        return parseJSON(reply);
+      } catch (parseError) {
+        console.warn("JSON inválido retornado pela IA. Tentando corrigir.", parseError);
+        const repaired = await repairProjectJSON(reply);
+        try {
+          return parseJSON(repaired);
+        } catch (repairError) {
+          throw new Error(`A IA retornou JSON inválido e a correção automática falhou. Detalhe: ${repairError.message}`);
+        }
+      }
+    }
+
+    async function repairProjectJSON(rawJSON) {
+      const repairPrompt = `Corrija o texto abaixo para JSON válido.
+Regras:
+1. Não invente novas informações.
+2. Preserve todos os campos e textos que forem recuperáveis.
+3. Retorne somente JSON válido, sem markdown.
+4. Use exatamente a estrutura de Projeto BNCC Integrado com os campos: titulo, subtitulo, objetivos_gerais, competencias_bncc, secoes, campos_experiencia, atividades_interativas, planejamento_bncc, atividades_bncc, avaliacao, conclusao.
+
+JSON para corrigir:
+${rawJSON}`;
+
+      const res = await fetch(`${GEMINI_API}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-goog-api-key": API_KEY },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: repairPrompt }] }],
+          generationConfig: {
+            temperature: 0,
+            topP: 0.8,
+            maxOutputTokens: 12000,
+            responseMimeType: "application/json",
+            responseSchema: PROJECT_RESPONSE_SCHEMA
+          }
+        })
+      });
+
+      if (!res.ok) {
+        let msg = "Erro ao corrigir JSON";
+        try { const e = await res.json(); msg = e.error?.message || msg; } catch (_) { }
+        throw new Error(msg);
+      }
+
+      const data = await res.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      if (!text) throw new Error("A IA não retornou JSON corrigido.");
+      return text;
+    }
+
+    function parseJSON(text) {
+      const cleaned = text.replace(/^```json/i, "").replace(/^```/i, "").replace(/```$/i, "").trim();
+      try { return JSON.parse(cleaned); } catch (_) {
+        const match = cleaned.match(/\{[\s\S]*\}/);
+        if (match) return JSON.parse(match[0]);
+        throw new Error("A IA não retornou JSON válido.");
+      }
+    }
+
+    function renderProject(p, isFallback) {
+      currentProject = p;
+      currentPlainText = projectToText(p);
+
+      document.getElementById("result-subtitle").textContent = isFallback
+        ? "A geração por IA falhou. Veja o erro no fim do resultado."
+        : "Projeto gerado com IA a partir das informações preenchidas.";
+      document.getElementById("copy-btn").classList.remove("hidden");
+      document.getElementById("download-btn").classList.remove("hidden");
+      document.getElementById("print-btn").classList.remove("hidden");
+
+      const competenciasHtml = (p.competencias_bncc || []).map(c => `
+      <div class="flex gap-3 items-start">
+        <span class="habilidade-tag shrink-0">${escapeHtml(c.codigo)}</span>
+        <span class="text-sm leading-relaxed text-on-surface-variant">${escapeHtml(c.descricao)}</span>
+      </div>`).join("");
+
+      const secoesHtml = (p.secoes || []).map((s, i) => `
+      <article class="result-card secao-card rounded-[2rem] bg-white p-6 soft-shadow">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary-fixed text-primary font-headline font-black text-lg">${i + 1}</span>
+          <h3 class="font-headline text-xl font-black">${escapeHtml(s.nome)}</h3>
+        </div>
+        <p class="text-sm leading-7 text-on-surface-variant mb-4">${escapeHtml(s.atividades)}</p>
+        <div class="flex flex-wrap gap-1 mt-3">
+          ${(s.habilidades || []).map(h => `
+            <span title="${escapeHtml(h.descricao)}" class="habilidade-tag cursor-help">${escapeHtml(h.codigo)}</span>
+          `).join("")}
+        </div>
+        <div class="mt-3 space-y-2">
+          ${(s.habilidades || []).map(h => `
+            <p class="text-xs text-on-surface-variant leading-5"><strong class="text-primary">${escapeHtml(h.codigo)}:</strong> ${escapeHtml(h.descricao)}</p>
+          `).join("")}
+        </div>
+      </article>`).join("");
+
+      const camposHtml = p.campos_experiencia && p.campos_experiencia.length
+        ? `<article class="result-card rounded-[2rem] bg-white p-6 soft-shadow">
+          <div class="flex items-center gap-3 mb-5">
+            <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-fixed text-primary">
+              <span class="material-symbols-outlined">child_care</span>
+            </span>
+            <h3 class="font-headline text-xl font-black">Campos de Experiência — Ed. Infantil</h3>
+          </div>
+          <div class="space-y-5">
+            ${(p.campos_experiencia || []).map(ce => `
+              <div>
+                <p class="font-headline font-bold text-on-surface mb-2">${escapeHtml(ce.campo)}</p>
+                <div class="space-y-1">
+                  ${(ce.habilidades || []).map(h => `
+                    <p class="text-sm text-on-surface-variant leading-5 flex gap-2"><span class="habilidade-tag shrink-0">${escapeHtml(h.codigo)}</span><span>${escapeHtml(h.descricao)}</span></p>
+                  `).join("")}
+                </div>
+              </div>`).join("")}
+          </div>
+        </article>`
+        : "";
+
+      const planejamento = p.planejamento_bncc || {};
+      const planejamentoHtml = `
+      <article class="result-card rounded-[2rem] bg-white p-6 soft-shadow">
+        <div class="flex items-center gap-3 mb-5">
+          <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-fixed text-primary">
+            <span class="material-symbols-outlined">auto_awesome</span>
+          </span>
+          <h3 class="font-headline text-xl font-black">Planejamento BNCC Integrado</h3>
+        </div>
+        <div class="grid gap-4 lg:grid-cols-2">
+          <div class="rounded-2xl bg-surface-container-low p-4">
+            <p class="font-headline font-bold text-sm text-primary mb-2">Objetivo de aprendizagem</p>
+            <p class="text-sm leading-7 text-on-surface-variant">${escapeHtml(planejamento.objetivo_aprendizagem || "Não informado.")}</p>
+          </div>
+          <div class="rounded-2xl bg-surface-container-low p-4">
+            <p class="font-headline font-bold text-sm text-primary mb-2">Metodologia</p>
+            <p class="text-sm leading-7 text-on-surface-variant">${escapeHtml(planejamento.metodologia || "Não informado.")}</p>
+          </div>
+        </div>
+        <div class="mt-5 grid gap-4 lg:grid-cols-2">
+          ${renderListBlock("Materiais", planejamento.materiais, "inventory_2")}
+          ${renderListBlock("Adaptações", planejamento.adaptacoes, "accessibility_new")}
+        </div>
+        ${planejamento.roteiro?.length ? `
+          <div class="mt-5 rounded-2xl bg-surface-container-low p-4">
+            <p class="font-headline font-bold text-sm text-primary mb-3">Roteiro / cronograma</p>
+            <div class="space-y-3">
+              ${planejamento.roteiro.map((item, index) => `
+                <div class="flex gap-3 text-sm leading-6 text-on-surface-variant">
+                  <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-black text-white">${index + 1}</span>
+                  <span>${escapeHtml(item)}</span>
+                </div>
+              `).join("")}
+            </div>
+          </div>` : ""}
+        ${planejamento.alerta_professor ? `
+          <div class="mt-5 rounded-2xl bg-primary-fixed p-4">
+            <p class="font-headline font-bold text-sm text-primary mb-2">Alerta ao professor</p>
+            <p class="text-sm leading-7 text-on-primary-fixed">${escapeHtml(planejamento.alerta_professor)}</p>
+          </div>` : ""}
+      </article>`;
+
+      const atividadesBnccHtml = (p.atividades_bncc || []).length ? `
+      <article class="result-card rounded-[2rem] bg-surface-container-low p-6 soft-shadow">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-white">
+            <span class="material-symbols-outlined">edit_note</span>
+          </span>
+          <h3 class="font-headline text-xl font-black">Atividades BNCC do Projeto</h3>
+        </div>
+        <div class="grid gap-4">
+          ${(p.atividades_bncc || []).map((activity, index) => `
+            <article class="rounded-[2rem] bg-white p-5 soft-shadow">
+              <div class="flex items-start gap-3">
+                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary-fixed text-primary font-headline font-black">${index + 1}</span>
+                <div>
+                  <h4 class="font-headline text-lg font-black">${escapeHtml(activity.titulo || "Atividade BNCC")}</h4>
+                  <p class="mt-2 text-xs font-bold uppercase text-primary">${escapeHtml(activity.habilidade_bncc || "Habilidade BNCC sugerida")}</p>
+                </div>
+              </div>
+              <div class="mt-4 grid gap-3 lg:grid-cols-2">
+                ${renderActivityField("Atividade principal", activity.exercicio)}
+                ${renderActivityField("Versão fácil", activity.versao_facil)}
+                ${renderActivityField("Versão desafio", activity.versao_dificil)}
+                ${renderActivityField("Versão inclusiva", activity.versao_inclusiva)}
+              </div>
+              <div class="mt-3 rounded-2xl bg-surface-container-low p-4">
+                <p class="font-headline font-bold text-sm text-primary mb-2">Gabarito / correção</p>
+                <p class="text-sm leading-7 text-on-surface-variant">${escapeHtml(activity.gabarito || "Não informado.")}</p>
+              </div>
+            </article>
+          `).join("")}
+        </div>
+      </article>` : "";
+
+      document.getElementById("result-grid").innerHTML = `
+      <!-- Hero do projeto -->
+      <article class="result-card rounded-[2.25rem] bg-gradient-to-br from-primary to-primary-container p-8 text-white rose-shadow">
+        <p class="font-headline text-xs font-black uppercase tracking-[0.24em] text-primary-fixed">Projeto pedagógico</p>
+        <h3 class="mt-3 font-display text-4xl font-black leading-tight">${escapeHtml(p.titulo || "Projeto Pedagógico BNCC")}</h3>
+        <p class="mt-3 text-lg text-white/85 font-body italic">${escapeHtml(p.subtitulo || "")}</p>
+        <p class="mt-5 text-sm leading-7 text-white/75">Use como base, adapte os nomes das seções e aplique com sua turma.</p>
+      </article>
+
+      <!-- Objetivos gerais -->
+      <article class="result-card rounded-[2rem] bg-white p-6 soft-shadow">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-fixed text-primary">
+            <span class="material-symbols-outlined">flag</span>
+          </span>
+          <h3 class="font-headline text-xl font-black">Objetivos Gerais</h3>
+        </div>
+        <p class="text-sm leading-7 text-on-surface-variant">${escapeHtml(p.objetivos_gerais || "")}</p>
+      </article>
+
+      <!-- Competências BNCC -->
+      <article class="result-card rounded-[2rem] bg-white p-6 soft-shadow">
+        <div class="flex items-center gap-3 mb-5">
+          <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-fixed text-primary">
+            <span class="material-symbols-outlined">verified</span>
+          </span>
+          <h3 class="font-headline text-xl font-black">Competências Gerais da BNCC</h3>
+        </div>
+        <div class="space-y-3">${competenciasHtml}</div>
+      </article>
+
+      <!-- Seções temáticas -->
+      <article class="result-card rounded-[2rem] bg-surface-container-low p-6 soft-shadow">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-white">
+            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">account_tree</span>
+          </span>
+          <h3 class="font-headline text-xl font-black">Estrutura do Projeto</h3>
+        </div>
+        <div class="grid gap-4 md:grid-cols-1">${secoesHtml}</div>
+      </article>
+
+      ${camposHtml}
+
+      ${planejamentoHtml}
+
+      ${atividadesBnccHtml}
+
+      <!-- Atividades interativas -->
+      <article class="result-card rounded-[2rem] bg-white p-6 soft-shadow">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-fixed text-primary">
+            <span class="material-symbols-outlined">celebration</span>
+          </span>
+          <h3 class="font-headline text-xl font-black">Atividades Interativas e Produto Final</h3>
+        </div>
+        <p class="text-sm leading-7 text-on-surface-variant">${escapeHtml(p.atividades_interativas || "")}</p>
+      </article>
+
+      <!-- Avaliação -->
+      <article class="result-card rounded-[2rem] bg-white p-6 soft-shadow">
+        <div class="flex items-center gap-3 mb-5">
+          <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-fixed text-primary">
+            <span class="material-symbols-outlined">quiz</span>
+          </span>
+          <h3 class="font-headline text-xl font-black">Avaliação</h3>
+        </div>
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="rounded-2xl bg-surface-container-low p-4">
+            <p class="font-headline font-bold text-sm text-primary mb-2">Processo</p>
+            <p class="text-sm leading-7 text-on-surface-variant">${escapeHtml(p.avaliacao?.processo || "")}</p>
+          </div>
+          <div class="rounded-2xl bg-surface-container-low p-4">
+            <p class="font-headline font-bold text-sm text-primary mb-2">Produto</p>
+            <p class="text-sm leading-7 text-on-surface-variant">${escapeHtml(p.avaliacao?.produto || "")}</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Conclusão -->
+      <article class="result-card rounded-[2rem] bg-gradient-to-br from-surface-container-low to-white p-6 soft-shadow">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-fixed text-primary">
+            <span class="material-symbols-outlined">check_circle</span>
+          </span>
+          <h3 class="font-headline text-xl font-black">Conclusão</h3>
+        </div>
+        <p class="text-sm leading-7 text-on-surface-variant">${escapeHtml(p.conclusao || "")}</p>
+      </article>
+    `;
+    }
+
+    function renderListBlock(title, items, icon) {
+      const safeItems = Array.isArray(items) && items.length ? items : ["Não informado."];
+      return `
+      <div class="rounded-2xl bg-surface-container-low p-4">
+        <div class="mb-3 flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[19px]">${icon}</span>
+          <p class="font-headline font-bold text-sm text-primary">${escapeHtml(title)}</p>
+        </div>
+        <ul class="space-y-2 text-sm leading-6 text-on-surface-variant">
+          ${safeItems.map(item => `<li class="flex gap-2"><span class="material-symbols-outlined mt-0.5 text-base text-primary">check_circle</span><span>${escapeHtml(item)}</span></li>`).join("")}
+        </ul>
+      </div>`;
+    }
+
+    function renderActivityField(title, value) {
+      return `
+      <div class="rounded-2xl bg-surface-container-low p-4">
+        <p class="font-headline font-bold text-sm text-primary mb-2">${escapeHtml(title)}</p>
+        <p class="text-sm leading-7 text-on-surface-variant">${escapeHtml(value || "Não informado.")}</p>
+      </div>`;
+    }
+
+    function projectToText(p) {
+      const lines = [
+        `PROJETO: ${p.titulo || ""}`,
+        p.subtitulo ? `"${p.subtitulo}"` : "",
+        "",
+        "OBJETIVOS GERAIS",
+        p.objetivos_gerais || "",
+        "",
+        "COMPETÊNCIAS GERAIS DA BNCC",
+        ...(p.competencias_bncc || []).map(c => `${c.codigo}: ${c.descricao}`),
+        "",
+        "ESTRUTURA DO PROJETO",
+        ...(p.secoes || []).flatMap((s, i) => [
+          "",
+          `${i + 1}. ${s.nome}`,
+          `Atividades: ${s.atividades}`,
+          "Habilidades BNCC:",
+          ...(s.habilidades || []).map(h => `  - ${h.codigo}: ${h.descricao}`)
+        ]),
+      ];
+
+      if (p.campos_experiencia && p.campos_experiencia.length) {
+        lines.push("", "CAMPOS DE EXPERIÊNCIA — EDUCAÇÃO INFANTIL");
+        (p.campos_experiencia || []).forEach(ce => {
+          lines.push(`\n${ce.campo}`);
+          (ce.habilidades || []).forEach(h => lines.push(`  - ${h.codigo}: ${h.descricao}`));
+        });
+      }
+
+      const planejamento = p.planejamento_bncc || {};
+      lines.push(
+        "",
+        "PLANEJAMENTO BNCC INTEGRADO",
+        "",
+        "Objetivo de aprendizagem",
+        planejamento.objetivo_aprendizagem || "",
+        "",
+        "Metodologia",
+        planejamento.metodologia || "",
+        "",
+        "Materiais",
+        ...(planejamento.materiais || []).map(item => "- " + item),
+        "",
+        "Roteiro / cronograma",
+        ...(planejamento.roteiro || []).map(item => "- " + item),
+        "",
+        "Adaptações",
+        ...(planejamento.adaptacoes || []).map(item => "- " + item),
+        "",
+        "Alerta ao professor",
+        planejamento.alerta_professor || ""
+      );
+
+      if (p.atividades_bncc && p.atividades_bncc.length) {
+        lines.push("", "ATIVIDADES BNCC DO PROJETO");
+        (p.atividades_bncc || []).forEach((activity, index) => {
+          lines.push(
+            "",
+            `${index + 1}. ${activity.titulo || "Atividade BNCC"}`,
+            `Habilidade BNCC: ${activity.habilidade_bncc || ""}`,
+            `Atividade principal: ${activity.exercicio || ""}`,
+            `Versão fácil: ${activity.versao_facil || ""}`,
+            `Versão desafio: ${activity.versao_dificil || ""}`,
+            `Versão inclusiva: ${activity.versao_inclusiva || ""}`,
+            `Gabarito / correção: ${activity.gabarito || ""}`
+          );
+        });
+      }
+
+      lines.push(
+        "", "ATIVIDADES INTERATIVAS E PRODUTO FINAL",
+        p.atividades_interativas || "",
+        "", "AVALIAÇÃO",
+        `Processo: ${p.avaliacao?.processo || ""}`,
+        `Produto: ${p.avaliacao?.produto || ""}`,
+        "", "CONCLUSÃO",
+        p.conclusao || ""
+      );
+
+      return lines.filter(l => l !== undefined && l !== null).join("\n");
+    }
+
+    async function copyProject() {
+      if (!currentPlainText) return;
+      try { await navigator.clipboard.writeText(currentPlainText); }
+      catch (_) {
+        const ta = document.createElement("textarea");
+        ta.value = currentPlainText;
+        ta.setAttribute("readonly", "");
+        ta.style.cssText = "position:fixed;opacity:0;";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+      }
+      const btn = document.getElementById("copy-btn");
+      const old = btn.textContent;
+      btn.textContent = "Copiado!";
+      setTimeout(() => btn.textContent = old, 1400);
+    }
+
+    function downloadProject() {
+      if (!currentProject) return;
+      const cfg = getSchoolConfig();
+      const headerHtml = (cfg.schoolName || cfg.teacherName) ? `
+      <div style="border-bottom:2px solid #b10048;padding-bottom:10px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-size:15pt;font-weight:900;color:#1b1c1c;">${escapeHtml(cfg.schoolName || '')}</div>
+          <div style="font-size:10pt;color:#5c3f44;margin-top:3px;">${escapeHtml([cfg.teacherName, cfg.teacherRole].filter(Boolean).join(' — '))}</div>
+        </div>
+        <div style="text-align:right;font-size:10pt;color:#5c3f44;">${escapeHtml([cfg.schoolYear, new Date().toLocaleDateString('pt-BR')].filter(Boolean).join('\n'))}</div>
+      </div>` : '';
+
+      const html = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>${escapeHtml(currentProject.titulo || "Projeto Pedagógico")}</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; color: #1b1c1c; }
+    h1 { color: #b10048; font-size: 22pt; }
+    h2 { color: #b10048; font-size: 14pt; margin-top: 1.5em; }
+    h3 { color: #3f0015; font-size: 12pt; }
+    pre { white-space: pre-wrap; word-wrap: break-word; font-size: 11pt; line-height: 1.7; }
+  </style>
+</head>
+<body>
+  ${headerHtml}
+  <pre>${escapeHtml(currentPlainText)}</pre>
+</body>
+</html>`;
+
+      const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = slugify(currentProject.titulo || "projeto-pedagogico") + ".html";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function setLoading(isLoading) {
+      document.getElementById("loading-state").classList.toggle("hidden", !isLoading);
+      document.getElementById("generate-btn").disabled = isLoading;
+    }
+
+    function handleProjectPhotoSelection(event) {
+      const file = event.target.files[0];
+      const nameEl = document.getElementById("project-photo-name");
+      const previewEl = document.getElementById("project-photo-preview");
+      const removeBtn = document.getElementById("remove-photo-btn");
+
+      if (!file) {
+        clearProjectPhoto();
+        return;
+      }
+
+      if (!file.type.startsWith("image/")) {
+        alert("Envie um arquivo de imagem.");
+        clearProjectPhoto();
+        return;
+      }
+
+      if (file.size > 8 * 1024 * 1024) {
+        alert("A imagem precisa ter até 8 MB.");
+        clearProjectPhoto();
+        return;
+      }
+
+      nameEl.textContent = file.name;
+      removeBtn.classList.remove("hidden");
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        previewEl.src = reader.result;
+        previewEl.classList.remove("hidden");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearProjectPhoto() {
+      const input = document.getElementById("project-photo");
+      const nameEl = document.getElementById("project-photo-name");
+      const previewEl = document.getElementById("project-photo-preview");
+      const removeBtn = document.getElementById("remove-photo-btn");
+
+      input.value = "";
+      nameEl.textContent = "Nenhuma foto enviada";
+      previewEl.removeAttribute("src");
+      previewEl.classList.add("hidden");
+      removeBtn.classList.add("hidden");
+    }
+
+    function getProjectPhotoPart() {
+      const file = document.getElementById("project-photo").files[0];
+      if (!file) return Promise.resolve(null);
+
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = String(reader.result || "");
+          const base64 = result.split(",")[1];
+          if (!base64) {
+            reject(new Error("Não foi possível ler a fotografia enviada."));
+            return;
+          }
+          resolve({
+            inlineData: {
+              mimeType: file.type,
+              data: base64
+            }
+          });
+        };
+        reader.onerror = () => reject(new Error("Não foi possível ler a fotografia enviada."));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function fillExample(key) {
+      const examples = {
+        indigena: { topic: "Cultura indígena brasileira", grades: ["Educação Infantil (3–5 anos)"], subjects: [] },
+        sustentabilidade: { topic: "Sustentabilidade e meio ambiente", grades: ["3º ano do Ensino Fundamental"], subjects: ["Ciências", "Geografia", "Arte"] },
+        leitura: { topic: "Incentivo à leitura e produção de texto", grades: ["1º ano do Ensino Fundamental"], subjects: ["Português"] }
+      };
+      const ex = examples[key];
+      if (!ex) return;
+      document.getElementById("topic").value = ex.topic;
+      document.getElementById("description").value = ex.description || "";
+      document.querySelectorAll("#grades input").forEach(input => {
+        input.checked = ex.grades.includes(input.value);
+      });
+      document.querySelectorAll("#subjects input").forEach(input => {
+        input.checked = ex.subjects.includes(input.value);
+      });
+    }
+
+    function toggleApiPanel() {
+      document.getElementById("api-panel").classList.toggle("hidden");
+    }
+
+    function initApiPanel() {
+      document.getElementById("api-key-input").value = localStorage.getItem("gemini_api_key") || "";
+      updateApiStatus();
+    }
+
+    function saveApiKey() {
+      const value = document.getElementById("api-key-input").value.trim();
+      if (value) { localStorage.setItem("gemini_api_key", value); API_KEY = value; }
+      updateApiStatus();
+    }
+
+    function clearApiKey() {
+      localStorage.removeItem("gemini_api_key");
+      document.getElementById("api-key-input").value = "";
+      API_KEY = window.APP_CONFIG?.GEMINI_API_KEY || "";
+      updateApiStatus();
+    }
+
+    function updateApiStatus() {
+      const status = document.getElementById("api-status");
+      if (localStorage.getItem("gemini_api_key")) {
+        status.textContent = "Chave salva";
+        status.className = "rounded-full bg-tertiary-fixed px-3 py-1 text-xs font-bold text-on-tertiary-fixed";
+      } else {
+        status.textContent = "Padrão ativo";
+        status.className = "rounded-full bg-primary-fixed px-3 py-1 text-xs font-bold text-on-primary-fixed";
+      }
+    }
+
+    function escapeHtml(v) {
+      return String(v || "")
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    function slugify(v) {
+      return String(v).normalize("NFD").replace(/[̀-ͯ]/g, "")
+        .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    }
+  </script>
+
+  <script>
+    const standardSidebarToggle = document.getElementById('standard-sidebar-toggle');
+    standardSidebarToggle?.addEventListener('click', () => {
+      const collapsed = document.body.classList.toggle('sidebar-collapsed');
+      standardSidebarToggle.setAttribute('aria-expanded', String(!collapsed));
+      standardSidebarToggle.setAttribute('aria-label', collapsed ? 'Mostrar menu lateral' : 'Esconder menu lateral');
+    });
+
+    const currentPath = decodeURIComponent(window.location.pathname).replace(/\\/g, '/');
+    document.querySelectorAll('[data-nav-target]').forEach((link) => {
+      const target = link.getAttribute('data-nav-target');
+      if (currentPath.endsWith(target)) link.classList.add('active');
+    });
+
+    window.addEventListener('pageshow', () => {
+      document.body.classList.remove('page-leaving');
+      requestAnimationFrame(() => document.body.classList.add('page-ready'));
+    });
+
+    document.addEventListener('click', (event) => {
+      const link = event.target.closest('a[href]');
+      if (!link) return;
+      const href = link.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto:') || link.target === '_blank') return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      event.preventDefault();
+      document.body.classList.add('page-leaving');
+      setTimeout(() => { window.location.href = link.href; }, 160);
+    });
+  </script>
+
+  <script>
+    const SCHOOL_CONFIG_KEY = "cp_school_config";
+    function getSchoolConfig() { try { return JSON.parse(localStorage.getItem(SCHOOL_CONFIG_KEY) || "{}"); } catch (_) { return {}; } }
+    function openSchoolConfig() {
+      const cfg = getSchoolConfig();
+      document.getElementById("sc-school-name").value = cfg.schoolName || "";
+      document.getElementById("sc-teacher-name").value = cfg.teacherName || "";
+      document.getElementById("sc-teacher-role").value = cfg.teacherRole || "";
+      document.getElementById("sc-school-year").value = cfg.schoolYear || "";
+      document.getElementById("school-config-modal").classList.remove("hidden");
+    }
+    function closeSchoolConfig() { document.getElementById("school-config-modal").classList.add("hidden"); }
+    function saveSchoolConfig() {
+      localStorage.setItem(SCHOOL_CONFIG_KEY, JSON.stringify({
+        schoolName: document.getElementById("sc-school-name").value.trim(),
+        teacherName: document.getElementById("sc-teacher-name").value.trim(),
+        teacherRole: document.getElementById("sc-teacher-role").value.trim(),
+        schoolYear: document.getElementById("sc-school-year").value.trim()
+      }));
+      closeSchoolConfig();
+      updatePrintHeader();
+    }
+    function updatePrintHeader() {
+      const cfg = getSchoolConfig();
+      const s = document.getElementById("psh-school"), t = document.getElementById("psh-teacher"), d = document.getElementById("psh-date");
+      if (s) s.textContent = cfg.schoolName || "";
+      if (t) t.textContent = [cfg.teacherName, cfg.teacherRole].filter(Boolean).join(" — ");
+      if (d) d.textContent = [cfg.schoolYear, new Date().toLocaleDateString("pt-BR")].filter(Boolean).join("\n");
+    }
+    function printDoc() { updatePrintHeader(); window.print(); }
+    updatePrintHeader();
+  </script>
+
+</body>
+
+</html>

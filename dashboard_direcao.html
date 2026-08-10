@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Executivo — Radar de Saúde & Retenção | School Intelligence OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="creative_pedagogy/design-system.css" />
+  <style>
+    :root {
+      --primary: #9b1c31;
+      --primary-container: #c42b47;
+      --background: #fbf9f8;
+    }
+    body {
+      font-family: 'Lexend', sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.05);
+    }
+    .badge-critical {
+      background-color: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+    .badge-warning {
+      background-color: #fffbe6;
+      color: #92400e;
+      border: 1px solid #fef08a;
+    }
+    .badge-healthy {
+      background-color: #f0fdf4;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- TOP HEADER & INTEGRATION BAR -->
+  <header class="glass-card sticky top-0 z-40 px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-200">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-700 to-rose-500 text-white flex items-center justify-center font-extrabold text-xl shadow-lg shadow-rose-500/20">
+        S
+      </div>
+      <div>
+        <h1 class="text-xl font-bold tracking-tight text-slate-900">School Intelligence OS</h1>
+        <p class="text-xs font-medium text-slate-500 flex items-center gap-1.5">
+          <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Conectado ao ERP Escola (TOTVS / Sponte Sync active)
+        </p>
+      </div>
+    </div>
+
+    <!-- CONTROLS & SELECTORS -->
+    <div class="flex flex-wrap items-center gap-3">
+      <div class="flex items-center bg-white border border-slate-200 rounded-lg p-1 text-xs font-medium">
+        <button class="px-3 py-1.5 rounded-md bg-rose-50 text-rose-700 font-semibold shadow-xs">2º Trimestre 2026</button>
+        <button class="px-3 py-1.5 text-slate-600 hover:text-slate-900">Visão Geral Ano</button>
+      </div>
+
+      <select class="bg-white border border-slate-200 text-slate-700 text-xs font-semibold rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-rose-500">
+        <option>Unidade Central — Ensino Fundamental II & Médio</option>
+        <option>Unidade II — Jardins</option>
+      </select>
+
+      <button onclick="window.print()" class="flex items-center gap-1.5 px-3 py-2 bg-slate-900 text-white text-xs font-semibold rounded-lg hover:bg-slate-800 transition">
+        <span class="material-symbols-outlined text-sm">download</span> Exportar Relatório Executivo
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN DASHBOARD CONTENT -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-8">
+    
+    <!-- DASHBOARD TITLE & ACTIONS -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Radar Executivo de Saúde & Retenção</h2>
+        <p class="text-sm text-slate-600">Painel preditivo para direção, coordenação pedagógica e gestão de permanência de alunos.</p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-semibold px-3 py-1 bg-amber-100 text-amber-800 rounded-full flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">warning</span> 14 Alunos exigem atenção pedagógica imediata
+        </span>
+      </div>
+    </div>
+
+    <!-- KPI HIGHLIGHT CARDS -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      
+      <!-- SCHOOL HEALTH SCORE -->
+      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden group hover:border-rose-300 transition">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500">School Health Score</span>
+          <span class="w-8 h-8 rounded-lg bg-rose-50 text-rose-700 flex items-center justify-center">
+            <span class="material-symbols-outlined text-lg">health_and_safety</span>
+          </span>
+        </div>
+        <div class="my-4">
+          <div class="flex items-baseline gap-2">
+            <span class="text-4xl font-extrabold text-slate-900">84.5</span>
+            <span class="text-sm font-bold text-emerald-600 flex items-center">+2.8 pts</span>
+          </div>
+          <p class="text-xs font-medium text-slate-500 mt-1">Classificação: <strong class="text-emerald-700">Saudável (Zona Verde)</strong></p>
+        </div>
+        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+          <div class="bg-gradient-to-r from-emerald-500 to-emerald-400 h-full rounded-full" style="width: 84.5%;"></div>
+        </div>
+      </div>
+
+      <!-- ÍNDICE PREVISTO DE RETENÇÃO -->
+      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden group hover:border-emerald-300 transition">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Projeção de Rematrícula</span>
+          <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
+            <span class="material-symbols-outlined text-lg">trending_up</span>
+          </span>
+        </div>
+        <div class="my-4">
+          <div class="flex items-baseline gap-2">
+            <span class="text-4xl font-extrabold text-slate-900">93.8%</span>
+            <span class="text-sm font-bold text-emerald-600 flex items-center">R$ 1.4M Preservados</span>
+          </div>
+          <p class="text-xs font-medium text-slate-500 mt-1">Estimativa de perda: <strong>~12 alunos (evasão evitada em 88%)</strong></p>
+        </div>
+        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+          <div class="bg-emerald-500 h-full rounded-full" style="width: 93.8%;"></div>
+        </div>
+      </div>
+
+      <!-- ALUNOS EM RISCO (EARLY WARNING) -->
+      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden group hover:border-amber-300 transition">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Early Warning (Risco Preditivo)</span>
+          <span class="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center">
+            <span class="material-symbols-outlined text-lg">person_alert</span>
+          </span>
+        </div>
+        <div class="my-4">
+          <div class="flex items-baseline gap-2">
+            <span class="text-4xl font-extrabold text-rose-700">14</span>
+            <span class="text-sm font-semibold text-slate-600">Alunos sinalizados</span>
+          </div>
+          <p class="text-xs font-medium text-slate-500 mt-1">
+            <strong class="text-rose-600">4 Risco Crítico</strong> • 10 Risco Moderado
+          </p>
+        </div>
+        <div class="flex gap-1.5">
+          <span class="h-2 rounded-full bg-rose-500 flex-[4]"></span>
+          <span class="h-2 rounded-full bg-amber-400 flex-[10]"></span>
+          <span class="h-2 rounded-full bg-slate-200 flex-[86]"></span>
+        </div>
+      </div>
+
+      <!-- ENGAJAMENTO & RESOLUÇÃO DE LACUNAS -->
+      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden group hover:border-indigo-300 transition">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Resolução de Lacunas (IA)</span>
+          <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center">
+            <span class="material-symbols-outlined text-lg">psychology</span>
+          </span>
+        </div>
+        <div class="my-4">
+          <div class="flex items-baseline gap-2">
+            <span class="text-4xl font-extrabold text-slate-900">76%</span>
+            <span class="text-sm font-bold text-indigo-600">342 Exercícios/Semana</span>
+          </div>
+          <p class="text-xs font-medium text-slate-500 mt-1">Alunos ativamente recuperando pré-requisitos</p>
+        </div>
+        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+          <div class="bg-indigo-600 h-full rounded-full" style="width: 76%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN GRID SECTION: EARLY WARNING SYSTEM & RADAR POR TURMA -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- EARLY WARNING SYSTEM TABLE (2 COLS) -->
+      <div class="lg:col-span-2 glass-card rounded-2xl p-6 flex flex-col justify-between space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <span class="material-symbols-outlined text-rose-600">radar</span>
+              Early Warning System (Radar de Alunos em Risco)
+            </h3>
+            <p class="text-xs text-slate-500">Identificação precoce baseada no cruzamento de dados pedagógicos, engajamento e histórico.</p>
+          </div>
+          
+          <input type="text" id="search-student" onkeyup="filterStudents()" placeholder="Buscar aluno ou turma..." class="bg-white border border-slate-200 text-xs rounded-lg px-3 py-2 w-full sm:w-48 outline-none focus:ring-2 focus:ring-rose-500" />
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider bg-slate-50/50">
+                <th class="py-3 px-4">Aluno & Turma</th>
+                <th class="py-3 px-4">Score de Risco</th>
+                <th class="py-3 px-4">Origem / Fatores Detectados</th>
+                <th class="py-3 px-4">Status da Ação</th>
+                <th class="py-3 px-4 text-right">Ação Recomendada</th>
+              </tr>
+            </thead>
+            <tbody id="student-table-body" class="divide-y divide-slate-100 font-medium">
+              
+              <!-- STUDENT ROW 1 -->
+              <tr class="hover:bg-slate-50/80 transition">
+                <td class="py-3.5 px-4">
+                  <div class="font-bold text-slate-900">Gabriel Souza Lima</div>
+                  <div class="text-slate-500 text-[11px]">8º Ano B — Ensino Fundamental II</div>
+                </td>
+                <td class="py-3.5 px-4">
+                  <span class="px-2.5 py-1 rounded-full badge-critical font-bold text-[11px] inline-flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span> 92/100 (Crítico)
+                  </span>
+                </td>
+                <td class="py-3.5 px-4">
+                  <div class="flex flex-wrap gap-1">
+                    <span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-[10px]">Queda Nota Matemática (-45%)</span>
+                    <span class="px-2 py-0.5 bg-rose-50 text-rose-700 rounded text-[10px]">Falta de 3 dias corridos</span>
+                  </div>
+                </td>
+                <td class="py-3.5 px-4">
+                  <span class="text-amber-700 bg-amber-50 font-semibold px-2 py-0.5 rounded text-[10px]">Pendente Ação</span>
+                </td>
+                <td class="py-3.5 px-4 text-right">
+                  <button onclick="openInterventionModal('Gabriel Souza Lima', '8º Ano B', 'Lacuna acumulada em Frações e Álgebra Básica', 92)" class="px-3 py-1.5 bg-rose-700 hover:bg-rose-800 text-white font-semibold rounded-lg shadow-sm transition text-[11px]">
+                    Intervir Agora
+                  </button>
+                </td>
+              </tr>
+
+              <!-- STUDENT ROW 2 -->
+              <tr class="hover:bg-slate-50/80 transition">
+                <td class="py-3.5 px-4">
+                  <div class="font-bold text-slate-900">Beatriz Mendes Santos</div>
+                  <div class="text-slate-500 text-[11px]">1º Ano EM — Ensino Médio</div>
+                </td>
+                <td class="py-3.5 px-4">
+                  <span class="px-2.5 py-1 rounded-full badge-critical font-bold text-[11px] inline-flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span> 88/100 (Crítico)
+                  </span>
+                </td>
+                <td class="py-3.5 px-4">
+                  <div class="flex flex-wrap gap-1">
+                    <span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-[10px]">Queda em Física e Química</span>
+                    <span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-[10px]">Não acessa Tutor IA há 14d</span>
+                  </div>
+                </td>
+                <td class="py-3.5 px-4">
+                  <span class="text-blue-700 bg-blue-50 font-semibold px-2 py-0.5 rounded text-[10px]">Reunião Agendada</span>
+                </td>
+                <td class="py-3.5 px-4 text-right">
+                  <button onclick="openInterventionModal('Beatriz Mendes Santos', '1º Ano EM', 'Queda de desempenho em exatas e desengajamento', 88)" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-lg transition text-[11px]">
+                    Ver Plano
+                  </button>
+                </td>
+              </tr>
+
+              <!-- STUDENT ROW 3 -->
+              <tr class="hover:bg-slate-50/80 transition">
+                <td class="py-3.5 px-4">
+                  <div class="font-bold text-slate-900">Lucas Ferreira Rocha</div>
+                  <div class="text-slate-500 text-[11px]">9º Ano A — Ensino Fundamental II</div>
+                </td>
+                <td class="py-3.5 px-4">
+                  <span class="px-2.5 py-1 rounded-full badge-warning font-bold text-[11px] inline-flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> 68/100 (Atenção)
+                  </span>
+                </td>
+                <td class="py-3.5 px-4">
+                  <div class="flex flex-wrap gap-1">
+                    <span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-[10px]">Dificuldade em Redação/Gramática</span>
+                  </div>
+                </td>
+                <td class="py-3.5 px-4">
+                  <span class="text-emerald-700 bg-emerald-50 font-semibold px-2 py-0.5 rounded text-[10px]">Em Acompanhamento</span>
+                </td>
+                <td class="py-3.5 px-4 text-right">
+                  <button onclick="openInterventionModal('Lucas Ferreira Rocha', '9º Ano A', 'Dificuldade de estruturação textual em Língua Portuguesa', 68)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold rounded-lg transition text-[11px]">
+                    Detalhes
+                  </button>
+                </td>
+              </tr>
+
+              <!-- STUDENT ROW 4 -->
+              <tr class="hover:bg-slate-50/80 transition">
+                <td class="py-3.5 px-4">
+                  <div class="font-bold text-slate-900">Mariana Oliveira Costa</div>
+                  <div class="text-slate-500 text-[11px]">2º Ano EM — Ensino Médio</div>
+                </td>
+                <td class="py-3.5 px-4">
+                  <span class="px-2.5 py-1 rounded-full badge-warning font-bold text-[11px] inline-flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> 64/100 (Atenção)
+                  </span>
+                </td>
+                <td class="py-3.5 px-4">
+                  <div class="flex flex-wrap gap-1">
+                    <span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-[10px]">Inadimplência pontual + Queda notas</span>
+                  </div>
+                </td>
+                <td class="py-3.5 px-4">
+                  <span class="text-amber-700 bg-amber-50 font-semibold px-2 py-0.5 rounded text-[10px]">Pendente Ação</span>
+                </td>
+                <td class="py-3.5 px-4 text-right">
+                  <button onclick="openInterventionModal('Mariana Oliveira Costa', '2º Ano EM', 'Múltiplos fatores de risco (acadêmico e administrativo)', 64)" class="px-3 py-1.5 bg-rose-700 hover:bg-rose-800 text-white font-semibold rounded-lg shadow-sm transition text-[11px]">
+                    Intervir Agora
+                  </button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- RADAR PEDAGÓGICO POR TURMA / SÉRIE (1 COL) -->
+      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-6">
+        <div>
+          <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <span class="material-symbols-outlined text-indigo-600">bar_chart</span>
+            Saúde Pedagógica por Turma
+          </h3>
+          <p class="text-xs text-slate-500">Classificação de turmas de acordo com o nível médio de lacunas e engajamento.</p>
+        </div>
+
+        <div class="space-y-4">
+          
+          <!-- TURMA ITEM 1 -->
+          <div class="p-3.5 bg-white border border-slate-200 rounded-xl space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-slate-900">8º Ano B (EF II)</span>
+              <span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-extrabold text-[10px]">Atenção Elevada (Score 68)</span>
+            </div>
+            <p class="text-[11px] text-slate-500">Lacuna Crítica: <strong>Álgebra & Funções (BNCC EF08MA06)</strong></p>
+            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+              <div class="bg-rose-500 h-full rounded-full" style="width: 68%;"></div>
+            </div>
+          </div>
+
+          <!-- TURMA ITEM 2 -->
+          <div class="p-3.5 bg-white border border-slate-200 rounded-xl space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-slate-900">9º Ano A (EF II)</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-extrabold text-[10px]">Estável (Score 89)</span>
+            </div>
+            <p class="text-[11px] text-slate-500">92% da turma em dia com a resolução de exercícios diários.</p>
+            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+              <div class="bg-emerald-500 h-full rounded-full" style="width: 89%;"></div>
+            </div>
+          </div>
+
+          <!-- TURMA ITEM 3 -->
+          <div class="p-3.5 bg-white border border-slate-200 rounded-xl space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-slate-900">1º Ano EM (Ensino Médio)</span>
+              <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-extrabold text-[10px]">Atenção Média (Score 74)</span>
+            </div>
+            <p class="text-[11px] text-slate-500">Lacuna Crítica: <strong>Física — Cinemática</strong></p>
+            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+              <div class="bg-amber-500 h-full rounded-full" style="width: 74%;"></div>
+            </div>
+          </div>
+
+          <!-- TURMA ITEM 4 -->
+          <div class="p-3.5 bg-white border border-slate-200 rounded-xl space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-slate-900">3º Ano EM (Pre-Vestibular)</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-extrabold text-[10px]">Excelente (Score 94)</span>
+            </div>
+            <p class="text-[11px] text-slate-500">Alto ritmo nos simulados com IA.</p>
+            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+              <div class="bg-emerald-500 h-full rounded-full" style="width: 94%;"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <button class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition">
+          Ver Mapeamento Geral de Turmas
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- INTERVENTION MODAL -->
+  <div id="intervention-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card bg-white max-w-xl w-full rounded-2xl p-6 shadow-2xl border border-slate-200 space-y-5 animate-in fade-in zoom-in duration-150">
+      
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-sm">IA</span>
+          <h3 class="text-base font-bold text-slate-900">Plano de Intervenção Preventiva</h3>
+        </div>
+        <button onclick="closeInterventionModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+      </div>
+
+      <div class="space-y-3">
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
+          <div>
+            <div id="modal-student-name" class="font-extrabold text-slate-900 text-sm">Gabriel Souza Lima</div>
+            <div id="modal-student-class" class="text-slate-500">8º Ano B — Ensino Fundamental II</div>
+          </div>
+          <div id="modal-risk-badge" class="px-2.5 py-1 rounded-full badge-critical font-bold text-[11px]">
+            Score de Risco: 92/100
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-bold text-slate-700">Diagnóstico de Causa Raiz (IA Pedagógica):</label>
+          <p id="modal-student-diag" class="text-xs text-slate-600 bg-rose-50/60 p-3 rounded-lg border border-rose-100 mt-1">
+            Lacuna acumulada em Frações e Álgebra Básica gerando notas baixas no 2º trimestre.
+          </p>
+        </div>
+
+        <div>
+          <label class="text-xs font-bold text-slate-700">Minuta de Mensagem Sugerida para a Família (WhatsApp/App Escola):</label>
+          <textarea id="modal-msg" rows="3" class="w-full text-xs p-3 border border-slate-200 rounded-lg mt-1 outline-none focus:ring-2 focus:ring-rose-500">Olá! Identificamos que o Gabriel está com algumas dúvidas em tópicos de Matemática. Elaboramos um plano de reforço personalizado com auxílio do tutor IA da escola para ajudá-lo antes da próxima avaliação.</textarea>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+        <button onclick="closeInterventionModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-lg">Cancelar</button>
+        <button onclick="triggerAction()" class="px-4 py-2 text-xs font-bold text-white bg-rose-700 hover:bg-rose-800 rounded-lg shadow-sm">Notificar Família & Iniciar Reforço</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function filterStudents() {
+      const query = document.getElementById('search-student').value.toLowerCase();
+      const rows = document.querySelectorAll('#student-table-body tr');
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+      });
+    }
+
+    function openInterventionModal(name, studentClass, diag, risk) {
+      document.getElementById('modal-student-name').innerText = name;
+      document.getElementById('modal-student-class').innerText = studentClass;
+      document.getElementById('modal-student-diag').innerText = diag;
+      document.getElementById('modal-risk-badge').innerText = 'Score de Risco: ' + risk + '/100';
+      document.getElementById('intervention-modal').classList.remove('hidden');
+    }
+
+    function closeInterventionModal() {
+      document.getElementById('intervention-modal').classList.add('hidden');
+    }
+
+    function triggerAction() {
+      alert('Ação registrada com sucesso! A família foi notificada via aplicativo e o plano de reforço foi ativado para o aluno.');
+      closeInterventionModal();
+    }
+  </script>
+</body>
+</html>

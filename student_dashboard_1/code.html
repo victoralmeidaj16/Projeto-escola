@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+  <script>
+    if (localStorage.getItem("theme") === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  </script>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Painel - School Intelligence OS</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&amp;family=Lexend:wght@300;400;500;600&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-bright": "#fbf9f8",
+            "on-tertiary-fixed": "#3f0019",
+            "primary-fixed-dim": "#ffb2bf",
+            "secondary-fixed": "#ffdad7",
+            "on-secondary-container": "#fffbff",
+            "primary-container": "#df005d",
+            "inverse-primary": "#ffb2bf",
+            "on-error": "#ffffff",
+            "surface-container-low": "#f6f3f2",
+            "primary": "#b10048",
+            "outline": "#906f73",
+            "background": "#fbf9f8",
+            "surface-tint": "#bc004d",
+            "surface-container-high": "#eae8e7",
+            "surface-variant": "#e4e2e1",
+            "on-surface": "#1b1c1c",
+            "surface-dim": "#dcd9d9",
+            "primary-fixed": "#ffd9de",
+            "on-tertiary": "#ffffff",
+            "tertiary-fixed": "#ffd9e0",
+            "tertiary": "#ad1054",
+            "on-primary-container": "#fff4f4",
+            "on-background": "#1b1c1c",
+            "on-secondary": "#ffffff",
+            "error": "#ba1a1a",
+            "tertiary-fixed-dim": "#ffb1c3",
+            "on-primary-fixed": "#3f0015",
+            "on-primary": "#ffffff",
+            "secondary-container": "#e02830",
+            "on-tertiary-container": "#fff5f5",
+            "on-surface-variant": "#5c3f44",
+            "on-secondary-fixed": "#410004",
+            "surface-container-lowest": "#ffffff",
+            "secondary": "#bb001b",
+            "on-tertiary-fixed-variant": "#8f0042",
+            "inverse-on-surface": "#f3f0f0",
+            "tertiary-container": "#cf316c",
+            "on-secondary-fixed-variant": "#930013",
+            "secondary-fixed-dim": "#ffb3ad",
+            "outline-variant": "#e4bdc2",
+            "surface-container": "#f0eded",
+            "surface-container-highest": "#e4e2e1",
+            "inverse-surface": "#303030",
+            "surface": "#fbf9f8",
+            "error-container": "#ffdad6",
+            "on-primary-fixed-variant": "#900039",
+            "on-error-container": "#93000a"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {},
+          "fontFamily": {
+            "headline": [
+              "Plus Jakarta Sans"
+            ],
+            "body": [
+              "Lexend"
+            ],
+            "label": [
+              "Plus Jakarta Sans"
+            ]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+
+<body
+  class="bg-surface text-on-surface font-body antialiased min-h-screen selection:bg-primary-container selection:text-on-primary-container relative overflow-x-hidden">
+
+<!-- Mobile Navigation Header -->
+<header id="mobile-navigation-bar" class="md:hidden sticky top-0 z-50 flex items-center justify-between px-5 py-3.5 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/50 dark:border-zinc-800/50">
+  <div class="flex items-center gap-3">
+    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white font-bold shadow-sm">
+      <span class="material-symbols-outlined text-lg">auto_awesome</span>
+    </div>
+    <div>
+      <h1 class="text-sm font-bold text-primary font-headline tracking-tight">School Intelligence OS</h1>
+      <p class="text-[9px] text-on-surface-variant font-medium">EdTech Suite</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <button id="mobile-theme-toggle" class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors" aria-label="Alternar tema">
+      <span class="material-symbols-outlined text-xl">dark_mode</span>
+    </button>
+    <button id="mobile-menu-toggle" class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors" aria-label="Abrir menu">
+      <span class="material-symbols-outlined text-2xl">menu</span>
+    </button>
+  </div>
+</header>
+<div id="sidebar-backdrop" class="fixed inset-0 bg-black/40 z-[9990] hidden opacity-0 transition-opacity duration-300"></div>
+
+
+  <!-- Decorative Background Elements -->
+  <div
+    class="fixed top-[-10%] left-[-5%] w-[40%] h-[40%] bg-surface-container-low rounded-full blur-3xl opacity-50 z-0 rotate-12 pointer-events-none">
+  </div>
+  <div
+    class="fixed bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-surface-container-low rounded-full blur-3xl opacity-50 z-0 -rotate-6 pointer-events-none">
+  </div>
+  <!-- TopAppBar -->
+
+  <header
+    class="app-main-offset flex justify-between items-center sticky top-0 z-40 ml-72 w-[calc(100%-18rem)] w-full h-20 px-12 backdrop-blur-md bg-white/70 dark:bg-zinc-950/70 border-none shadow-none font-['Lexend'] text-sm font-medium">
+    <div class="hidden text-primary font-headline text-xl font-bold tracking-tight">School Intelligence OS</div>
+    <!-- Search Bar -->
+    <div class="flex-grow max-w-md relative group">
+      <span
+        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
+      <input
+        class="w-full bg-surface-container-lowest text-on-surface placeholder:text-on-surface-variant/60 rounded-full py-3 pl-12 pr-6 border border-outline-variant/30 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 focus:bg-surface-bright transition-all outline-none font-body"
+        placeholder="Buscar cursos, biblioteca..." type="text" />
+    </div>
+    <!-- Trailing Actions -->
+    <div class="flex items-center gap-2 ml-4">
+      <button id="theme-toggle"
+        class="p-3 text-on-surface-variant hover:bg-surface-variant/50 hover:text-on-surface rounded-full transition-colors"
+        aria-label="Alternar tema">
+        <span class="material-symbols-outlined" id="theme-toggle-icon">dark_mode</span>
+      </button>
+      <button
+        class="p-3 text-on-surface-variant hover:bg-surface-variant/50 hover:text-on-surface rounded-full transition-colors relative">
+        <span class="material-symbols-outlined">notifications</span>
+        <span
+          class="absolute top-2 right-2 w-2 h-2 bg-secondary-container rounded-full border border-surface-bright"></span>
+      </button>
+      <button
+        class="p-3 text-on-surface-variant hover:bg-surface-variant/50 hover:text-on-surface rounded-full transition-colors">
+        <span class="material-symbols-outlined">help_outline</span>
+      </button>
+      <button
+        class="ml-2 w-10 h-10 rounded-full overflow-hidden hover:scale-105 transition-transform border border-outline-variant/30">
+        <img alt="Avatar do Usuário" class="w-full h-full object-cover"
+          data-alt="Retrato de um estudante jovem sorridente com cabelo curto escuro em luz natural"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSw7CGjdZTW36EW7Z-RlyC2eV542E6FIrHviGFmdH6ajiJ-dsH3HIEWTLTSw_deK4b5ZzjI--BUhMY2w2gUzxGyK45hxYGAJiwZYRxNs1E9zj5uPjw6giK7oCA0FzW5wZe9Mb-OBj1GdQruOFtajuKNlHpXBmduJ2Rd6Bt8iy8ALHAz110HR4HpLegKoJ-CDHUgNErIvyfgl3qvS5hKzMdCLCjgxhpnEmlBP_HLoMa09_CLsfatnCD8r89okvYHyE9DlpWefoaibs" />
+      </button>
+    </div>
+  </header>
+  <!-- Main Content Area -->
+  <!-- Standard Side Navigation (Web) -->
+  <nav id="standard-sidebar"
+    class="standard-sidebar hidden md:flex fixed left-0 top-0 w-64 h-full flex-col py-8 bg-zinc-50 dark:bg-zinc-900 rounded-r-[3rem] overflow-hidden z-40">
+    <div class="px-8 mb-12 flex items-center gap-4">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white font-bold shadow-md">
+        <span class="material-symbols-outlined text-xl">auto_awesome</span>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold text-primary font-headline tracking-tight">School Intelligence OS</h1>
+        <p class="text-xs text-on-surface-variant font-medium">EdTech Suite</p>
+      </div>
+    </div>
+    <div class="flex flex-col gap-2 flex-grow px-4 font-['Lexend'] font-medium overflow-y-auto scrollbar-hide">
+      <a data-nav-target="student_dashboard_1/code.html"
+        class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2"
+        href="../student_dashboard_1/code.html">
+        <span class="material-symbols-outlined text-xl">dashboard</span>
+        <span>Painel</span>
+      </a>
+      <a data-nav-target="gerador_projetos/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../gerador_projetos/code.html">
+      <span class="material-symbols-outlined text-xl">account_tree</span><span>Projeto BNCC Integrado</span>
+    </a>
+      <a data-nav-target="chat/code.html"
+        class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2"
+        href="../chat/code.html">
+        <span class="material-symbols-outlined text-xl">psychology</span>
+        <span>Chat IA</span>
+      </a>
+      <a data-nav-target="criador_posts/code.html"
+        class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2"
+        href="../criador_posts/code.html">
+        <span class="material-symbols-outlined text-xl">campaign</span>
+        <span>Criador de Posts</span>
+      </a>
+      <a data-nav-target="pareceres_relatorios/code.html"
+        class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2"
+        href="../pareceres_relatorios/code.html">
+        <span class="material-symbols-outlined text-xl">assignment</span>
+        <span>Pareceres</span>
+      </a>
+      <a data-nav-target="comunicados_familia/code.html"
+        class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2"
+        href="../comunicados_familia/code.html">
+        <span class="material-symbols-outlined text-xl">forum</span>
+        <span>Comunicados</span>
+      </a>
+      <a data-nav-target="turma_alfabetizacao/code.html"
+        class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2"
+        href="../turma_alfabetizacao/code.html">
+        <span class="material-symbols-outlined text-xl">groups</span>
+        <span>Turma</span>
+      </a>
+      
+      <a data-nav-target="resource_library/code.html"
+        class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2"
+        href="../resource_library/code.html">
+        <span class="material-symbols-outlined text-xl">book_4</span>
+        <span>Coleções</span>
+      </a>
+      
+      
+      
+    </div>
+    <div class="px-6 mt-auto">
+      <div
+        class="p-6 rounded-3xl bg-gradient-to-br from-tertiary-fixed to-primary-fixed relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+        <div
+          class="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500">
+        </div>
+        <h3 class="font-headline font-bold text-on-surface mb-2 relative z-10">Vá Mais Longe</h3>
+        <p class="text-sm text-on-surface-variant mb-4 relative z-10 font-body">Desbloqueie todos os recursos premium.
+        </p>
+        <button
+          class="w-full py-3 px-4 bg-primary text-white rounded-full font-semibold text-sm hover:bg-primary-container transition-colors shadow-lg shadow-primary/20 relative z-10">
+          Atualizar para Pro
+        </button>
+      </div>
+    </div>
+  </nav>
+  <button id="standard-sidebar-toggle" aria-label="Esconder menu lateral" aria-expanded="true"
+    class="standard-sidebar-toggle hidden md:flex fixed left-[15.25rem] top-24 z-50 h-8 w-8 items-center justify-center rounded-full bg-white/80 text-zinc-500 shadow-sm border border-zinc-200 hover:bg-white hover:text-primary hover:opacity-100 active:scale-95 transition-all">
+    <span class="material-symbols-outlined text-[18px] standard-sidebar-toggle-icon">chevron_left</span>
+  </button>
+  <main class="app-main-offset ml-72 p-12 relative z-10 flex flex-col gap-16 pb-32">
+    <!-- Big Hero Section -->
+    <section
+      class="relative w-full rounded-[2.5rem] md:rounded-[3rem] overflow-hidden shadow-xl shadow-primary-container/10 group bg-cover bg-center"
+      style="background-image: url('hero_bg.png');">
+      <!-- Dark overlay to ensure text readability -->
+      <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-transparent z-0"></div>
+
+      <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 md:p-12 text-white">
+        <!-- Left column: Welcome & Intro -->
+        <div class="lg:col-span-7 flex flex-col items-start gap-4">
+          <div
+            class="inline-flex items-center gap-1.5 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold tracking-wide text-pink-100 border border-white/10">
+            <span class="material-symbols-outlined text-xs">auto_awesome</span>
+            <span>Espaço Criativo do Professor</span>
+          </div>
+          <h2 class="font-headline text-4xl md:text-[3.25rem] font-black tracking-tight leading-tight">
+            Bem-vindo de volta, <br class="hidden md:inline" /><span class="text-pink-200">Victor!</span>
+          </h2>
+          <p class="font-body text-sm md:text-base text-pink-100 max-w-xl leading-relaxed mt-2 opacity-95">
+            Pronto para transformar suas aulas hoje? Acesse as ferramentas de IA desenvolvidas especialmente para
+            otimizar a rotina pedagógica de professoras.
+          </p>
+
+          <!-- Hero Actions -->
+          <div class="flex flex-wrap gap-3 mt-4">
+            <a href="../gerador_projetos/code.html"
+              class="inline-flex items-center gap-2 bg-white text-[#b10048] hover:bg-pink-50 transition-all font-semibold px-6 py-3 rounded-full shadow-md text-sm hover:scale-[1.03] active:scale-95 duration-200">
+              <span class="material-symbols-outlined text-sm font-bold">edit_calendar</span>
+              <span>Criar Projeto Integrado</span>
+            </a>
+            <a href="../chat/code.html"
+              class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 transition-all font-semibold px-6 py-3 rounded-full text-sm hover:scale-[1.03] active:scale-95 duration-200">
+              <span class="material-symbols-outlined text-sm">psychology</span>
+              <span>Perguntar à IA</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right column: Stats Grid / Quick Info -->
+        <div class="lg:col-span-5 flex flex-col md:flex-row lg:flex-col gap-4 w-full">
+          <!-- Quick Stats Card 1 -->
+          <div
+            class="flex-grow bg-white/10 backdrop-blur-md border border-white/10 rounded-[2rem] p-6 hover:bg-white/15 transition-all">
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-bold text-pink-200 uppercase tracking-wider">Status da Conta</span>
+              <span
+                class="px-2.5 py-0.5 bg-pink-100/20 text-pink-100 text-[10px] font-bold rounded-full uppercase tracking-wider">PRO</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center">
+                <span class="material-symbols-outlined text-2xl text-pink-100">workspace_premium</span>
+              </div>
+              <div>
+                <h4 class="font-headline font-bold text-lg text-white">Acesso Premium Ativo</h4>
+                <p class="text-xs text-pink-200">Renovação em Março de 2027</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Stats Card 2 -->
+          <div
+            class="flex-grow bg-white/10 backdrop-blur-md border border-white/10 rounded-[2rem] p-6 hover:bg-white/15 transition-all">
+            <div class="grid grid-cols-3 gap-2 divide-x divide-white/10 text-center">
+              <div>
+                <span class="block text-2xl font-black text-white">42</span>
+                <span class="text-[10px] text-pink-200 font-semibold uppercase">Aulas BNCC</span>
+              </div>
+              <div>
+                <span class="block text-2xl font-black text-white">18</span>
+                <span class="text-[10px] text-pink-200 font-semibold uppercase">Atividades</span>
+              </div>
+              <div>
+                <span class="block text-2xl font-black text-white">85%</span>
+                <span class="text-[10px] text-pink-200 font-semibold uppercase">Eficiência</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Dynamic Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Left Column (Wider for Courses) -->
+      <div class="lg:col-span-2 flex flex-col gap-8">
+        <!-- Progresso do Curso Bento Grid -->
+        <section>
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="font-headline text-2xl font-bold text-on-surface">Vídeo-Aulas em Andamento</h3>
+            <button
+              class="text-primary font-label font-bold text-sm hover:underline underline-offset-4 decoration-2">Ver
+              todas</button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Card 1 (Video Lesson) -->
+            <div
+              class="bg-surface-container-lowest dark:bg-zinc-900 border border-outline-variant/10 rounded-[2.5rem] p-6 flex flex-col justify-between min-h-[360px] relative overflow-hidden group hover:shadow-md transition-all duration-300">
+              <div class="relative w-full aspect-video rounded-2xl overflow-hidden mb-4 z-10">
+                <img src="thumbnail_aula1.png" alt="Planejamento Criativo com IA"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <span
+                  class="absolute bottom-2 right-2 bg-black/75 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded">12:45</span>
+                <div
+                  class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div
+                    class="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                    <span class="material-symbols-outlined text-2xl font-bold"
+                      style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col gap-2 relative z-10 mb-4">
+                <div class="flex justify-between items-center">
+                  <span
+                    class="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed dark:bg-zinc-800 dark:text-zinc-300 font-label text-xs font-bold rounded-full">Vídeo-Aula</span>
+                  <span class="text-xs text-on-surface-variant font-medium">Módulo 1</span>
+                </div>
+                <h4 class="font-headline text-lg font-bold text-on-surface line-clamp-1">Planejamento Criativo com IA
+                </h4>
+                <p class="text-on-surface-variant text-xs font-body line-clamp-2 leading-relaxed">Aprenda a estruturar
+                  planos de aula alinhados à BNCC usando a inteligência artificial do School Intelligence OS.</p>
+              </div>
+              <div class="mt-auto relative z-10 flex flex-col gap-3">
+                <div>
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="text-[11px] font-bold text-on-surface">65% Concluído</span>
+                  </div>
+                  <div class="w-full bg-surface-container dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
+                    <div class="bg-gradient-to-r from-primary to-primary-container w-[65%] h-full rounded-full"></div>
+                  </div>
+                </div>
+                <button
+                  class="w-full bg-gradient-to-br from-primary to-primary-container text-white font-label font-bold py-2.5 px-6 rounded-full hover:scale-[1.02] active:scale-95 transition-transform flex items-center justify-center gap-2 text-sm shadow-[0_4px_15px_rgba(177,0,72,0.15)]">
+                  <span class="material-symbols-outlined text-sm">play_circle</span>
+                  <span>Assistir Aula</span>
+                </button>
+              </div>
+            </div>
+            <!-- Card 2 (Video Lesson) -->
+            <div
+              class="bg-surface-container-lowest dark:bg-zinc-900 border border-outline-variant/10 rounded-[2.5rem] p-6 flex flex-col justify-between min-h-[360px] relative overflow-hidden group hover:shadow-md transition-all duration-300">
+              <div class="relative w-full aspect-video rounded-2xl overflow-hidden mb-4 z-10">
+                <img src="thumbnail_aula2.png" alt="Dominando o Chat IA"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <span
+                  class="absolute bottom-2 right-2 bg-black/75 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded">15:42</span>
+                <div
+                  class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div
+                    class="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                    <span class="material-symbols-outlined text-2xl font-bold"
+                      style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col gap-2 relative z-10 mb-4">
+                <div class="flex justify-between items-center">
+                  <span
+                    class="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed dark:bg-zinc-800 dark:text-zinc-300 font-label text-xs font-bold rounded-full">Vídeo-Aula</span>
+                  <span class="text-xs text-on-surface-variant font-medium">Módulo 2</span>
+                </div>
+                <h4 class="font-headline text-lg font-bold text-on-surface line-clamp-1">Dominando o Chat IA</h4>
+                <p class="text-on-surface-variant text-xs font-body line-clamp-2 leading-relaxed">Entenda como utilizar
+                  o assistente de IA para responder dúvidas sobre a BNCC e calibrar suas sequências didáticas.</p>
+              </div>
+              <div class="mt-auto relative z-10 flex flex-col gap-3">
+                <div>
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="text-[11px] font-bold text-on-surface">92% Concluído</span>
+                  </div>
+                  <div class="w-full bg-surface-container dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
+                    <div class="bg-gradient-to-r from-primary to-primary-container w-[92%] h-full rounded-full"></div>
+                  </div>
+                </div>
+                <button
+                  class="w-full bg-gradient-to-br from-primary to-primary-container text-white font-label font-bold py-2.5 px-6 rounded-full hover:scale-[1.02] active:scale-95 transition-transform flex items-center justify-center gap-2 text-sm shadow-[0_4px_15px_rgba(177,0,72,0.15)]">
+                  <span class="material-symbols-outlined text-sm">play_circle</span>
+                  <span>Continuar Assistindo</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <!-- Right Column -->
+      <div class="flex flex-col gap-8">
+        <!-- Materials for Download (Asymmetric Card) -->
+        <section
+          class="bg-surface-container-lowest dark:bg-zinc-900 border border-outline-variant/10 rounded-[3rem] p-8 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.03)] relative overflow-visible">
+          <!-- Playful Overlapping Element -->
+          <div
+            class="absolute -top-6 -right-6 w-16 h-16 bg-tertiary text-on-tertiary rounded-full flex items-center justify-center shadow-lg rotate-12 z-20">
+            <span class="material-symbols-outlined text-3xl">download</span>
+          </div>
+          <h3 class="font-headline text-xl font-bold text-on-surface mb-6 relative z-10">Materiais para Download</h3>
+          <div class="flex flex-col gap-4 relative z-10">
+            <!-- Material Item -->
+            <div
+              class="flex gap-4 items-start p-4 bg-surface-container-low dark:bg-zinc-800/50 rounded-2xl border border-outline-variant/20 hover:bg-surface-container transition-colors group justify-between items-center">
+              <div class="flex gap-4 items-center">
+                <div
+                  class="w-12 h-12 rounded-full bg-primary-fixed dark:bg-pink-950/50 flex items-center justify-center text-on-primary-fixed dark:text-pink-300 flex-shrink-0 group-hover:scale-110 transition-transform">
+                  <span class="material-symbols-outlined text-2xl font-medium">picture_as_pdf</span>
+                </div>
+                <div>
+                  <h4 class="font-label font-bold text-on-surface text-sm">Planner Semanal BNCC</h4>
+                  <p class="text-xs text-on-surface-variant font-medium">PDF • 2.4 MB</p>
+                </div>
+              </div>
+              <a href="#"
+                class="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors flex items-center justify-center"
+                aria-label="Baixar Planner Semanal BNCC">
+                <span class="material-symbols-outlined text-xl">download_for_offline</span>
+              </a>
+            </div>
+            <!-- Material Item -->
+            <div
+              class="flex gap-4 items-start p-4 bg-surface-container-low dark:bg-zinc-800/50 rounded-2xl border border-outline-variant/20 hover:bg-surface-container transition-colors group justify-between items-center">
+              <div class="flex gap-4 items-center">
+                <div
+                  class="w-12 h-12 rounded-full bg-tertiary-fixed dark:bg-purple-950/50 flex items-center justify-center text-on-tertiary-fixed dark:text-purple-300 flex-shrink-0 group-hover:scale-110 transition-transform">
+                  <span class="material-symbols-outlined text-2xl font-medium">menu_book</span>
+                </div>
+                <div>
+                  <h4 class="font-label font-bold text-on-surface text-sm">Ebook: 50 Metodologias Ativas</h4>
+                  <p class="text-xs text-on-surface-variant font-medium">EPUB • 4.8 MB</p>
+                </div>
+              </div>
+              <a href="#"
+                class="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors flex items-center justify-center"
+                aria-label="Baixar Ebook">
+                <span class="material-symbols-outlined text-xl">download_for_offline</span>
+              </a>
+            </div>
+          </div>
+          
+        </section>
+        <section class="bg-surface-container-low rounded-[3rem] p-8 relative">
+          <h3 class="font-headline text-xl font-bold text-on-surface mb-6">Medalhas Recentes</h3>
+          <div class="flex flex-wrap gap-4">
+            <!-- Badge 1 -->
+            <div class="group relative">
+              <div
+                class="w-16 h-16 rounded-full bg-surface-container-lowest shadow-sm flex items-center justify-center border-2 border-primary/20 hover:border-primary transition-colors cursor-pointer hover:-translate-y-1">
+                <span class="material-symbols-outlined text-3xl text-primary"
+                  style="font-variation-settings: 'FILL' 1;">star</span>
+              </div>
+              <!-- Tooltip -->
+              <div
+                class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-[120px] bg-inverse-surface text-inverse-on-surface text-xs text-center p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 font-body">
+                Primeira Obra-prima
+              </div>
+            </div>
+            <!-- Badge 2 -->
+            <div class="group relative">
+              <div
+                class="w-16 h-16 rounded-full bg-surface-container-lowest shadow-sm flex items-center justify-center border-2 border-tertiary/20 hover:border-tertiary transition-colors cursor-pointer hover:-translate-y-1">
+                <span class="material-symbols-outlined text-3xl text-tertiary"
+                  style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+              </div>
+              <div
+                class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-[120px] bg-inverse-surface text-inverse-on-surface text-xs text-center p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 font-body">
+                Pontuação Perfeita
+              </div>
+            </div>
+            <!-- Badge 3 (Locked) -->
+            <div class="group relative">
+              <div
+                class="w-16 h-16 rounded-full bg-surface-variant shadow-none flex items-center justify-center border-2 border-transparent border-dashed cursor-not-allowed opacity-60">
+                <span class="material-symbols-outlined text-3xl text-on-surface-variant">lock</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <style>
+  /* Mobile Responsive Overrides */
+  @media (max-width: 767px) {
+    main.app-main-offset,
+    .app-main-offset {
+      margin-left: 0 !important;
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+      padding-top: 1.5rem !important;
+      width: 100% !important;
+    }
+    
+    header.app-main-offset {
+      display: none !important; /* Hide desktop header on mobile */
+    }
+    
+    /* Force grids to single column on mobile */
+    .grid:not(.grid-cols-3):not(.grid-cols-4):not(.flex) {
+      grid-template-columns: 1fr !important;
+    }
+    
+    /* Make sure form layout works on mobile */
+    #project-form, #planner-form, form {
+      padding: 1.25rem !important;
+      border-radius: 1.5rem !important;
+    }
+    
+    /* Sidebar as mobile drawer */
+    .standard-sidebar {
+      display: flex !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      height: 100vh !important;
+      width: 280px !important;
+      transform: translateX(-100%) !important;
+      transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+      z-index: 9999 !important;
+      box-shadow: 20px 0 50px rgba(0, 0, 0, 0.15) !important;
+      border-radius: 0 2rem 2rem 0 !important;
+    }
+    
+    .standard-sidebar.mobile-open {
+      transform: translateX(0) !important;
+    }
+    
+    /* Hide standard desktop toggle button on mobile */
+    #standard-sidebar-toggle,
+    .standard-sidebar-toggle {
+      display: none !important;
+    }
+    
+    /* Prevent iOS auto-zoom on form inputs */
+    .input-field, select, textarea, input {
+      font-size: 16px !important;
+    }
+  }
+
+    @keyframes shimmer {
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    .standard-sidebar,
+    .standard-sidebar-toggle,
+    .app-main-offset {
+      transition: margin-left 260ms ease, transform 260ms ease, left 260ms ease, width 260ms ease, opacity 160ms ease;
+    }
+
+    .standard-nav-link.active {
+      background: #ffffff;
+      color: #b10048;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+
+    .standard-nav-link.active .material-symbols-outlined {
+      font-variation-settings: 'FILL' 1;
+    }
+
+    @media (min-width: 768px) {
+      .app-main-offset {
+        margin-left: 16rem !important;
+        width: calc(100% - 16rem) !important;
+      }
+
+      body.sidebar-collapsed .standard-sidebar {
+        transform: translateX(-100%);
+      }
+
+      body.sidebar-collapsed .app-main-offset {
+        margin-left: 0 !important;
+        width: 100% !important;
+      }
+
+      body.sidebar-collapsed .standard-sidebar-toggle {
+        left: 0.75rem;
+        opacity: 0.55;
+      }
+
+      body.sidebar-collapsed .standard-sidebar-toggle-icon {
+        transform: rotate(180deg);
+      }
+    }
+
+    .standard-sidebar-toggle-icon {
+      transition: transform 260ms ease;
+    }
+
+    body {
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    body.page-ready {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    body.page-leaving {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      body,
+      body.page-ready,
+      body.page-leaving {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
+
+    /* ── Theme Dark Mode Custom Colors Overrides ── */
+    html.dark body {
+      background-color: #0c0d0e !important;
+      color: #f4f4f5 !important;
+    }
+
+    html.dark header {
+      background-color: rgba(12, 13, 14, 0.7) !important;
+      border-color: rgba(63, 63, 70, 0.3) !important;
+    }
+
+    html.dark .bg-surface-container-lowest,
+    html.dark .bg-white {
+      background-color: #18181b !important;
+      color: #f4f4f5 !important;
+    }
+
+    html.dark .bg-surface-container-low,
+    html.dark .bg-zinc-50 {
+      background-color: #131314 !important;
+    }
+
+    html.dark .text-on-surface {
+      color: #f4f4f5 !important;
+    }
+
+    html.dark .text-on-surface-variant {
+      color: #a1a1aa !important;
+    }
+
+    html.dark .border-outline-variant/20,
+    html.dark .border-outline-variant/30 {
+      border-color: rgba(63, 63, 70, 0.4) !important;
+    }
+
+    html.dark .bg-surface-container {
+      background-color: #27272a !important;
+    }
+
+    html.dark .bg-surface-container-highest {
+      background-color: #3f3f46 !important;
+    }
+
+    html.dark .bg-surface-variant {
+      background-color: #27272a !important;
+    }
+
+    html.dark .standard-nav-link:hover {
+      background-color: #27272a !important;
+      color: #ffffff !important;
+    }
+
+    html.dark .standard-nav-link.active {
+      background-color: #ffffff !important;
+      color: #b10048 !important;
+    }
+
+    html.dark input {
+      background-color: #1c1c1e !important;
+      color: #ffffff !important;
+      border-color: rgba(63, 63, 70, 0.5) !important;
+    }
+
+    html.dark #standard-sidebar-toggle {
+      background-color: rgba(39, 39, 42, 0.8) !important;
+      border-color: #3f3f46 !important;
+      color: #a1a1aa !important;
+    }
+
+    html.dark .divider {
+      border-color: rgba(63, 63, 70, 0.3) !important;
+    }
+  </style>
+
+  <script>
+    const standardSidebarToggle = document.getElementById('standard-sidebar-toggle');
+    standardSidebarToggle?.addEventListener('click', () => {
+      const collapsed = document.body.classList.toggle('sidebar-collapsed');
+      standardSidebarToggle.setAttribute('aria-expanded', String(!collapsed));
+      standardSidebarToggle.setAttribute('aria-label', collapsed ? 'Mostrar menu lateral' : 'Esconder menu lateral');
+    });
+
+    const currentPath = decodeURIComponent(window.location.pathname).replace(/\\/g, '/');
+    document.querySelectorAll('[data-nav-target]').forEach((link) => {
+      if (currentPath.endsWith(link.getAttribute('data-nav-target'))) {
+        link.classList.add('active');
+      }
+    });
+
+    // Theme Toggle script
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleIcon = document.getElementById('theme-toggle-icon');
+
+    function updateThemeUI() {
+      const isDark = document.documentElement.classList.contains('dark');
+      if (themeToggleIcon) {
+        themeToggleIcon.textContent = isDark ? 'light_mode' : 'dark_mode';
+      }
+    }
+
+    updateThemeUI();
+
+    themeToggle?.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      updateThemeUI();
+    });
+  </script>
+
+
+  <script>
+    window.addEventListener('pageshow', () => {
+      document.body.classList.remove('page-leaving');
+      requestAnimationFrame(() => document.body.classList.add('page-ready'));
+    });
+
+    document.addEventListener('click', (event) => {
+      const link = event.target.closest('a[href]');
+      if (!link) return;
+
+      const href = link.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto:') || link.target === '_blank') return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      event.preventDefault();
+      document.body.classList.add('page-leaving');
+      setTimeout(() => {
+        window.location.href = link.href;
+      }, 160);
+    });
+  </script>
+
+
+
+<script id="mobile-responsive-script">
+  (function() {
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+    const sidebar = document.getElementById('standard-sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    
+    if (mobileMenuToggle && sidebar && backdrop) {
+      function openMobileMenu() {
+        sidebar.classList.add('mobile-open');
+        backdrop.classList.remove('hidden');
+        setTimeout(() => {
+          backdrop.classList.add('opacity-100');
+        }, 10);
+      }
+      
+      function closeMobileMenu() {
+        sidebar.classList.remove('mobile-open');
+        backdrop.classList.remove('opacity-100');
+        setTimeout(() => {
+          backdrop.classList.add('hidden');
+        }, 300);
+      }
+      
+      mobileMenuToggle.addEventListener('click', openMobileMenu);
+      backdrop.addEventListener('click', closeMobileMenu);
+      
+      sidebar.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+      });
+    }
+
+    if (mobileThemeToggle) {
+      function updateMobileThemeIcon() {
+        const isDark = document.documentElement.classList.contains('dark');
+        const icon = mobileThemeToggle.querySelector('.material-symbols-outlined');
+        if (icon) {
+          icon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        }
+      }
+      
+      updateMobileThemeIcon();
+      
+      mobileThemeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateMobileThemeIcon();
+        
+        const standardIcon = document.getElementById('theme-toggle-icon');
+        if (standardIcon) {
+          standardIcon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        }
+      });
+      
+      const standardToggle = document.getElementById('theme-toggle');
+      if (standardToggle) {
+        standardToggle.addEventListener('click', () => {
+          setTimeout(updateMobileThemeIcon, 50);
+        });
+      }
+    }
+  })();
+</script>
+
+</body>
+
+</html>

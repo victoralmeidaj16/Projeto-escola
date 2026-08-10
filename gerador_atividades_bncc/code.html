@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gerador de Atividades BNCC</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="../creative_pedagogy/design-system.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&amp;family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="../config.js"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "surface-bright": "#fbf9f8",
+          "on-tertiary-fixed": "#3f0019",
+          "primary-fixed-dim": "#ffb2bf",
+          "secondary-fixed": "#ffdad7",
+          "on-secondary-container": "#fffbff",
+          "primary-container": "#df005d",
+          "inverse-primary": "#ffb2bf",
+          "on-error": "#ffffff",
+          "surface-container-low": "#f6f3f2",
+          "primary": "#b10048",
+          "outline": "#906f73",
+          "background": "#fbf9f8",
+          "surface-tint": "#bc004d",
+          "surface-container-high": "#eae8e7",
+          "surface-variant": "#e4e2e1",
+          "on-surface": "#1b1c1c",
+          "surface-dim": "#dcd9d9",
+          "primary-fixed": "#ffd9de",
+          "on-tertiary": "#ffffff",
+          "tertiary-fixed": "#ffd9e0",
+          "tertiary": "#ad1054",
+          "on-primary-container": "#fff4f4",
+          "on-background": "#1b1c1c",
+          "on-secondary": "#ffffff",
+          "error": "#ba1a1a",
+          "tertiary-fixed-dim": "#ffb1c3",
+          "on-primary-fixed": "#3f0015",
+          "on-primary": "#ffffff",
+          "secondary-container": "#e02830",
+          "on-tertiary-container": "#fff5f5",
+          "on-surface-variant": "#5c3f44",
+          "on-secondary-fixed": "#410004",
+          "surface-container-lowest": "#ffffff",
+          "secondary": "#bb001b",
+          "on-tertiary-fixed-variant": "#8f0042",
+          "inverse-on-surface": "#f3f0f0",
+          "tertiary-container": "#cf316c",
+          "on-secondary-fixed-variant": "#930013",
+          "secondary-fixed-dim": "#ffb3ad",
+          "outline-variant": "#e4bdc2",
+          "surface-container": "#f0eded",
+          "surface-container-highest": "#e4e2e1",
+          "inverse-surface": "#303030",
+          "surface": "#fbf9f8",
+          "error-container": "#ffdad6",
+          "on-primary-fixed-variant": "#900039",
+          "on-error-container": "#93000a"
+        },
+        borderRadius: {
+          DEFAULT: "1rem",
+          lg: "2rem",
+          xl: "3rem",
+          full: "9999px"
+        },
+        fontFamily: {
+          headline: ["Plus Jakarta Sans"],
+          body: ["Lexend"],
+          label: ["Plus Jakarta Sans"],
+          display: ["Plus Jakarta Sans"]
+        }
+      }
+    }
+  };
+</script>
+<style>
+  /* Mobile Responsive Overrides */
+  @media (max-width: 767px) {
+    main.app-main-offset,
+    .app-main-offset {
+      margin-left: 0 !important;
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+      padding-top: 1.5rem !important;
+      width: 100% !important;
+    }
+    
+    header.app-main-offset {
+      display: none !important; /* Hide desktop header on mobile */
+    }
+    
+    /* Force grids to single column on mobile */
+    .grid:not(.grid-cols-3):not(.grid-cols-4):not(.flex) {
+      grid-template-columns: 1fr !important;
+    }
+    
+    /* Make sure form layout works on mobile */
+    #project-form, #planner-form, form {
+      padding: 1.25rem !important;
+      border-radius: 1.5rem !important;
+    }
+    
+    /* Sidebar as mobile drawer */
+    .standard-sidebar {
+      display: flex !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      height: 100vh !important;
+      width: 280px !important;
+      transform: translateX(-100%) !important;
+      transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+      z-index: 9999 !important;
+      box-shadow: 20px 0 50px rgba(0, 0, 0, 0.15) !important;
+      border-radius: 0 2rem 2rem 0 !important;
+    }
+    
+    .standard-sidebar.mobile-open {
+      transform: translateX(0) !important;
+    }
+    
+    /* Hide standard desktop toggle button on mobile */
+    #standard-sidebar-toggle,
+    .standard-sidebar-toggle {
+      display: none !important;
+    }
+    
+    /* Prevent iOS auto-zoom on form inputs */
+    .input-field, select, textarea, input {
+      font-size: 16px !important;
+    }
+  }
+
+  body {
+    font-family: "Lexend", sans-serif;
+    background:
+      radial-gradient(circle at 6% 6%, rgba(255, 217, 224, 0.72), transparent 28rem),
+      radial-gradient(circle at 95% 18%, rgba(255, 218, 215, 0.62), transparent 28rem),
+      #fbf9f8;
+    color: #1b1c1c;
+  }
+
+  .material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 24;
+  }
+
+  .soft-shadow {
+    box-shadow: 0 18px 60px -34px rgba(27, 28, 28, 0.26);
+  }
+
+  .rose-shadow {
+    box-shadow: 0 22px 60px -28px rgba(223, 0, 93, 0.36);
+  }
+
+  .field-label {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 800;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #906f73;
+  }
+
+  .planner-input,
+  .planner-select,
+  .planner-textarea {
+    width: 100%;
+    border: 0;
+    border-radius: 1.5rem;
+    background: #ffffff;
+    color: #1b1c1c;
+    font-family: "Lexend", sans-serif;
+    box-shadow: inset 0 0 0 1px rgba(228, 189, 194, 0.34);
+  }
+
+  .planner-input:focus,
+  .planner-select:focus,
+  .planner-textarea:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 2px rgba(177, 0, 72, 0.34), 0 0 0 6px rgba(223, 0, 93, 0.08);
+  }
+
+  .quick-chip input:checked + span {
+    background: #b10048;
+    color: #ffffff;
+    box-shadow: 0 12px 30px -18px rgba(177, 0, 72, 0.8);
+  }
+
+  .result-card {
+    animation: reveal 0.42s ease both;
+  }
+
+  @keyframes reveal {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .standard-sidebar,
+  .standard-sidebar-toggle,
+  .app-main-offset {
+    transition: margin-left 260ms ease, transform 260ms ease, left 260ms ease, width 260ms ease, opacity 160ms ease;
+  }
+  .standard-nav-link.active {
+    background: #ffffff;
+    color: #b10048;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+  .standard-nav-link.active .material-symbols-outlined {
+    font-variation-settings: 'FILL' 1;
+  }
+  @media (min-width: 768px) {
+    .app-main-offset {
+      margin-left: 16rem !important;
+      width: calc(100% - 16rem) !important;
+    }
+    body.sidebar-collapsed .standard-sidebar {
+      transform: translateX(-100%);
+    }
+    body.sidebar-collapsed .app-main-offset {
+      margin-left: 0 !important;
+      width: 100% !important;
+    }
+    body.sidebar-collapsed .standard-sidebar-toggle {
+      left: 0.75rem;
+      opacity: 0.55;
+    }
+    body.sidebar-collapsed .standard-sidebar-toggle-icon {
+      transform: rotate(180deg);
+    }
+  }
+  .standard-sidebar-toggle-icon {
+    transition: transform 260ms ease;
+  }
+  body {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 180ms ease, transform 180ms ease;
+  }
+  body.page-ready {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  body.page-leaving {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    body,
+    body.page-ready,
+    body.page-leaving {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  @media print {
+    @page { margin: 1cm; }
+    body { background: #ffffff !important; }
+    header, aside, form, nav, button, #school-config-modal { display: none !important; }
+    #print-school-header { display: block !important; }
+    main { display: block !important; margin: 0 !important; padding: 0 !important; max-width: none !important; }
+    #result-section { background: transparent !important; padding: 0 !important; }
+    .result-card { box-shadow: none !important; break-inside: avoid; border: 1px solid #e4bdc2 !important; margin-bottom: 1rem !important; font-size: 11pt; font-family: 'Lexend', sans-serif; line-height: 1.6; }
+    .result-card h3, .result-card strong { font-size: 13pt; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .bg-gradient-to-br { background: #fbf9f8 !important; color: #1b1c1c !important; }
+    .text-white { color: #1b1c1c !important; }
+    .text-white\/82 { color: #5c3f44 !important; }
+    .grid { display: block !important; }
+    .lg\:col-span-2 { width: auto !important; }
+  }
+</style>
+</head>
+<body class="min-h-screen text-on-surface">
+
+<!-- Mobile Navigation Header -->
+<header id="mobile-navigation-bar" class="md:hidden sticky top-0 z-50 flex items-center justify-between px-5 py-3.5 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/50 dark:border-zinc-800/50">
+  <div class="flex items-center gap-3">
+    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white font-bold shadow-sm">
+      <span class="material-symbols-outlined text-lg">auto_awesome</span>
+    </div>
+    <div>
+      <h1 class="text-sm font-bold text-primary font-headline tracking-tight">School Intelligence OS</h1>
+      <p class="text-[9px] text-on-surface-variant font-medium">EdTech Suite</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <button id="mobile-theme-toggle" class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors" aria-label="Alternar tema">
+      <span class="material-symbols-outlined text-xl">dark_mode</span>
+    </button>
+    <button id="mobile-menu-toggle" class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors" aria-label="Abrir menu">
+      <span class="material-symbols-outlined text-2xl">menu</span>
+    </button>
+  </div>
+</header>
+<div id="sidebar-backdrop" class="fixed inset-0 bg-black/40 z-[9990] hidden opacity-0 transition-opacity duration-300"></div>
+
+
+
+<!-- Print school header — hidden on screen, visible in print -->
+<div id="print-school-header" class="hidden" aria-hidden="true">
+  <div style="border-bottom: 2px solid #b10048; padding-bottom: 10px; margin-bottom: 16px; font-family: 'Plus Jakarta Sans', sans-serif;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+      <div>
+        <div id="psh-school" style="font-size: 15pt; font-weight: 900; color: #1b1c1c;"></div>
+        <div id="psh-teacher" style="font-size: 10pt; color: #5c3f44; margin-top: 3px; font-family: 'Lexend', sans-serif;"></div>
+      </div>
+      <div id="psh-date" style="text-align: right; font-size: 10pt; color: #5c3f44; font-family: 'Lexend', sans-serif; white-space: pre-line;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Standard Side Navigation (Web) -->
+<nav id="standard-sidebar" class="standard-sidebar hidden md:flex fixed left-0 top-0 w-64 h-full flex-col py-8 bg-zinc-50 dark:bg-zinc-900 rounded-r-[3rem] overflow-hidden z-40">
+<div class="px-8 mb-12 flex items-center gap-4">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white font-bold shadow-md">
+  <span class="material-symbols-outlined text-xl">auto_awesome</span>
+</div>
+<div>
+<h1 class="text-lg font-bold text-primary font-headline tracking-tight">School Intelligence OS</h1>
+<p class="text-xs text-on-surface-variant font-medium">EdTech Suite</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 flex-grow px-4 font-['Lexend'] font-medium overflow-y-auto scrollbar-hide">
+<a data-nav-target="student_dashboard_1/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../student_dashboard_1/code.html">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span>Painel</span>
+</a>
+<a data-nav-target="gerador_projetos/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../gerador_projetos/code.html">
+      <span class="material-symbols-outlined text-xl">account_tree</span><span>Projeto BNCC Integrado</span>
+    </a>
+<a data-nav-target="chat/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../chat/code.html">
+<span class="material-symbols-outlined text-xl">psychology</span>
+<span>Chat IA</span>
+</a>
+<a data-nav-target="criador_posts/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../criador_posts/code.html">
+<span class="material-symbols-outlined text-xl">campaign</span>
+<span>Criador de Posts</span>
+</a>
+<a data-nav-target="pareceres_relatorios/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../pareceres_relatorios/code.html">
+<span class="material-symbols-outlined text-xl">assignment</span>
+<span>Pareceres</span>
+</a>
+<a data-nav-target="comunicados_familia/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../comunicados_familia/code.html">
+<span class="material-symbols-outlined text-xl">forum</span>
+<span>Comunicados</span>
+</a>
+<a data-nav-target="turma_alfabetizacao/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../turma_alfabetizacao/code.html">
+<span class="material-symbols-outlined text-xl">groups</span>
+<span>Turma</span>
+</a>
+
+<a data-nav-target="resource_library/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../resource_library/code.html">
+<span class="material-symbols-outlined text-xl">book_4</span>
+<span>Coleções</span>
+</a>
+
+
+
+</div>
+<div class="px-6 mt-auto">
+<div class="p-6 rounded-3xl bg-gradient-to-br from-tertiary-fixed to-primary-fixed relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
+<h3 class="font-headline font-bold text-on-surface mb-2 relative z-10">Vá Mais Longe</h3>
+<p class="text-sm text-on-surface-variant mb-4 relative z-10 font-body">Desbloqueie todos os recursos premium.</p>
+<button class="w-full py-3 px-4 bg-primary text-white rounded-full font-semibold text-sm hover:bg-primary-container transition-colors shadow-lg shadow-primary/20 relative z-10">
+Atualizar para Pro
+</button>
+</div>
+</div>
+</nav>
+<button id="standard-sidebar-toggle" aria-label="Esconder menu lateral" aria-expanded="true" class="standard-sidebar-toggle hidden md:flex fixed left-[15.25rem] top-24 z-50 h-8 w-8 items-center justify-center rounded-full bg-white/80 text-zinc-500 shadow-sm border border-zinc-200 hover:bg-white hover:text-primary hover:opacity-100 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px] standard-sidebar-toggle-icon">chevron_left</span>
+</button>
+<main class="app-main-offset grid min-h-screen gap-8 px-6 py-10 md:px-10 lg:grid-cols-[360px_minmax(0,1fr)] xl:grid-cols-[400px_minmax(0,1fr)]">
+  <aside class="flex flex-col gap-5 lg:sticky lg:top-8 lg:h-fit">
+    <section class="overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary to-primary-container p-7 text-white rose-shadow">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="font-headline text-xs font-black uppercase tracking-[0.24em] text-primary-fixed">Produto recorrente</p>
+          <h1 class="mt-4 font-display text-4xl font-black leading-tight tracking-tight">Gere exercícios com múltiplas versões</h1>
+        </div>
+        <span class="hidden h-16 w-16 shrink-0 rotate-6 items-center justify-center rounded-3xl bg-white/16 text-white backdrop-blur md:flex">
+          <span class="material-symbols-outlined text-4xl" style="font-variation-settings:'FILL' 1;">extension</span>
+        </span>
+      </div>
+      <p class="mt-5 text-sm leading-7 text-white/82">
+        Preencha a série, matéria, assunto e dificuldade. A IA devolve o exercício principal, além de versões facilitadas, avançadas, inclusivas e o gabarito.
+      </p>
+      <div class="mt-6 grid grid-cols-3 gap-3 text-center">
+        <div class="rounded-2xl bg-white/12 p-3 backdrop-blur">
+          <strong class="block font-headline text-xl">5 em 1</strong>
+          <span class="text-[11px] text-white/75">várias versões</span>
+        </div>
+        <div class="rounded-2xl bg-white/12 p-3 backdrop-blur">
+          <strong class="block font-headline text-xl">BNCC</strong>
+          <span class="text-[11px] text-white/75">alinhado</span>
+        </div>
+        <div class="rounded-2xl bg-white/12 p-3 backdrop-blur">
+          <strong class="block font-headline text-xl">Fácil</strong>
+          <span class="text-[11px] text-white/75">com gabarito</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="api-panel" class="hidden rounded-[2rem] bg-surface-container-lowest p-5 soft-shadow">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <p class="field-label">Configuração Gemini</p>
+          <h2 class="mt-2 font-headline text-xl font-black">Chave da API</h2>
+        </div>
+        <span id="api-status" class="rounded-full bg-primary-fixed px-3 py-1 text-xs font-bold text-on-primary-fixed">Padrão ativo</span>
+      </div>
+      <label class="mt-5 block">
+        <span class="field-label">Gemini API Key</span>
+        <input id="api-key-input" class="planner-input mt-2 px-4 py-3 text-sm" placeholder="Cole sua chave Gemini aqui" type="password"/>
+      </label>
+      <div class="mt-4 flex gap-2">
+        <button class="flex-1 rounded-full bg-primary px-4 py-3 font-headline text-sm font-bold text-white transition-transform hover:scale-[1.02]" onclick="saveApiKey()" type="button">Salvar chave</button>
+        <button class="rounded-full bg-surface-container-low px-4 py-3 font-headline text-sm font-bold text-on-surface-variant" onclick="clearApiKey()" type="button">Limpar</button>
+      </div>
+      <p class="mt-4 text-xs leading-5 text-on-surface-variant">
+        Protótipo local: a chave fica no navegador. Para produto real, mova a chamada Gemini para um backend.
+      </p>
+    </section>
+
+    <section class="rounded-[2rem] bg-surface-container-low p-5">
+      <p class="field-label">Atalhos inteligentes</p>
+      <div class="mt-4 grid gap-3">
+        <button class="rounded-[1.5rem] bg-white p-4 text-left transition-transform hover:-translate-y-0.5 soft-shadow" onclick="fillExample()" type="button">
+          <strong class="font-headline text-on-surface">Atividade Padrão</strong>
+          <span class="mt-1 block text-sm text-on-surface-variant">Frações, 4º ano, nível médio.</span>
+        </button>
+        <button class="rounded-[1.5rem] bg-white p-4 text-left transition-transform hover:-translate-y-0.5 soft-shadow" onclick="fillChallenge()" type="button">
+          <strong class="font-headline text-on-surface">Nível Desafio</strong>
+          <span class="mt-1 block text-sm text-on-surface-variant">Figuras de Linguagem, 9º ano, nível avançado.</span>
+        </button>
+      </div>
+    </section>
+  </aside>
+
+  <section class="flex flex-col gap-8">
+    <form class="rounded-[2.5rem] bg-surface-container-lowest p-5 soft-shadow md:p-8" id="planner-form">
+      <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p class="field-label">Entrada do professor</p>
+          <h2 class="mt-2 font-display text-3xl font-black tracking-tight md:text-5xl">Gere uma nova atividade</h2>
+          <p class="mt-3 max-w-2xl text-sm leading-7 text-on-surface-variant">
+            A IA cuidará de gerar as versões adaptadas e o gabarito. Informe apenas a base:
+          </p>
+        </div>
+        <button class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-br from-primary to-primary-container px-6 py-4 font-headline font-black text-white rose-shadow transition-transform hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60" id="generate-btn" type="submit">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
+          Gerar Atividade BNCC
+        </button>
+      </div>
+
+      <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-2">
+        <label>
+          <span class="field-label">Ano / Série</span>
+          <select class="planner-select mt-2 px-4 py-3" id="grade" required>
+            <option value="">Selecione</option>
+            <option>Educação Infantil</option>
+            <option>1º ano do Ensino Fundamental</option>
+            <option>2º ano do Ensino Fundamental</option>
+            <option>3º ano do Ensino Fundamental</option>
+            <option>4º ano do Ensino Fundamental</option>
+            <option>5º ano do Ensino Fundamental</option>
+            <option>6º ano do Ensino Fundamental</option>
+            <option>7º ano do Ensino Fundamental</option>
+            <option>8º ano do Ensino Fundamental</option>
+            <option>9º ano do Ensino Fundamental</option>
+            <option>Ensino Médio</option>
+          </select>
+        </label>
+
+        <label>
+          <span class="field-label">Disciplina</span>
+          <select class="planner-select mt-2 px-4 py-3" id="subject" required>
+            <option value="">Selecione</option>
+            <option>Português</option>
+            <option>Matemática</option>
+            <option>Ciências</option>
+            <option>História</option>
+            <option>Geografia</option>
+            <option>Arte</option>
+            <option>Educação Física</option>
+            <option>Inglês</option>
+          </select>
+        </label>
+
+        <label>
+          <span class="field-label">Assunto</span>
+          <input class="planner-input mt-2 px-4 py-3" id="topic" placeholder="Ex.: Frações, verbos, meio ambiente..." required type="text"/>
+        </label>
+
+        <label>
+          <span class="field-label">Dificuldade</span>
+          <select class="planner-select mt-2 px-4 py-3" id="difficulty" required>
+            <option>Fácil (Nível Básico)</option>
+            <option selected>Médio (Nível Padrão)</option>
+            <option>Difícil (Avançado)</option>
+            <option>Desafio (Olimpíadas/Vestibular)</option>
+          </select>
+        </label>
+
+        <div class="md:col-span-2">
+          <span class="field-label">Fotografia da atividade <span class="text-xs text-on-surface-variant font-normal">(opcional)</span></span>
+          <div class="mt-2 rounded-[1.75rem] bg-surface-container-low p-4">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div class="flex items-center gap-3">
+                <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-primary">
+                  <span class="material-symbols-outlined">add_a_photo</span>
+                </span>
+                <div>
+                  <p class="font-headline text-sm font-black text-on-surface" id="activity-photo-name">Nenhuma foto enviada</p>
+                  <p class="mt-1 text-xs leading-5 text-on-surface-variant">Use uma foto da folha, quadro ou atividade para a IA adaptar o conteúdo.</p>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <label class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-bold text-primary soft-shadow transition-transform hover:scale-[1.02]">
+                  <span class="material-symbols-outlined text-[18px]">upload</span>
+                  Enviar foto
+                  <input class="sr-only" id="activity-photo" type="file" accept="image/*"/>
+                </label>
+                <button class="hidden rounded-full bg-surface-container-high px-4 py-3 text-sm font-bold text-on-surface-variant" id="remove-photo-btn" onclick="clearActivityPhoto()" type="button">Remover</button>
+              </div>
+            </div>
+            <img id="activity-photo-preview" alt="Prévia da fotografia enviada" class="mt-4 hidden max-h-56 w-full rounded-2xl border border-outline-variant object-contain bg-white"/>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <section class="rounded-[2.5rem] bg-surface-container-low p-5 md:p-8" id="result-section">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p class="field-label">Saída da IA</p>
+          <h2 class="mt-2 font-display text-3xl font-black tracking-tight">Atividade gerada</h2>
+          <p class="mt-2 text-sm text-on-surface-variant" id="result-subtitle">Preencha os campos e gere uma aula estruturada.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button class="hidden rounded-full bg-white px-4 py-2 text-sm font-bold text-primary soft-shadow hover:bg-surface-container-low transition-colors" id="copy-btn" onclick="copyPlan()" type="button">Copiar atividade</button>
+          <button class="hidden rounded-full bg-primary px-4 py-2 text-sm font-bold text-white soft-shadow hover:bg-primary-container transition-colors flex items-center gap-1.5" id="print-btn" onclick="printDoc()" type="button">
+            <span class="material-symbols-outlined text-[18px]">print</span> Imprimir / PDF
+          </button>
+          <button class="hidden rounded-full bg-white px-4 py-2 text-sm font-bold text-primary soft-shadow hover:bg-surface-container-low transition-colors" id="download-btn" onclick="downloadPlan()" type="button">Baixar HTML</button>
+          <button class="rounded-full bg-surface-container-low px-3 py-2 text-sm text-on-surface-variant hover:bg-surface-container-high transition-colors flex items-center gap-1.5" onclick="openSchoolConfig()" type="button" title="Configurar escola para impressão"><span class="material-symbols-outlined text-[18px]">settings</span><span class="text-xs font-semibold">Escola</span></button>
+        </div>
+      </div>
+
+      <div class="mt-6 hidden rounded-[2rem] bg-white p-6 text-center soft-shadow" id="loading-state">
+        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary-fixed text-primary">
+          <span class="material-symbols-outlined animate-pulse text-4xl" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
+        </div>
+        <h3 class="mt-4 font-headline text-xl font-black">Gerando atividade alinhada à BNCC...</h3>
+        <p class="mt-2 text-sm text-on-surface-variant">A IA está adaptando linguagem, tempo, recursos e nível da turma.</p>
+      </div>
+
+      <div class="mt-6 grid gap-5" id="result-grid">
+        <div class="rounded-[2rem] bg-white p-8 text-center soft-shadow">
+          <span class="material-symbols-outlined text-5xl text-primary">edit_note</span>
+          <h3 class="mt-3 font-headline text-2xl font-black">Nenhuma atividade gerada ainda</h3>
+          <p class="mx-auto mt-2 max-w-xl text-sm leading-7 text-on-surface-variant">
+            Use o formulário para transformar tema, turma e recursos disponíveis em uma aula pronta para aplicar.
+          </p>
+        </div>
+      </div>
+    </section>
+  </section>
+</main>
+
+<script>
+  let API_KEY = window.APP_CONFIG?.GEMINI_API_KEY || localStorage.getItem("gemini_api_key") || "";
+  const GEMINI_MODEL = "gemini-2.5-flash";
+  const GEMINI_API = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+  let currentActivity = null;
+  let currentPlainText = "";
+  let currentFormData = null;
+
+  const fallbackPlan = {
+    titulo: "Frações no dia a dia (Pizzaria)",
+    habilidade_bncc: "EF04MA09 - Reconhecer as frações unitárias mais usuais...",
+    exercicio: "1. Uma pizza foi dividida em 8 pedaços. João comeu 3 pedaços. Que fração da pizza João comeu?\n\n2. Represente a fração 1/2 desenhando uma barra de chocolate.",
+    versao_facil: "1. Pinte 1 metade (1/2) do círculo abaixo.\n\n2. Circule a imagem que mostra 3/4 de uma pizza.",
+    versao_dificil: "1. João comeu 3/8 de uma pizza e Maria comeu 2/8. Que fração eles comeram juntos? Quanto sobrou?\n\n2. Simplifique a fração 4/8.",
+    gabarito: "Principal:\n1. 3/8\n2. (Desenho de barra dividida ao meio, metade pintada)\n\nFácil:\n1. (Aluno pinta metade)\n2. (Aluno circula 3 fatias de 4)\n\nDifícil:\n1. Comeram 5/8. Sobrou 3/8.\n2. 1/2",
+    versao_inclusiva: "**Dica Visual:** (Usar fontes maiores e sem serifa). \n\n**Questão 1:** Olhe para o desenho da pizza dividida em 8 pedaços. Se você tirar 3 pedaços, quantos pedaços pintados ficam? Pinte 3 pedaços na figura."
+  };
+
+  document.getElementById("planner-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    await generatePlan();
+  });
+
+  document.getElementById("activity-photo").addEventListener("change", handlePhotoSelection);
+
+  initApiPanel();
+
+  function buildPrompt(formData) {
+    return `
+Você é um especialista em criação de atividades didáticas alinhadas à BNCC.
+Crie um exercício ou atividade com base nas seguintes especificações:
+
+Dados da atividade:
+- Ano/Série: ${formData.grade}
+- Disciplina: ${formData.subject}
+- Assunto: ${formData.topic}
+- Dificuldade alvo: ${formData.difficulty}
+- Fotografia enviada: ${formData.photoName ? `sim (${formData.photoName})` : "não"}
+
+Regras obrigatórias:
+1. Retorne apenas um JSON válido no formato abaixo.
+2. A "versao_inclusiva" deve conter adaptações reais de leitura ou estrutura visual (ex: instruções mais curtas) para alunos com TEA/TDAH ou dificuldade de leitura.
+3. Se uma fotografia foi enviada, use a imagem como referência para identificar o conteúdo, reescrever enunciados, preservar o objetivo pedagógico e melhorar clareza, nível e adaptação.
+4. Não use markdown fora do JSON.
+
+{
+  "titulo": "string",
+  "habilidade_bncc": "string",
+  "exercicio": "string",
+  "versao_facil": "string",
+  "versao_dificil": "string",
+  "gabarito": "string",
+  "versao_inclusiva": "string"
+}`;
+  }
+
+  async function generatePlan() {
+    currentFormData = {
+      grade: document.getElementById("grade").value,
+      subject: document.getElementById("subject").value,
+      topic: document.getElementById("topic").value.trim(),
+      difficulty: document.getElementById("difficulty").value,
+      photoName: document.getElementById("activity-photo").files[0]?.name || ""
+    };
+
+    setLoading(true);
+
+    try {
+      const prompt = buildPrompt(currentFormData);
+      const photoPart = await getActivityPhotoPart();
+      const reply = await callGemini(prompt, photoPart);
+      console.log("IA Resposta Bruta:", reply);
+      
+      const activity = parsePlan(reply);
+      console.log("JSON Interpretado:", activity);
+      
+      renderPlan(activity, false);
+      generateActivityImage(activity, currentFormData);
+    } catch (error) {
+      console.error(error);
+      const plan = {
+        ...fallbackPlan,
+        alerta_professor: "Não foi possível acessar a API agora. Exibindo exemplo local. Erro: " + error.message
+      };
+      renderPlan(plan, true);
+      generateActivityImage(plan, currentFormData);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function callGemini(prompt, photoPart) {
+    const parts = [{ text: prompt }];
+    if (photoPart) parts.push(photoPart);
+
+    const res = await fetch(`${GEMINI_API}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-goog-api-key": API_KEY },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts }],
+        generationConfig: {
+          temperature: 0.35,
+          topP: 0.9,
+          maxOutputTokens: 2200,
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "object",
+            properties: {
+              titulo: { type: "string" },
+              habilidade_bncc: { type: "string" },
+              exercicio: { type: "string" },
+              versao_facil: { type: "string" },
+              versao_dificil: { type: "string" },
+              gabarito: { type: "string" },
+              versao_inclusiva: { type: "string" }
+            },
+            required: ["titulo", "habilidade_bncc", "exercicio", "versao_facil", "versao_dificil", "gabarito", "versao_inclusiva"]
+          }
+        }
+      })
+    });
+
+    if (!res.ok) {
+      let message = "Erro na API Gemini";
+      try {
+        const error = await res.json();
+        message = error.error?.message || message;
+      } catch (_) {}
+      throw new Error(message);
+    }
+
+    const data = await res.json();
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+  }
+
+  function parsePlan(text) {
+    let cleaned = text.trim();
+    if (cleaned.startsWith("```json")) {
+      cleaned = cleaned.replace(/^```json/i, "").replace(/```$/i, "").trim();
+    } else if (cleaned.startsWith("```")) {
+      cleaned = cleaned.replace(/^```/i, "").replace(/```$/i, "").trim();
+    }
+
+    let obj;
+    try {
+      obj = JSON.parse(cleaned);
+    } catch (_) {
+      const match = text.match(/\{[\s\S]*\}/);
+      if (match) {
+        try {
+          obj = JSON.parse(match[0]);
+        } catch (e) {
+          throw new Error("A IA não retornou JSON válido. Erro de parse no regex.");
+        }
+      } else {
+        throw new Error("A IA não retornou JSON válido. Formato irreconhecível.");
+      }
+    }
+    
+    // Normalização caso a IA coloque tudo dentro de uma chave "atividade"
+    if (obj.atividade && typeof obj.atividade === 'object' && obj.atividade.titulo) {
+      return obj.atividade;
+    }
+    if (obj.activity && typeof obj.activity === 'object' && obj.activity.titulo) {
+      return obj.activity;
+    }
+    
+    // Verifica se pelo menos uma chave esperada existe
+    if (!obj.titulo && !obj.exercicio && !obj.habilidade_bncc) {
+      throw new Error("O JSON retornado não possui a estrutura esperada.");
+    }
+
+    return obj;
+  }
+
+  function renderPlan(activity, isFallback) {
+    currentActivity = activity;
+    currentPlainText = activityToText(activity);
+
+    document.getElementById("result-subtitle").textContent = isFallback
+      ? "Exemplo local exibido porque a API não respondeu."
+      : "Atividade gerada com base nos campos informados.";
+    document.getElementById("copy-btn").classList.remove("hidden");
+    document.getElementById("download-btn").classList.remove("hidden");
+    document.getElementById("print-btn").classList.remove("hidden");
+
+    const sections = [
+      ["Habilidade BNCC sugerida", activity.habilidade_bncc, "verified"],
+      ["Atividade Principal", activity.exercicio, "edit_note"],
+      ["Versão Fácil (Apoio)", activity.versao_facil, "child_care"],
+      ["Versão Difícil (Desafio)", activity.versao_dificil, "fitness_center"],
+      ["Versão Inclusiva", activity.versao_inclusiva, "accessibility_new"],
+      ["Gabarito / Correção", activity.gabarito, "check_circle"]
+    ];
+
+    document.getElementById("result-grid").innerHTML = `
+      <article class="result-card rounded-[2.25rem] bg-gradient-to-br from-primary to-primary-container p-6 text-white rose-shadow">
+        <p class="font-headline text-xs font-black uppercase tracking-[0.24em] text-primary-fixed">Atividade pronta</p>
+        <h3 class="mt-3 font-display text-3xl font-black leading-tight">${escapeHtml(activity.titulo || "Atividade BNCC")}</h3>
+        <p class="mt-4 text-sm leading-7 text-white/82">Pronta para copiar e imprimir para seus alunos.</p>
+      </article>
+      ${activity.alerta_professor ? `
+      <article class="result-card rounded-[2rem] bg-error-container p-5">
+        <div class="flex items-start gap-3">
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/50 text-on-error-container">
+            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">warning</span>
+          </span>
+          <div>
+            <h3 class="font-headline text-base font-black text-on-error-container">Atividade de exemplo (API indisponível)</h3>
+            <p class="mt-1 text-sm text-on-error-container/80">${escapeHtml(activity.alerta_professor)}</p>
+            <p class="mt-2 text-xs text-on-error-container/70">Configure uma chave Gemini válida no painel "API" para gerar atividades com o conteúdo que você preencheu.</p>
+          </div>
+        </div>
+      </article>` : ""}
+      <div class="grid gap-5 lg:grid-cols-2">
+        ${sections.map(([title, value, icon]) => renderSection(title, value, icon)).join("")}
+      </div>
+      
+      <article class="result-card rounded-[2rem] bg-white p-5 soft-shadow mt-5" id="image-section">
+        <div class="flex items-start gap-3">
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-surface-container-low text-primary">
+            <span class="material-symbols-outlined">image</span>
+          </span>
+          <div class="w-full">
+            <h3 class="font-headline text-lg font-black">Ilustração para Impressão</h3>
+            <p class="mt-1 text-xs text-on-surface-variant">Gerada por IA · Preto e branco · Estilo folha escolar</p>
+            
+            <div id="image-loading" class="mt-4 flex items-center gap-2 text-primary hidden">
+              <span class="material-symbols-outlined animate-spin">progress_activity</span>
+              <span class="text-sm font-bold">Gerando ilustração...</span>
+            </div>
+            
+            <div id="image-result" class="mt-4 hidden">
+              <img id="activity-image" src="" alt="Ilustração da atividade" class="w-full max-w-md rounded-xl border border-outline-variant object-cover">
+            </div>
+            
+            <div id="image-error" class="mt-4 hidden text-sm font-bold text-error"></div>
+          </div>
+        </div>
+      </article>`;
+  }
+
+  function renderSection(title, value, icon) {
+    const formattedValue = escapeHtml(value || "Não informado.").replace(/\n/g, "<br>");
+    return `
+      <article class="result-card rounded-[2rem] bg-white p-5 soft-shadow lg:col-span-2">
+        <div class="flex items-start gap-3">
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-surface-container-low text-primary">
+            <span class="material-symbols-outlined">${icon}</span>
+          </span>
+          <div class="w-full">
+            <h3 class="font-headline text-lg font-black">${escapeHtml(title)}</h3>
+            <p class="mt-3 text-sm leading-7 text-on-surface-variant">${formattedValue}</p>
+          </div>
+        </div>
+      </article>`;
+  }
+
+  function handlePhotoSelection(event) {
+    const file = event.target.files[0];
+    const nameEl = document.getElementById("activity-photo-name");
+    const previewEl = document.getElementById("activity-photo-preview");
+    const removeBtn = document.getElementById("remove-photo-btn");
+
+    if (!file) {
+      clearActivityPhoto();
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      alert("Envie um arquivo de imagem.");
+      clearActivityPhoto();
+      return;
+    }
+
+    if (file.size > 8 * 1024 * 1024) {
+      alert("A imagem precisa ter até 8 MB.");
+      clearActivityPhoto();
+      return;
+    }
+
+    nameEl.textContent = file.name;
+    removeBtn.classList.remove("hidden");
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      previewEl.src = reader.result;
+      previewEl.classList.remove("hidden");
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function clearActivityPhoto() {
+    const input = document.getElementById("activity-photo");
+    const nameEl = document.getElementById("activity-photo-name");
+    const previewEl = document.getElementById("activity-photo-preview");
+    const removeBtn = document.getElementById("remove-photo-btn");
+
+    input.value = "";
+    nameEl.textContent = "Nenhuma foto enviada";
+    previewEl.removeAttribute("src");
+    previewEl.classList.add("hidden");
+    removeBtn.classList.add("hidden");
+  }
+
+  function getActivityPhotoPart() {
+    const file = document.getElementById("activity-photo").files[0];
+    if (!file) return Promise.resolve(null);
+
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = String(reader.result || "");
+        const base64 = result.split(",")[1];
+        if (!base64) {
+          reject(new Error("Não foi possível ler a fotografia enviada."));
+          return;
+        }
+        resolve({
+          inlineData: {
+            mimeType: file.type,
+            data: base64
+          }
+        });
+      };
+      reader.onerror = () => reject(new Error("Não foi possível ler a fotografia enviada."));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function activityToText(activity) {
+    const lines = [
+      activity.titulo,
+      "",
+      "1. Habilidade BNCC",
+      activity.habilidade_bncc,
+      "",
+      "2. Atividade Principal",
+      activity.exercicio,
+      "",
+      "3. Versão Fácil",
+      activity.versao_facil,
+      "",
+      "4. Versão Difícil",
+      activity.versao_dificil,
+      "",
+      "5. Versão Inclusiva",
+      activity.versao_inclusiva,
+      "",
+      "6. Gabarito",
+      activity.gabarito
+    ];
+    return lines.filter(line => line !== undefined && line !== null).join("\n");
+  }
+
+  async function copyPlan() {
+    if (!currentPlainText) return;
+    try {
+      await navigator.clipboard.writeText(currentPlainText);
+    } catch (_) {
+      const textarea = document.createElement("textarea");
+      textarea.value = currentPlainText;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      textarea.remove();
+    }
+    const btn = document.getElementById("copy-btn");
+    const oldText = btn.textContent;
+    btn.textContent = "Copiado!";
+    setTimeout(() => btn.textContent = oldText, 1400);
+  }
+
+  function downloadPlan() {
+    if (!currentActivity) return;
+    const html = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>${escapeHtml(currentActivity.titulo || "Atividade BNCC")}</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; color: #1b1c1c; }
+    h1, h2 { color: #b10048; }
+    section { background: #f6f3f2; border-radius: 18px; padding: 18px; margin: 14px 0; }
+</style>
+</head>
+<body>
+  <pre>${escapeHtml(currentPlainText)}</pre>
+
+
+<script id="mobile-responsive-script">
+  (function() {
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+    const sidebar = document.getElementById('standard-sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    
+    if (mobileMenuToggle && sidebar && backdrop) {
+      function openMobileMenu() {
+        sidebar.classList.add('mobile-open');
+        backdrop.classList.remove('hidden');
+        setTimeout(() => {
+          backdrop.classList.add('opacity-100');
+        }, 10);
+      }
+      
+      function closeMobileMenu() {
+        sidebar.classList.remove('mobile-open');
+        backdrop.classList.remove('opacity-100');
+        setTimeout(() => {
+          backdrop.classList.add('hidden');
+        }, 300);
+      }
+      
+      mobileMenuToggle.addEventListener('click', openMobileMenu);
+      backdrop.addEventListener('click', closeMobileMenu);
+      
+      sidebar.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+      });
+    }
+
+    if (mobileThemeToggle) {
+      function updateMobileThemeIcon() {
+        const isDark = document.documentElement.classList.contains('dark');
+        const icon = mobileThemeToggle.querySelector('.material-symbols-outlined');
+        if (icon) {
+          icon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        }
+      }
+      
+      updateMobileThemeIcon();
+      
+      mobileThemeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateMobileThemeIcon();
+        
+        const standardIcon = document.getElementById('theme-toggle-icon');
+        if (standardIcon) {
+          standardIcon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        }
+      });
+      
+      const standardToggle = document.getElementById('theme-toggle');
+      if (standardToggle) {
+        standardToggle.addEventListener('click', () => {
+          setTimeout(updateMobileThemeIcon, 50);
+        });
+      }
+    }
+  })();
+</script>
+
+</body>
+</html>`;
+
+    const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = slugify(currentActivity.titulo || "atividade-bncc") + ".html";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function setLoading(isLoading) {
+    document.getElementById("loading-state").classList.toggle("hidden", !isLoading);
+    document.getElementById("generate-btn").disabled = isLoading;
+  }
+
+  function fillExample() {
+    document.getElementById("grade").value = "4º ano do Ensino Fundamental";
+    document.getElementById("subject").value = "Matemática";
+    document.getElementById("topic").value = "Frações";
+    document.getElementById("difficulty").value = "Médio (Nível Padrão)";
+  }
+
+  function fillChallenge() {
+    document.getElementById("grade").value = "9º ano do Ensino Fundamental";
+    document.getElementById("subject").value = "Português";
+    document.getElementById("topic").value = "Figuras de Linguagem";
+    document.getElementById("difficulty").value = "Desafio (Olimpíadas/Vestibular)";
+  }
+
+  function toggleApiPanel() {
+    document.getElementById("api-panel").classList.toggle("hidden");
+  }
+
+  function initApiPanel() {
+    document.getElementById("api-key-input").value = localStorage.getItem("gemini_api_key") || "";
+    updateApiStatus();
+  }
+
+  function saveApiKey() {
+    const value = document.getElementById("api-key-input").value.trim();
+    if (value) {
+      localStorage.setItem("gemini_api_key", value);
+      API_KEY = value;
+    }
+    updateApiStatus();
+  }
+
+  function clearApiKey() {
+    localStorage.removeItem("gemini_api_key");
+    document.getElementById("api-key-input").value = "";
+    API_KEY = window.APP_CONFIG?.GEMINI_API_KEY || "";
+    updateApiStatus();
+  }
+
+  function updateApiStatus() {
+    const status = document.getElementById("api-status");
+    if (localStorage.getItem("gemini_api_key")) {
+      status.textContent = "Chave salva";
+      status.className = "rounded-full bg-tertiary-fixed px-3 py-1 text-xs font-bold text-on-tertiary-fixed";
+    } else {
+      status.textContent = "Padrão ativo";
+      status.className = "rounded-full bg-primary-fixed px-3 py-1 text-xs font-bold text-on-primary-fixed";
+    }
+  }
+
+  async function generateActivityImage(activity, formData) {
+    const section = document.getElementById("image-section");
+    if (!section) return;
+
+    const loadingEl = document.getElementById("image-loading");
+    const resultEl = document.getElementById("image-result");
+    const errorEl = document.getElementById("image-error");
+    const imgEl = document.getElementById("activity-image");
+
+    loadingEl.classList.remove("hidden");
+    resultEl.classList.add("hidden");
+    errorEl.classList.add("hidden");
+
+    const imagePrompt = buildImagePrompt(activity, formData);
+
+    try {
+      const base64 = await callImagenAPI(imagePrompt);
+      imgEl.src = `data:image/jpeg;base64,${base64}`;
+      loadingEl.classList.add("hidden");
+      resultEl.classList.remove("hidden");
+    } catch (err) {
+      loadingEl.classList.add("hidden");
+      errorEl.classList.remove("hidden");
+      errorEl.textContent = "Não foi possível gerar a ilustração: " + err.message;
+    }
+  }
+
+  function buildImagePrompt(activity, formData) {
+    const topic = formData?.topic || activity.titulo || "atividade escolar";
+    const subject = formData?.subject || "educação";
+    const grade = formData?.grade || "ensino fundamental";
+    return `Black and white line art illustration for a Brazilian elementary school printed worksheet. Subject: ${subject}. Topic: "${topic}", grade: ${grade}. Simple clean pencil drawing, educational style, suitable for photocopying. No shading, only outlines. No text. Centered composition, white background.`;
+  }
+
+  async function callImagenAPI(prompt) {
+    const IMAGEN_API = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent";
+    const res = await fetch(`${IMAGEN_API}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-goog-api-key": API_KEY },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text: prompt }] }]
+      })
+    });
+
+    if (!res.ok) {
+      let message = "Erro na API de imagem";
+      try {
+        const err = await res.json();
+        message = err.error?.message || message;
+      } catch (_) {}
+      throw new Error(message);
+    }
+
+    const data = await res.json();
+    const inlineData = data.candidates?.[0]?.content?.parts?.[0]?.inlineData;
+    if (!inlineData || !inlineData.data) throw new Error("Nenhuma imagem retornada pela API.");
+    return inlineData.data;
+  }
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function slugify(value) {
+    return String(value)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+</script>
+
+<script>
+        const standardSidebarToggle = document.getElementById('standard-sidebar-toggle');
+        standardSidebarToggle?.addEventListener('click', () => {
+            const collapsed = document.body.classList.toggle('sidebar-collapsed');
+            standardSidebarToggle.setAttribute('aria-expanded', String(!collapsed));
+            standardSidebarToggle.setAttribute('aria-label', collapsed ? 'Mostrar menu lateral' : 'Esconder menu lateral');
+        });
+
+        const currentPath = decodeURIComponent(window.location.pathname).replace(/\\/g, '/');
+        const activeAliases = {
+            'student_dashboard_1/code.html': ['student_dashboard_1/code.html', 'student_dashboard_2/code.html'],
+            'planejador_aula_bncc/code.html': ['planejador_aula_bncc/code.html'],
+            'gerador_atividades_bncc/code.html': ['gerador_atividades_bncc/code.html'],
+            'chat/code.html': ['chat/code.html'],
+            'loja_de_recursos_grade_detalhada/code.html': ['loja_de_recursos_grade_detalhada/code.html', 'kits_pedag_gicos_foco_em_cole_es/code.html'],
+            'resource_library/code.html': ['resource_library/code.html'],
+            'biblioteca_de_recursos_pedag_gicos/code.html': ['biblioteca_de_recursos_pedag_gicos/code.html'],
+            'biblioteca_digital_layout_moderno/code.html': ['biblioteca_digital_layout_moderno/code.html'],
+            'apresentacao.html': ['apresentacao.html']
+        };
+        document.querySelectorAll('[data-nav-target]').forEach((link) => {
+            const target = link.getAttribute('data-nav-target');
+            if ((activeAliases[target] || [target]).some((alias) => currentPath.endsWith(alias))) {
+                link.classList.add('active');
+            }
+        });
+
+        window.addEventListener('pageshow', () => {
+            document.body.classList.remove('page-leaving');
+            requestAnimationFrame(() => document.body.classList.add('page-ready'));
+        });
+
+        document.addEventListener('click', (event) => {
+            const link = event.target.closest('a[href]');
+            if (!link) return;
+            const href = link.getAttribute('href');
+            if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto:') || link.target === '_blank') return;
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            event.preventDefault();
+            document.body.classList.add('page-leaving');
+            setTimeout(() => { window.location.href = link.href; }, 160);
+        });
+</script>
+
+<!-- School config modal (T3-B) -->
+<div id="school-config-modal" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-[2rem] p-7 max-w-md w-full soft-shadow">
+    <h2 class="font-headline text-2xl font-black">Configurar escola</h2>
+    <p class="text-sm text-on-surface-variant mt-1">Salvo localmente. Aparece no cabeçalho dos documentos impressos.</p>
+    <div class="mt-5 grid gap-4">
+      <label><span class="field-label">Nome da escola</span><input class="mt-1 w-full rounded-[1.5rem] border-0 bg-white px-4 py-3 text-sm shadow-[inset_0_0_0_1px_rgba(228,189,194,0.34)]" id="sc-school-name" placeholder="Ex.: E.M. Prof. João Silva"/></label>
+      <label><span class="field-label">Nome da professora</span><input class="mt-1 w-full rounded-[1.5rem] border-0 bg-white px-4 py-3 text-sm shadow-[inset_0_0_0_1px_rgba(228,189,194,0.34)]" id="sc-teacher-name" placeholder="Ex.: Professora Maria Souza"/></label>
+      <label><span class="field-label">Cargo / turma</span><input class="mt-1 w-full rounded-[1.5rem] border-0 bg-white px-4 py-3 text-sm shadow-[inset_0_0_0_1px_rgba(228,189,194,0.34)]" id="sc-teacher-role" placeholder="Ex.: Professora regente — 2º ano B"/></label>
+      <label><span class="field-label">Ano letivo</span><input class="mt-1 w-full rounded-[1.5rem] border-0 bg-white px-4 py-3 text-sm shadow-[inset_0_0_0_1px_rgba(228,189,194,0.34)]" id="sc-school-year" placeholder="Ex.: 2026"/></label>
+    </div>
+    <div class="mt-6 flex gap-3 justify-end">
+      <button onclick="closeSchoolConfig()" class="rounded-full px-5 py-3 text-sm font-bold" style="color:#5c3f44" type="button">Cancelar</button>
+      <button onclick="saveSchoolConfig()" class="rounded-full bg-primary px-5 py-3 text-sm font-bold text-white hover:bg-primary-container transition-colors" type="button">Salvar</button>
+    </div>
+  </div>
+</div>
+<script>
+  const SCHOOL_CONFIG_KEY = "cp_school_config";
+  function getSchoolConfig() { try { return JSON.parse(localStorage.getItem(SCHOOL_CONFIG_KEY) || "{}"); } catch (_) { return {}; } }
+  function openSchoolConfig() {
+    const cfg = getSchoolConfig();
+    document.getElementById("sc-school-name").value = cfg.schoolName || "";
+    document.getElementById("sc-teacher-name").value = cfg.teacherName || "";
+    document.getElementById("sc-teacher-role").value = cfg.teacherRole || "";
+    document.getElementById("sc-school-year").value = cfg.schoolYear || "";
+    document.getElementById("school-config-modal").classList.remove("hidden");
+  }
+  function closeSchoolConfig() { document.getElementById("school-config-modal").classList.add("hidden"); }
+  function saveSchoolConfig() {
+    localStorage.setItem(SCHOOL_CONFIG_KEY, JSON.stringify({
+      schoolName: document.getElementById("sc-school-name").value.trim(),
+      teacherName: document.getElementById("sc-teacher-name").value.trim(),
+      teacherRole: document.getElementById("sc-teacher-role").value.trim(),
+      schoolYear: document.getElementById("sc-school-year").value.trim()
+    }));
+    closeSchoolConfig();
+    updatePrintHeader();
+  }
+  function updatePrintHeader() {
+    const cfg = getSchoolConfig();
+    const s = document.getElementById("psh-school"), t = document.getElementById("psh-teacher"), d = document.getElementById("psh-date");
+    if (s) s.textContent = cfg.schoolName || "";
+    if (t) t.textContent = [cfg.teacherName, cfg.teacherRole].filter(Boolean).join(" — ");
+    if (d) d.textContent = [cfg.schoolYear, new Date().toLocaleDateString("pt-BR")].filter(Boolean).join("\n");
+  }
+  function printDoc() { updatePrintHeader(); window.print(); }
+  updatePrintHeader();
+</script>
+
+</body>
+</html>

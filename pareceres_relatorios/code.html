@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pareceres e Relatórios - School Intelligence OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="../creative_pedagogy/design-system.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="../config.js"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "surface-bright": "#fbf9f8",
+          "on-tertiary-fixed": "#3f0019",
+          "primary-fixed-dim": "#ffb2bf",
+          "secondary-fixed": "#ffdad7",
+          "on-secondary-container": "#fffbff",
+          "primary-container": "#df005d",
+          "inverse-primary": "#ffb2bf",
+          "on-error": "#ffffff",
+          "surface-container-low": "#f6f3f2",
+          "primary": "#b10048",
+          "outline": "#906f73",
+          "background": "#fbf9f8",
+          "surface-tint": "#bc004d",
+          "surface-container-high": "#eae8e7",
+          "surface-variant": "#e4e2e1",
+          "on-surface": "#1b1c1c",
+          "surface-dim": "#dcd9d9",
+          "primary-fixed": "#ffd9de",
+          "on-tertiary": "#ffffff",
+          "tertiary-fixed": "#ffd9e0",
+          "tertiary": "#ad1054",
+          "on-primary-container": "#fff4f4",
+          "on-background": "#1b1c1c",
+          "on-secondary": "#ffffff",
+          "error": "#ba1a1a",
+          "tertiary-fixed-dim": "#ffb1c3",
+          "on-primary-fixed": "#3f0015",
+          "on-primary": "#ffffff",
+          "secondary-container": "#e02830",
+          "on-tertiary-container": "#fff5f5",
+          "on-surface-variant": "#5c3f44",
+          "on-secondary-fixed": "#410004",
+          "surface-container-lowest": "#ffffff",
+          "secondary": "#bb001b",
+          "on-tertiary-fixed-variant": "#8f0042",
+          "inverse-on-surface": "#f3f0f0",
+          "tertiary-container": "#cf316c",
+          "on-secondary-fixed-variant": "#930013",
+          "secondary-fixed-dim": "#ffb3ad",
+          "outline-variant": "#e4bdc2",
+          "surface-container": "#f0eded",
+          "surface-container-highest": "#e4e2e1",
+          "inverse-surface": "#303030",
+          "surface": "#fbf9f8",
+          "error-container": "#ffdad6",
+          "on-primary-fixed-variant": "#900039",
+          "on-error-container": "#93000a"
+        },
+        borderRadius: { DEFAULT: "1rem", lg: "2rem", xl: "3rem", full: "9999px" },
+        fontFamily: {
+          headline: ["Plus Jakarta Sans"],
+          body: ["Lexend"],
+          label: ["Plus Jakarta Sans"],
+          display: ["Plus Jakarta Sans"]
+        }
+      }
+    }
+  };
+</script>
+<style>
+  /* Mobile Responsive Overrides */
+  @media (max-width: 767px) {
+    main.app-main-offset,
+    .app-main-offset {
+      margin-left: 0 !important;
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+      padding-top: 1.5rem !important;
+      width: 100% !important;
+    }
+    
+    header.app-main-offset {
+      display: none !important; /* Hide desktop header on mobile */
+    }
+    
+    /* Force grids to single column on mobile */
+    .grid:not(.grid-cols-3):not(.grid-cols-4):not(.flex) {
+      grid-template-columns: 1fr !important;
+    }
+    
+    /* Make sure form layout works on mobile */
+    #project-form, #planner-form, form {
+      padding: 1.25rem !important;
+      border-radius: 1.5rem !important;
+    }
+    
+    /* Sidebar as mobile drawer */
+    .standard-sidebar {
+      display: flex !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      height: 100vh !important;
+      width: 280px !important;
+      transform: translateX(-100%) !important;
+      transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+      z-index: 9999 !important;
+      box-shadow: 20px 0 50px rgba(0, 0, 0, 0.15) !important;
+      border-radius: 0 2rem 2rem 0 !important;
+    }
+    
+    .standard-sidebar.mobile-open {
+      transform: translateX(0) !important;
+    }
+    
+    /* Hide standard desktop toggle button on mobile */
+    #standard-sidebar-toggle,
+    .standard-sidebar-toggle {
+      display: none !important;
+    }
+    
+    /* Prevent iOS auto-zoom on form inputs */
+    .input-field, select, textarea, input {
+      font-size: 16px !important;
+    }
+  }
+
+  .result-card, .draft-card { animation: reveal 0.36s ease both; }
+  @keyframes reveal {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .standard-sidebar,
+  .standard-sidebar-toggle,
+  .app-main-offset {
+    transition: margin-left 260ms ease, transform 260ms ease, left 260ms ease, width 260ms ease, opacity 160ms ease;
+  }
+  .standard-nav-link.active {
+    background: #ffffff;
+    color: #b10048;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+  .standard-nav-link.active .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
+  @media (min-width: 768px) {
+    .app-main-offset {
+      margin-left: 16rem !important;
+      width: calc(100% - 16rem) !important;
+    }
+    body.sidebar-collapsed .standard-sidebar { transform: translateX(-100%); }
+    body.sidebar-collapsed .app-main-offset {
+      margin-left: 0 !important;
+      width: 100% !important;
+    }
+    body.sidebar-collapsed .standard-sidebar-toggle {
+      left: 0.75rem;
+      opacity: 0.55;
+    }
+    body.sidebar-collapsed .standard-sidebar-toggle-icon { transform: rotate(180deg); }
+  }
+  .standard-sidebar-toggle-icon { transition: transform 260ms ease; }
+  body {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 180ms ease, transform 180ms ease;
+  }
+  body.page-leaving {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    body, body.page-leaving {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+  .turma-toggle-track { background-color: #e4e2e1; }
+  .turma-toggle-track.active { background-color: #b10048; }
+  .accordion-body { max-height: 0; overflow: hidden; transition: max-height 340ms ease; }
+  .accordion-body.open { max-height: 9999px; }
+  @media print {
+    @page { margin: 1cm; }
+    body { background: #ffffff !important; }
+    nav, button, form, aside, #drafts-section, #school-config-modal { display: none !important; }
+    #print-school-header { display: block !important; }
+    main { margin: 0 !important; width: 100% !important; padding: 0 !important; display: block !important; }
+    #result-section { background: #ffffff !important; padding: 0 !important; }
+    .result-card { box-shadow: none !important; border: 1px solid #e4bdc2 !important; break-inside: avoid; font-size: 11pt; font-family: 'Lexend', sans-serif; line-height: 1.6; }
+    .result-card h3 { font-size: 14pt; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .accordion-body { max-height: none !important; overflow: visible !important; }
+    .batch-doc-page { page-break-after: always; break-after: page; }
+    .batch-doc-page:last-child { page-break-after: avoid; break-after: avoid; }
+  }
+</style>
+</head>
+<body class="min-h-screen text-on-surface">
+
+<!-- Mobile Navigation Header -->
+<header id="mobile-navigation-bar" class="md:hidden sticky top-0 z-50 flex items-center justify-between px-5 py-3.5 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/50 dark:border-zinc-800/50">
+  <div class="flex items-center gap-3">
+    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white font-bold shadow-sm">
+      <span class="material-symbols-outlined text-lg">auto_awesome</span>
+    </div>
+    <div>
+      <h1 class="text-sm font-bold text-primary font-headline tracking-tight">School Intelligence OS</h1>
+      <p class="text-[9px] text-on-surface-variant font-medium">EdTech Suite</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <button id="mobile-theme-toggle" class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors" aria-label="Alternar tema">
+      <span class="material-symbols-outlined text-xl">dark_mode</span>
+    </button>
+    <button id="mobile-menu-toggle" class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors" aria-label="Abrir menu">
+      <span class="material-symbols-outlined text-2xl">menu</span>
+    </button>
+  </div>
+</header>
+<div id="sidebar-backdrop" class="fixed inset-0 bg-black/40 z-[9990] hidden opacity-0 transition-opacity duration-300"></div>
+
+
+
+<!-- Print school header — hidden on screen, visible in print -->
+<div id="print-school-header" class="hidden" aria-hidden="true">
+  <div style="border-bottom: 2px solid #b10048; padding-bottom: 10px; margin-bottom: 16px; font-family: 'Plus Jakarta Sans', sans-serif;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+      <div>
+        <div id="psh-school" style="font-size: 15pt; font-weight: 900; color: #1b1c1c;"></div>
+        <div id="psh-teacher" style="font-size: 10pt; color: #5c3f44; margin-top: 3px; font-family: 'Lexend', sans-serif;"></div>
+      </div>
+      <div id="psh-date" style="text-align: right; font-size: 10pt; color: #5c3f44; font-family: 'Lexend', sans-serif; white-space: pre-line;"></div>
+    </div>
+  </div>
+</div>
+
+<nav id="standard-sidebar" class="standard-sidebar hidden md:flex fixed left-0 top-0 w-64 h-full flex-col py-8 bg-zinc-50 dark:bg-zinc-900 rounded-r-[3rem] overflow-hidden z-40">
+<div class="px-8 mb-12 flex items-center gap-4">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white font-bold shadow-md">
+  <span class="material-symbols-outlined text-xl">auto_awesome</span>
+</div>
+<div>
+<h1 class="text-lg font-bold text-primary font-headline tracking-tight">School Intelligence OS</h1>
+<p class="text-xs text-on-surface-variant font-medium">EdTech Suite</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 flex-grow px-4 font-['Lexend'] font-medium overflow-y-auto scrollbar-hide">
+<a data-nav-target="student_dashboard_1/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../student_dashboard_1/code.html">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span>Painel</span>
+</a>
+<a data-nav-target="gerador_projetos/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../gerador_projetos/code.html">
+      <span class="material-symbols-outlined text-xl">account_tree</span><span>Projeto BNCC Integrado</span>
+    </a>
+<a data-nav-target="chat/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../chat/code.html">
+<span class="material-symbols-outlined text-xl">psychology</span>
+<span>Chat IA</span>
+</a>
+<a data-nav-target="criador_posts/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../criador_posts/code.html">
+<span class="material-symbols-outlined text-xl">campaign</span>
+<span>Criador de Posts</span>
+</a>
+<a data-nav-target="pareceres_relatorios/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../pareceres_relatorios/code.html">
+<span class="material-symbols-outlined text-xl">assignment</span>
+<span>Pareceres</span>
+</a>
+<a data-nav-target="comunicados_familia/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../comunicados_familia/code.html">
+<span class="material-symbols-outlined text-xl">forum</span>
+<span>Comunicados</span>
+</a>
+<a data-nav-target="turma_alfabetizacao/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../turma_alfabetizacao/code.html">
+<span class="material-symbols-outlined text-xl">groups</span>
+<span>Turma</span>
+</a>
+
+<a data-nav-target="resource_library/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../resource_library/code.html">
+<span class="material-symbols-outlined text-xl">book_4</span>
+<span>Coleções</span>
+</a>
+
+
+
+</div>
+<div class="px-6 mt-auto">
+<div class="p-6 rounded-3xl bg-gradient-to-br from-tertiary-fixed to-primary-fixed relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+<h3 class="font-headline font-bold text-on-surface mb-2 relative z-10">Vá Mais Longe</h3>
+<p class="text-sm text-on-surface-variant mb-4 relative z-10 font-body">Transforme registros em documentos prontos.</p>
+<button class="w-full py-3 px-4 bg-primary text-white rounded-full font-semibold text-sm hover:bg-primary-container transition-colors shadow-lg shadow-primary/20 relative z-10">Atualizar para Pro</button>
+</div>
+</div>
+</nav>
+<button id="standard-sidebar-toggle" aria-label="Esconder menu lateral" aria-expanded="true" class="standard-sidebar-toggle hidden md:flex fixed left-[15.25rem] top-24 z-50 h-8 w-8 items-center justify-center rounded-full bg-white/80 text-zinc-500 shadow-sm border border-zinc-200 hover:bg-white hover:text-primary hover:opacity-100 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px] standard-sidebar-toggle-icon">chevron_left</span>
+</button>
+
+<main class="app-main-offset grid min-h-screen gap-8 px-6 py-10 md:px-10 xl:grid-cols-[390px_minmax(0,1fr)]">
+  <aside class="flex flex-col gap-5 xl:sticky xl:top-8 xl:h-fit">
+    <section class="overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary to-primary-container p-7 text-white rose-shadow">
+      <p class="font-headline text-xs font-black uppercase tracking-[0.24em] text-primary-fixed">Documentação pedagógica</p>
+      <h1 class="mt-4 font-display text-4xl font-black leading-tight tracking-tight">Pareceres e relatórios sem começar do zero</h1>
+      <p class="mt-5 text-sm leading-7 text-white/82">Transforme observações soltas em parecer bimestral, relatório pedagógico, registro de diário, texto para família ou encaminhamento para coordenação.</p>
+      <div class="mt-6 grid grid-cols-3 gap-3 text-center">
+        <div class="rounded-2xl bg-white/12 p-3 backdrop-blur"><strong class="block font-headline text-xl">5</strong><span class="text-[11px] text-white/75">formatos</span></div>
+        <div class="rounded-2xl bg-white/12 p-3 backdrop-blur"><strong class="block font-headline text-xl">BNCC</strong><span class="text-[11px] text-white/75">evidências</span></div>
+        <div class="rounded-2xl bg-white/12 p-3 backdrop-blur"><strong class="block font-headline text-xl">Local</strong><span class="text-[11px] text-white/75">histórico</span></div>
+      </div>
+    </section>
+
+    <section class="rounded-[2rem] bg-surface-container-lowest p-5 soft-shadow">
+      <p class="field-label">Atalhos</p>
+      <div class="mt-4 grid gap-3">
+        <button class="rounded-[1.5rem] bg-surface-container-low p-4 text-left transition-transform hover:-translate-y-0.5" onclick="fillExample('parecer')" type="button"><strong class="font-headline">Parecer bimestral</strong><span class="mt-1 block text-sm text-on-surface-variant">Preenche um exemplo equilibrado.</span></button>
+        <button class="rounded-[1.5rem] bg-surface-container-low p-4 text-left transition-transform hover:-translate-y-0.5" onclick="fillExample('familia')" type="button"><strong class="font-headline">Mensagem para família</strong><span class="mt-1 block text-sm text-on-surface-variant">Tom acolhedor e objetivo.</span></button>
+        <button class="rounded-[1.5rem] bg-surface-container-low p-4 text-left transition-transform hover:-translate-y-0.5" onclick="fillExample('coordenacao')" type="button"><strong class="font-headline">Relatório para coordenação</strong><span class="mt-1 block text-sm text-on-surface-variant">Com evidências e intervenções.</span></button>
+      </div>
+    </section>
+  </aside>
+
+  <section class="flex flex-col gap-8">
+    <form class="rounded-[2.5rem] bg-surface-container-lowest p-5 soft-shadow md:p-8" id="report-form">
+      <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p class="field-label">Entrada da professora</p>
+          <h2 class="mt-2 font-display text-3xl font-black tracking-tight md:text-5xl">Gerar documento pedagógico</h2>
+          <p class="mt-3 max-w-3xl text-sm leading-7 text-on-surface-variant">Informe observações reais. A IA organiza em linguagem profissional, cuidadosa e útil para escola ou família.</p>
+        </div>
+        <button class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-br from-primary to-primary-container px-6 py-4 font-headline font-black text-white rose-shadow transition-transform hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60" id="generate-btn" type="submit">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
+          Gerar documento
+        </button>
+      </div>
+
+      <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <label>
+          <span class="field-label">Tipo de documento</span>
+          <select class="input-field mt-2" id="document-type" required>
+            <option>Parecer bimestral</option>
+            <option>Relatório pedagógico</option>
+            <option>Registro de diário</option>
+            <option>Texto para família</option>
+            <option>Encaminhamento para coordenação</option>
+          </select>
+        </label>
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <span class="field-label">Nome do aluno</span>
+            <label class="flex items-center gap-2 cursor-pointer select-none" title="Gerar documentos para toda a turma de uma vez">
+              <span class="text-xs font-semibold text-on-surface-variant">Turma inteira</span>
+              <div id="turma-toggle-track" class="turma-toggle-track relative w-11 h-6 rounded-full cursor-pointer transition-colors" onclick="toggleTurmaMode()">
+                <div id="turma-toggle-thumb" class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow transition-transform"></div>
+              </div>
+            </label>
+          </div>
+          <input class="input-field mt-1" id="student-name" placeholder="Ex.: João" required type="text"/>
+        </div>
+        <!-- Turma mode fields (hidden by default) -->
+        <div id="turma-fields" class="hidden md:col-span-2 xl:col-span-3 grid gap-4">
+          <label class="block">
+            <span class="field-label">Lista de alunos <span class="text-on-surface-variant font-normal normal-case tracking-normal">(um nome por linha)</span></span>
+            <textarea id="students-list" class="input-field mt-2 min-h-[120px]" placeholder="Maria&#10;João&#10;Ana Luiza&#10;Pedro&#10;Carla"></textarea>
+            <p id="students-count" class="mt-1 text-xs text-on-surface-variant"></p>
+          </label>
+          <label class="block">
+            <span class="field-label">Personalizar por aluno <span class="text-on-surface-variant font-normal normal-case tracking-normal">(opcional — formato: Nome: observação específica)</span></span>
+            <textarea id="per-student-notes" class="input-field mt-2 min-h-[72px]" placeholder="Maria: retornou após afastamento de 3 semanas&#10;João: família tem acompanhado menos as tarefas este bimestre"></textarea>
+          </label>
+          <div class="rounded-2xl bg-primary-fixed p-4 flex items-start gap-3">
+            <span class="material-symbols-outlined text-on-primary-fixed text-lg shrink-0 mt-0.5">info</span>
+            <p class="text-xs text-on-primary-fixed leading-5"><strong>Plano gratuito:</strong> gera até 5 documentos por lote. Os campos "Avanços", "Pontos de atenção" e demais abaixo valem como base para todos os alunos — personalize individualmente no campo acima.</p>
+          </div>
+        </div>
+        <label>
+          <span class="field-label">Ano / turma</span>
+          <input class="input-field mt-2" id="grade" placeholder="Ex.: 2º ano B" required type="text"/>
+        </label>
+        <label>
+          <span class="field-label">Período</span>
+          <input class="input-field mt-2" id="period" placeholder="Ex.: 2º bimestre" type="text"/>
+        </label>
+        <label>
+          <span class="field-label">Tom</span>
+          <select class="input-field mt-2" id="tone">
+            <option>profissional e acolhedor</option>
+            <option>objetivo e institucional</option>
+            <option>cuidadoso para família</option>
+            <option>técnico para coordenação</option>
+          </select>
+        </label>
+        <label>
+          <span class="field-label">Área principal</span>
+          <select class="input-field mt-2" id="focus-area">
+            <option>desenvolvimento geral</option>
+            <option>alfabetização</option>
+            <option>matemática</option>
+            <option>comportamento e convivência</option>
+            <option>participação e autonomia</option>
+            <option>inclusão e adaptações</option>
+          </select>
+        </label>
+        <label class="md:col-span-2">
+          <span class="field-label">Avanços observados</span>
+          <textarea class="input-field mt-2 min-h-[96px]" id="progress" placeholder="Ex.: reconhece letras do nome, participa mais das rodas, resolve adições simples..."></textarea>
+        </label>
+        <label>
+          <span class="field-label">Pontos de atenção</span>
+          <textarea class="input-field mt-2 min-h-[96px]" id="challenges" placeholder="Ex.: precisa ampliar concentração, ainda troca letras, evita leitura em voz alta..."></textarea>
+        </label>
+        <label>
+          <span class="field-label">Intervenções realizadas</span>
+          <textarea class="input-field mt-2 min-h-[96px]" id="interventions" placeholder="Ex.: atividades em dupla, apoio visual, leitura compartilhada, combinados..."></textarea>
+        </label>
+        <label>
+          <span class="field-label">Evidências</span>
+          <textarea class="input-field mt-2 min-h-[96px]" id="evidence" placeholder="Ex.: produções no caderno, participação oral, avaliação diagnóstica, observação em grupo..."></textarea>
+        </label>
+        <label class="xl:col-span-3">
+          <span class="field-label">Observações sensíveis ou contexto</span>
+          <textarea class="input-field mt-2 min-h-[112px]" id="context" placeholder="Ex.: família acompanha pouco as tarefas, aluno retornou após faltas, precisa evitar tom acusatório..."></textarea>
+        </label>
+      </div>
+    </form>
+
+    <section class="rounded-[2.5rem] bg-surface-container-low p-5 md:p-8" id="result-section">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p class="field-label">Saída da IA</p>
+          <h2 class="mt-2 font-display text-3xl font-black tracking-tight">Documento gerado</h2>
+          <p class="mt-2 text-sm text-on-surface-variant" id="result-subtitle">Preencha os campos para gerar um texto profissional.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button class="hidden rounded-full bg-white px-4 py-2 text-sm font-bold text-primary soft-shadow hover:bg-surface-container-low transition-colors" id="copy-btn" onclick="copyResult()" type="button">Copiar</button>
+          <button class="hidden rounded-full bg-white px-4 py-2 text-sm font-bold text-primary soft-shadow hover:bg-surface-container-low transition-colors" id="print-btn" onclick="printDoc()" type="button">Imprimir / PDF</button>
+          <button class="hidden rounded-full bg-primary px-4 py-2 text-sm font-bold text-white soft-shadow hover:bg-primary-container transition-colors" id="save-btn" onclick="saveDraft()" type="button">Salvar rascunho</button>
+          <button class="hidden rounded-full bg-white px-4 py-2 text-sm font-bold text-primary soft-shadow hover:bg-surface-container-low transition-colors" id="btn-copy-all" onclick="copyAllResults()" type="button">Copiar todos</button>
+          <button class="hidden rounded-full bg-white px-4 py-2 text-sm font-bold text-primary soft-shadow hover:bg-surface-container-low transition-colors" id="btn-print-turma" onclick="printDoc()" type="button">Imprimir turma</button>
+          <button class="rounded-full bg-surface-container-low px-3 py-2 text-sm text-on-surface-variant hover:bg-surface-container-high transition-colors flex items-center gap-1.5" onclick="openSchoolConfig()" type="button" title="Configurar escola para impressão"><span class="material-symbols-outlined text-[18px]">settings</span><span class="text-xs font-semibold">Escola</span></button>
+        </div>
+      </div>
+
+      <div class="mt-6 hidden rounded-[2rem] bg-white p-6 text-center soft-shadow" id="loading-state">
+        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary-fixed text-primary">
+          <span class="material-symbols-outlined animate-pulse text-4xl" style="font-variation-settings:'FILL' 1;">assignment</span>
+        </div>
+        <h3 class="mt-4 font-headline text-xl font-black" id="loading-title">Organizando observações...</h3>
+        <p class="mt-2 text-sm text-on-surface-variant">A IA está transformando registros em texto profissional.</p>
+        <div id="loading-progress-wrap" class="hidden mt-4 mx-auto max-w-xs">
+          <div class="h-2 rounded-full bg-surface-container-high overflow-hidden">
+            <div id="loading-progress-bar" class="h-full bg-primary rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 grid gap-5" id="result-grid">
+        <div class="rounded-[2rem] bg-white p-8 text-center soft-shadow">
+          <span class="material-symbols-outlined text-5xl text-primary">assignment</span>
+          <h3 class="mt-3 font-headline text-2xl font-black">Nenhum documento gerado ainda</h3>
+          <p class="mx-auto mt-2 max-w-xl text-sm leading-7 text-on-surface-variant">Use observações reais para gerar pareceres, relatórios, registros e textos para família.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="rounded-[2.5rem] bg-surface-container-lowest p-5 soft-shadow md:p-8" id="drafts-section">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p class="field-label">Histórico local</p>
+          <h2 class="mt-2 font-display text-3xl font-black tracking-tight">Rascunhos salvos</h2>
+        </div>
+        <button class="rounded-full bg-surface-container-low px-4 py-2 text-sm font-bold text-on-surface-variant hover:bg-surface-container-high transition-colors" onclick="clearDrafts()" type="button">Limpar rascunhos</button>
+      </div>
+      <div class="mt-6 grid gap-4 md:grid-cols-2" id="drafts-grid"></div>
+    </section>
+  </section>
+</main>
+
+<script>
+  const DRAFTS_KEY = "school_intelligence_reports_v1";
+  const SCHOOL_CONFIG_KEY = "cp_school_config";
+  const GEMINI_MODEL = "gemini-2.5-flash";
+  const GEMINI_API = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+  const FREE_BATCH_LIMIT = 5;
+  let API_KEY = window.APP_CONFIG?.GEMINI_API_KEY || localStorage.getItem("gemini_api_key") || "";
+  let currentDocument = null;
+  let currentPlainText = "";
+  let batchResults = [];
+  let isTurmaMode = false;
+
+  document.getElementById("report-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (isTurmaMode) { await generateTurmaDocuments(); } else { await generateDocument(); }
+  });
+
+  // Turma mode toggle
+  function toggleTurmaMode() {
+    isTurmaMode = !isTurmaMode;
+    const track = document.getElementById("turma-toggle-track");
+    const thumb = document.getElementById("turma-toggle-thumb");
+    const studentInput = document.getElementById("student-name");
+    const turmaFields = document.getElementById("turma-fields");
+    track.classList.toggle("active", isTurmaMode);
+    thumb.style.transform = isTurmaMode ? "translateX(20px)" : "";
+    studentInput.toggleAttribute("required", !isTurmaMode);
+    studentInput.closest("div > div:not(#turma-fields)")?.parentElement && (studentInput.style.display = isTurmaMode ? "none" : "");
+    studentInput.style.display = isTurmaMode ? "none" : "";
+    turmaFields.classList.toggle("hidden", !isTurmaMode);
+    document.getElementById("students-list").toggleAttribute("required", isTurmaMode);
+    document.getElementById("btn-copy-all").classList.add("hidden");
+    document.getElementById("btn-print-turma").classList.add("hidden");
+  }
+
+  document.getElementById("students-list")?.addEventListener("input", function() {
+    const names = this.value.trim().split('\n').map(n => n.trim()).filter(Boolean);
+    const counter = document.getElementById("students-count");
+    if (!names.length) { counter.textContent = ""; return; }
+    counter.innerHTML = names.length > FREE_BATCH_LIMIT
+      ? `<span class="font-bold text-primary">${names.length} alunos</span> — plano gratuito gera os primeiros ${FREE_BATCH_LIMIT}.`
+      : `<span>${names.length} aluno${names.length !== 1 ? "s" : ""} detectado${names.length !== 1 ? "s" : ""}</span>`;
+  });
+
+  function parsePerStudentNotes(text) {
+    const map = {};
+    (text || "").split('\n').forEach(line => {
+      const idx = line.indexOf(':');
+      if (idx > 0) { map[line.slice(0, idx).trim().toLowerCase()] = line.slice(idx + 1).trim(); }
+    });
+    return map;
+  }
+
+  function getFormData() {
+    return {
+      type: document.getElementById("document-type").value,
+      studentName: document.getElementById("student-name").value.trim(),
+      grade: document.getElementById("grade").value.trim(),
+      period: document.getElementById("period").value.trim(),
+      tone: document.getElementById("tone").value,
+      focusArea: document.getElementById("focus-area").value,
+      progress: document.getElementById("progress").value.trim(),
+      challenges: document.getElementById("challenges").value.trim(),
+      interventions: document.getElementById("interventions").value.trim(),
+      evidence: document.getElementById("evidence").value.trim(),
+      context: document.getElementById("context").value.trim()
+    };
+  }
+
+  // Batch (turma) generation
+  async function generateTurmaDocuments() {
+    const names = document.getElementById("students-list").value.trim()
+      .split('\n').map(n => n.trim()).filter(Boolean);
+    if (!names.length) return;
+    const baseData = getFormData();
+    if (!baseData.grade) return;
+    const perStudentNotes = parsePerStudentNotes(document.getElementById("per-student-notes").value);
+    const activeNames = names.slice(0, FREE_BATCH_LIMIT);
+    const skipped = names.length - activeNames.length;
+    setLoading(true, true, 0, activeNames.length);
+    batchResults = [];
+    let completed = 0;
+    const promises = activeNames.map(async (name) => {
+      const sd = { ...baseData, studentName: name };
+      const note = perStudentNotes[name.toLowerCase()];
+      if (note) sd.context = [baseData.context, `Observação específica: ${note}`].filter(Boolean).join('\n');
+      try {
+        const res = await callGemini(buildPrompt(sd));
+        completed++;
+        setLoading(true, true, completed, activeNames.length);
+        return { name, document: normalizeDocument(res, sd) };
+      } catch (err) {
+        completed++;
+        setLoading(true, true, completed, activeNames.length);
+        return { name, document: fallbackDocument(sd, err.message), isError: true };
+      }
+    });
+    batchResults = await Promise.all(promises);
+    currentDocument = null;
+    currentPlainText = batchResults.map(r => `=== ${r.name} ===\n${documentToText(r.document)}`).join('\n\n');
+    renderBatchDocuments(batchResults, skipped);
+    setLoading(false);
+    document.getElementById("result-subtitle").textContent = `${batchResults.length} documento${batchResults.length !== 1 ? "s" : ""} gerado${batchResults.length !== 1 ? "s" : ""}.`;
+    document.getElementById("btn-copy-all").classList.remove("hidden");
+    document.getElementById("btn-print-turma").classList.remove("hidden");
+    document.getElementById("copy-btn").classList.add("hidden");
+    document.getElementById("print-btn").classList.add("hidden");
+    document.getElementById("save-btn").classList.add("hidden");
+  }
+
+  function renderBatchDocuments(results, skipped) {
+    let html = "";
+    if (skipped > 0) {
+      html += `<div class="rounded-[1.5rem] bg-primary-fixed p-4 text-sm font-bold text-on-primary-fixed flex items-center gap-3">
+        <span class="material-symbols-outlined text-lg">lock</span>
+        <span>${skipped} aluno${skipped !== 1 ? "s" : ""} não gerado${skipped !== 1 ? "s" : ""} (limite gratuito: ${FREE_BATCH_LIMIT}). Assine o Pro para turmas completas.</span>
+      </div>`;
+    }
+    html += results.map((r, i) => `
+      <div class="batch-doc-page result-card rounded-[2rem] bg-white soft-shadow overflow-hidden">
+        <button class="w-full flex items-center justify-between p-5 md:p-6 text-left hover:bg-surface-container-low transition-colors" type="button" onclick="toggleAccordion(${i})">
+          <div class="flex-1 min-w-0">
+            <p class="field-label text-[10px]">Documento ${i + 1} de ${results.length}</p>
+            <h3 class="mt-1 font-headline text-xl font-black">${escapeHtml(r.name)}</h3>
+            <p class="mt-1 text-xs text-on-surface-variant truncate">${escapeHtml(r.document.resumoObjetivo)}</p>
+          </div>
+          <span id="acc-icon-${i}" class="material-symbols-outlined text-on-surface-variant ml-3 shrink-0 transition-transform duration-200">expand_more</span>
+        </button>
+        <div id="acc-body-${i}" class="accordion-body">
+          <div class="px-5 pb-6 md:px-6 grid gap-4">
+            <div class="whitespace-pre-wrap rounded-2xl bg-surface-container-low p-5 text-sm leading-7">${escapeHtml(r.document.textoPrincipal)}</div>
+            ${r.document.mensagemFamilia ? `<div class="rounded-2xl bg-surface-container-low p-4"><p class="field-label text-[10px] mb-2">Mensagem para família</p><p class="text-sm leading-7 whitespace-pre-wrap">${escapeHtml(r.document.mensagemFamilia)}</p></div>` : ""}
+            <div class="flex gap-2">
+              <button type="button" class="rounded-full bg-surface-container-low px-3 py-2 text-xs font-bold text-primary hover:bg-surface-container-high transition-colors" onclick="copyStudentDoc(${i})">Copiar este</button>
+            </div>
+          </div>
+        </div>
+      </div>`).join("");
+    document.getElementById("result-grid").innerHTML = html;
+  }
+
+  function toggleAccordion(i) {
+    const body = document.getElementById(`acc-body-${i}`);
+    const icon = document.getElementById(`acc-icon-${i}`);
+    const isOpen = body.classList.contains("open");
+    body.classList.toggle("open", !isOpen);
+    icon.style.transform = isOpen ? "" : "rotate(180deg)";
+  }
+
+  function copyStudentDoc(i) {
+    const r = batchResults[i];
+    if (r) copyTextToClipboard(documentToText(r.document));
+  }
+
+  function copyAllResults() {
+    if (!currentPlainText) return;
+    copyTextToClipboard(currentPlainText);
+    const btn = document.getElementById("btn-copy-all");
+    const old = btn.textContent;
+    btn.textContent = "Copiado!";
+    setTimeout(() => btn.textContent = old, 1300);
+  }
+
+  function printDoc() { updatePrintHeader(); window.print(); }
+
+  function showSingleActions() {
+    document.getElementById("copy-btn").classList.remove("hidden");
+    document.getElementById("print-btn").classList.remove("hidden");
+    document.getElementById("save-btn").classList.remove("hidden");
+    document.getElementById("btn-copy-all").classList.add("hidden");
+    document.getElementById("btn-print-turma").classList.add("hidden");
+  }
+
+  function buildPrompt(data) {
+    return `Você é uma especialista em documentação pedagógica para professoras dos anos iniciais.
+Gere um texto em português brasileiro, profissional, humano e cuidadoso.
+Não invente diagnósticos clínicos. Não exponha a criança. Use linguagem ética, objetiva e orientada a intervenção.
+
+DADOS:
+Tipo de documento: ${data.type}
+Aluno: ${data.studentName}
+Ano/turma: ${data.grade}
+Período: ${data.period || "não informado"}
+Tom: ${data.tone}
+Área principal: ${data.focusArea}
+Avanços observados: ${data.progress || "não informado"}
+Pontos de atenção: ${data.challenges || "não informado"}
+Intervenções realizadas: ${data.interventions || "não informado"}
+Evidências: ${data.evidence || "não informado"}
+Contexto sensível: ${data.context || "não informado"}
+
+Responda APENAS em JSON válido, sem markdown, com esta estrutura:
+{
+  "titulo": "string",
+  "textoPrincipal": "texto completo pronto para copiar",
+  "resumoObjetivo": "resumo curto para diário ou registro interno",
+  "evidenciasOrganizadas": ["evidências em linguagem pedagógica"],
+  "proximosPassos": ["intervenções recomendadas"],
+  "mensagemFamilia": "versão curta e acolhedora para família",
+  "cuidadosDeLinguagem": ["alertas do que evitar ao comunicar este caso"]
+}`;
+  }
+
+  async function generateDocument() {
+    const data = getFormData();
+    if (!data.studentName || !data.grade) return;
+    setLoading(true, false);
+    try {
+      if (!API_KEY) throw new Error("Chave Gemini não encontrada no config.js ou localStorage.");
+      const result = await callGemini(buildPrompt(data));
+      currentDocument = normalizeDocument(result, data);
+      currentPlainText = documentToText(currentDocument);
+      renderDocument(currentDocument);
+    } catch (error) {
+      currentDocument = fallbackDocument(data, error.message);
+      currentPlainText = documentToText(currentDocument);
+      renderDocument(currentDocument, "Modo fallback: " + error.message);
+    } finally {
+      setLoading(false);
+      document.getElementById("result-subtitle").textContent = `${data.type} para ${data.studentName}.`;
+      showSingleActions();
+    }
+  }
+
+  async function callGemini(prompt) {
+    const response = await fetch(`${GEMINI_API}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-goog-api-key": API_KEY },
+      body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: prompt }] }] })
+    });
+    if (!response.ok) {
+      let message = "Erro na API Gemini";
+      try {
+        const err = await response.json();
+        message = err.error?.message || message;
+      } catch (_) {}
+      throw new Error(message);
+    }
+    const payload = await response.json();
+    const text = payload.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    return parseJsonResponse(text);
+  }
+
+  function parseJsonResponse(text) {
+    let cleaned = String(text || "").trim();
+    cleaned = cleaned.replace(/^```json/i, "").replace(/^```/i, "").replace(/```$/i, "").trim();
+    try {
+      return JSON.parse(cleaned);
+    } catch (_) {
+      const start = cleaned.indexOf("{");
+      const end = cleaned.lastIndexOf("}");
+      if (start >= 0 && end > start) return JSON.parse(cleaned.slice(start, end + 1));
+      throw new Error("A IA retornou um formato inesperado.");
+    }
+  }
+
+  function normalizeDocument(result, data) {
+    return {
+      titulo: result.titulo || `${data.type} - ${data.studentName}`,
+      textoPrincipal: result.textoPrincipal || "",
+      resumoObjetivo: result.resumoObjetivo || "",
+      evidenciasOrganizadas: Array.isArray(result.evidenciasOrganizadas) ? result.evidenciasOrganizadas : [],
+      proximosPassos: Array.isArray(result.proximosPassos) ? result.proximosPassos : [],
+      mensagemFamilia: result.mensagemFamilia || "",
+      cuidadosDeLinguagem: Array.isArray(result.cuidadosDeLinguagem) ? result.cuidadosDeLinguagem : []
+    };
+  }
+
+  function fallbackDocument(data, reason) {
+    const progress = data.progress || "apresentou avanços compatíveis com o acompanhamento realizado";
+    const challenges = data.challenges || "necessita continuidade nas intervenções pedagógicas";
+    const interventions = data.interventions || "foram realizadas mediações, retomadas e atividades orientadas";
+    return {
+      titulo: `${data.type} - ${data.studentName}`,
+      textoPrincipal: `${data.studentName}, estudante do(a) ${data.grade}, apresentou ao longo do período avanços importantes em seu percurso de aprendizagem. Observou-se que ${progress}. Também foram identificados pontos que ainda demandam atenção, especialmente quando ${challenges}.\n\nDurante o acompanhamento, ${interventions}. Recomenda-se a continuidade de propostas graduadas, acompanhamento próximo e registros periódicos para monitorar os avanços. O objetivo é favorecer a participação, a autonomia e a consolidação das aprendizagens de forma respeitosa e progressiva.`,
+      resumoObjetivo: `${data.studentName} apresenta avanços, com necessidade de continuidade nas intervenções relacionadas a ${data.focusArea}.`,
+      evidenciasOrganizadas: [data.evidence || "Registros de participação, produções e observações em sala."],
+      proximosPassos: ["Manter acompanhamento sistemático.", "Propor atividades graduadas.", "Registrar evidências de avanço.", "Compartilhar orientações objetivas com a família quando necessário."],
+      mensagemFamilia: `Olá, família. Compartilho que ${data.studentName} vem sendo acompanhado(a) em seu processo de aprendizagem. Observamos avanços e também pontos que seguem recebendo atenção na rotina escolar. Seguiremos propondo intervenções adequadas e contamos com a parceria de vocês.`,
+      cuidadosDeLinguagem: ["Evitar rótulos ou diagnósticos.", "Descrever comportamentos observáveis.", "Apontar intervenções e próximos passos."],
+      warning: reason
+    };
+  }
+
+  function renderDocument(doc, warning) {
+    document.getElementById("result-grid").innerHTML = `
+      ${warning ? `<div class="rounded-[1.5rem] bg-primary-fixed p-4 text-sm font-bold text-on-primary-fixed">${escapeHtml(warning)}</div>` : ""}
+      <article class="result-card rounded-[2rem] bg-white p-6 soft-shadow">
+        <p class="field-label">Documento</p>
+        <h3 class="mt-2 font-display text-3xl font-black">${escapeHtml(doc.titulo)}</h3>
+        <div class="mt-5 whitespace-pre-wrap rounded-2xl bg-surface-container-low p-5 text-sm leading-7">${escapeHtml(doc.textoPrincipal)}</div>
+      </article>
+      ${renderTextCard("Resumo objetivo", doc.resumoObjetivo, "summarize")}
+      ${renderListCard("Evidências organizadas", doc.evidenciasOrganizadas, "fact_check")}
+      ${renderListCard("Próximos passos", doc.proximosPassos, "route")}
+      ${renderTextCard("Mensagem para família", doc.mensagemFamilia, "forum")}
+      ${renderListCard("Cuidados de linguagem", doc.cuidadosDeLinguagem, "verified_user")}
+    `;
+  }
+
+  function renderTextCard(title, text, icon) {
+    return `<article class="result-card rounded-[2rem] bg-white p-6 soft-shadow">
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-primary">${icon}</span>
+        <h3 class="font-headline text-xl font-black">${escapeHtml(title)}</h3>
+      </div>
+      <p class="mt-4 whitespace-pre-wrap rounded-2xl bg-surface-container-low p-5 text-sm leading-7">${escapeHtml(text || "Não informado.")}</p>
+    </article>`;
+  }
+
+  function renderListCard(title, items, icon) {
+    const list = (items || []).map((item) => `<li class="rounded-2xl bg-surface-container-low p-4 text-sm leading-6">${escapeHtml(item)}</li>`).join("");
+    return `<article class="result-card rounded-[2rem] bg-white p-6 soft-shadow">
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-primary">${icon}</span>
+        <h3 class="font-headline text-xl font-black">${escapeHtml(title)}</h3>
+      </div>
+      <ol class="mt-4 grid gap-3">${list || `<li class="text-sm text-on-surface-variant">Sem itens.</li>`}</ol>
+    </article>`;
+  }
+
+  function documentToText(doc) {
+    return [
+      doc.titulo,
+      "",
+      "DOCUMENTO",
+      doc.textoPrincipal,
+      "",
+      "RESUMO OBJETIVO",
+      doc.resumoObjetivo,
+      "",
+      "EVIDÊNCIAS",
+      ...(doc.evidenciasOrganizadas || []).map((item) => `- ${item}`),
+      "",
+      "PRÓXIMOS PASSOS",
+      ...(doc.proximosPassos || []).map((item) => `- ${item}`),
+      "",
+      "MENSAGEM PARA FAMÍLIA",
+      doc.mensagemFamilia,
+      "",
+      "CUIDADOS DE LINGUAGEM",
+      ...(doc.cuidadosDeLinguagem || []).map((item) => `- ${item}`)
+    ].join("\n");
+  }
+
+  function copyTextToClipboard(text) {
+    try { navigator.clipboard.writeText(text); } catch (_) {
+      const el = document.createElement("textarea");
+      el.value = text; el.setAttribute("readonly", ""); el.style.position = "fixed"; el.style.opacity = "0";
+      document.body.appendChild(el); el.select(); document.execCommand("copy"); el.remove();
+    }
+  }
+
+  async function copyResult() {
+    if (!currentPlainText) return;
+    copyTextToClipboard(currentPlainText);
+    const btn = document.getElementById("copy-btn");
+    const old = btn.textContent;
+    btn.textContent = "Copiado!";
+    setTimeout(() => btn.textContent = old, 1300);
+  }
+
+  function saveDraft() {
+    if (!currentDocument) return;
+    const data = getFormData();
+    const drafts = getDrafts();
+    drafts.unshift({
+      id: String(Date.now()),
+      createdAt: new Date().toLocaleString("pt-BR"),
+      type: data.type,
+      studentName: data.studentName,
+      document: currentDocument,
+      plainText: currentPlainText
+    });
+    localStorage.setItem(DRAFTS_KEY, JSON.stringify(drafts.slice(0, 30)));
+    renderDrafts();
+  }
+
+  function getDrafts() {
+    try {
+      return JSON.parse(localStorage.getItem(DRAFTS_KEY) || "[]");
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function renderDrafts() {
+    const grid = document.getElementById("drafts-grid");
+    const drafts = getDrafts();
+    if (!drafts.length) {
+      grid.innerHTML = `<div class="rounded-[2rem] bg-surface-container-low p-6 text-sm text-on-surface-variant">Nenhum rascunho salvo ainda.</div>`;
+      return;
+    }
+    grid.innerHTML = drafts.map((draft) => `<article class="draft-card rounded-[2rem] bg-surface-container-low p-5">
+      <p class="text-xs font-bold uppercase tracking-[0.12em] text-primary">${escapeHtml(draft.type)} - ${escapeHtml(draft.createdAt)}</p>
+      <h3 class="mt-2 font-headline text-lg font-black">${escapeHtml(draft.studentName)}</h3>
+      <p class="mt-2 text-sm text-on-surface-variant">${escapeHtml(draft.document?.resumoObjetivo || "")}</p>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <button class="rounded-full bg-white px-3 py-2 text-xs font-bold text-primary" onclick="loadDraft('${draft.id}')" type="button">Abrir</button>
+        <button class="rounded-full bg-white px-3 py-2 text-xs font-bold text-on-surface-variant" onclick="deleteDraft('${draft.id}')" type="button">Excluir</button>
+      </div>
+    </article>`).join("");
+  }
+
+  function loadDraft(id) {
+    const draft = getDrafts().find((item) => item.id === id);
+    if (!draft) return;
+    currentDocument = draft.document;
+    currentPlainText = draft.plainText || documentToText(draft.document);
+    renderDocument(currentDocument);
+    document.getElementById("copy-btn").classList.remove("hidden");
+    document.getElementById("print-btn").classList.remove("hidden");
+    document.getElementById("save-btn").classList.remove("hidden");
+    document.getElementById("result-section").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function deleteDraft(id) {
+    localStorage.setItem(DRAFTS_KEY, JSON.stringify(getDrafts().filter((item) => item.id !== id)));
+    renderDrafts();
+  }
+
+  function clearDrafts() {
+    localStorage.removeItem(DRAFTS_KEY);
+    renderDrafts();
+  }
+
+  function fillExample(kind) {
+    if (isTurmaMode) toggleTurmaMode();
+    document.getElementById("student-name").value = kind === "familia" ? "Ana" : "João";
+    document.getElementById("grade").value = "2º ano B";
+    document.getElementById("period").value = "2º bimestre";
+    document.getElementById("document-type").value = kind === "familia" ? "Texto para família" : kind === "coordenacao" ? "Encaminhamento para coordenação" : "Parecer bimestral";
+    document.getElementById("focus-area").value = kind === "coordenacao" ? "comportamento e convivência" : "alfabetização";
+    document.getElementById("progress").value = "Participa das rodas de conversa, reconhece letras do próprio nome e demonstra mais segurança em atividades com apoio visual.";
+    document.getElementById("challenges").value = "Ainda precisa ampliar concentração, organizar melhor os registros no caderno e avançar na leitura de palavras simples.";
+    document.getElementById("interventions").value = "Leitura compartilhada, atividades em dupla, apoio com alfabeto móvel, combinados de rotina e retomadas individuais.";
+    document.getElementById("evidence").value = "Produções no caderno, participação oral, atividade diagnóstica e observações durante propostas em grupo.";
+    document.getElementById("context").value = "Usar linguagem cuidadosa, sem tom de cobrança, destacando parceria entre escola e família.";
+  }
+
+  function setLoading(isLoading, isBatch, done, total) {
+    document.getElementById("loading-state").classList.toggle("hidden", !isLoading);
+    document.getElementById("generate-btn").disabled = isLoading;
+    if (isLoading && isBatch && total) {
+      document.getElementById("loading-title").textContent = `Gerando ${done} de ${total}...`;
+      document.getElementById("loading-progress-bar").style.width = `${Math.round((done / total) * 100)}%`;
+      document.getElementById("loading-progress-wrap").classList.remove("hidden");
+    } else {
+      document.getElementById("loading-title").textContent = "Organizando observações...";
+      document.getElementById("loading-progress-wrap").classList.add("hidden");
+    }
+  }
+
+  // School config (T3-B)
+  function getSchoolConfig() {
+    try { return JSON.parse(localStorage.getItem(SCHOOL_CONFIG_KEY) || "{}"); } catch (_) { return {}; }
+  }
+  function openSchoolConfig() {
+    const cfg = getSchoolConfig();
+    document.getElementById("sc-school-name").value = cfg.schoolName || "";
+    document.getElementById("sc-teacher-name").value = cfg.teacherName || "";
+    document.getElementById("sc-teacher-role").value = cfg.teacherRole || "";
+    document.getElementById("sc-school-year").value = cfg.schoolYear || "";
+    document.getElementById("school-config-modal").classList.remove("hidden");
+  }
+  function closeSchoolConfig() { document.getElementById("school-config-modal").classList.add("hidden"); }
+  function saveSchoolConfig() {
+    localStorage.setItem(SCHOOL_CONFIG_KEY, JSON.stringify({
+      schoolName: document.getElementById("sc-school-name").value.trim(),
+      teacherName: document.getElementById("sc-teacher-name").value.trim(),
+      teacherRole: document.getElementById("sc-teacher-role").value.trim(),
+      schoolYear: document.getElementById("sc-school-year").value.trim()
+    }));
+    closeSchoolConfig();
+    updatePrintHeader();
+  }
+  function updatePrintHeader() {
+    const cfg = getSchoolConfig();
+    const s = document.getElementById("psh-school");
+    const t = document.getElementById("psh-teacher");
+    const d = document.getElementById("psh-date");
+    if (s) s.textContent = cfg.schoolName || "";
+    if (t) t.textContent = [cfg.teacherName, cfg.teacherRole].filter(Boolean).join(" — ");
+    if (d) d.textContent = [cfg.schoolYear, new Date().toLocaleDateString("pt-BR")].filter(Boolean).join("\n");
+  }
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  updatePrintHeader();
+  renderDrafts();
+
+  // Pre-populate batch mode if redirected from turma_alfabetizacao
+  (function() {
+    const batchStudents = sessionStorage.getItem('cp_batch_students');
+    if (batchStudents) {
+      sessionStorage.removeItem('cp_batch_students');
+      sessionStorage.removeItem('cp_batch_grade');
+      if (!isTurmaMode) toggleTurmaMode();
+      const sl = document.getElementById('students-list');
+      if (sl) sl.value = batchStudents;
+      // scroll to top so teacher sees the populated list
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  })();
+</script>
+
+<!-- School config modal (T3-B) -->
+<div id="school-config-modal" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-[2rem] p-7 max-w-md w-full soft-shadow">
+    <h2 class="font-headline text-2xl font-black">Configurar escola</h2>
+    <p class="text-sm text-on-surface-variant mt-1">Salvo localmente. Aparece no cabeçalho de documentos impressos.</p>
+    <div class="mt-5 grid gap-4">
+      <label><span class="field-label">Nome da escola</span><input class="input-field mt-1" id="sc-school-name" placeholder="Ex.: E.M. Prof. João Silva"/></label>
+      <label><span class="field-label">Nome da professora</span><input class="input-field mt-1" id="sc-teacher-name" placeholder="Ex.: Professora Maria Souza"/></label>
+      <label><span class="field-label">Cargo / turma</span><input class="input-field mt-1" id="sc-teacher-role" placeholder="Ex.: Professora regente — 2º ano B"/></label>
+      <label><span class="field-label">Ano letivo</span><input class="input-field mt-1" id="sc-school-year" placeholder="Ex.: 2026"/></label>
+    </div>
+    <div class="mt-6 flex gap-3 justify-end">
+      <button onclick="closeSchoolConfig()" class="rounded-full px-5 py-3 text-sm font-bold text-on-surface-variant hover:bg-surface-container-low transition-colors" type="button">Cancelar</button>
+      <button onclick="saveSchoolConfig()" class="rounded-full bg-primary px-5 py-3 text-sm font-bold text-white hover:bg-primary-container transition-colors" type="button">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const standardSidebarToggle = document.getElementById('standard-sidebar-toggle');
+  standardSidebarToggle?.addEventListener('click', () => {
+    const collapsed = document.body.classList.toggle('sidebar-collapsed');
+    standardSidebarToggle.setAttribute('aria-expanded', String(!collapsed));
+    standardSidebarToggle.setAttribute('aria-label', collapsed ? 'Mostrar menu lateral' : 'Esconder menu lateral');
+  });
+
+  const currentPath = decodeURIComponent(window.location.pathname).replace(/\\/g, '/');
+  const activeAliases = {
+    'student_dashboard_1/code.html': ['student_dashboard_1/code.html', 'student_dashboard_2/code.html'],
+    'planejador_aula_bncc/code.html': ['planejador_aula_bncc/code.html'],
+    'gerador_atividades_bncc/code.html': ['gerador_atividades_bncc/code.html'],
+    'chat/code.html': ['chat/code.html'],
+    'criador_posts/code.html': ['criador_posts/code.html'],
+    'pareceres_relatorios/code.html': ['pareceres_relatorios/code.html'],
+    'loja_de_recursos_grade_detalhada/code.html': ['loja_de_recursos_grade_detalhada/code.html', 'kits_pedag_gicos_foco_em_cole_es/code.html'],
+    'resource_library/code.html': ['resource_library/code.html'],
+    'biblioteca_de_recursos_pedag_gicos/code.html': ['biblioteca_de_recursos_pedag_gicos/code.html'],
+    'biblioteca_digital_layout_moderno/code.html': ['biblioteca_digital_layout_moderno/code.html'],
+    'apresentacao.html': ['apresentacao.html']
+  };
+  document.querySelectorAll('[data-nav-target]').forEach((link) => {
+    const target = link.getAttribute('data-nav-target');
+    if ((activeAliases[target] || [target]).some((alias) => currentPath.endsWith(alias))) link.classList.add('active');
+  });
+
+  document.addEventListener('click', (event) => {
+    const link = event.target.closest('a[href]');
+    if (!link) return;
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto:') || link.target === '_blank') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    event.preventDefault();
+    document.body.classList.add('page-leaving');
+    setTimeout(() => { window.location.href = link.href; }, 160);
+  });
+</script>
+
+
+<script id="mobile-responsive-script">
+  (function() {
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+    const sidebar = document.getElementById('standard-sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    
+    if (mobileMenuToggle && sidebar && backdrop) {
+      function openMobileMenu() {
+        sidebar.classList.add('mobile-open');
+        backdrop.classList.remove('hidden');
+        setTimeout(() => {
+          backdrop.classList.add('opacity-100');
+        }, 10);
+      }
+      
+      function closeMobileMenu() {
+        sidebar.classList.remove('mobile-open');
+        backdrop.classList.remove('opacity-100');
+        setTimeout(() => {
+          backdrop.classList.add('hidden');
+        }, 300);
+      }
+      
+      mobileMenuToggle.addEventListener('click', openMobileMenu);
+      backdrop.addEventListener('click', closeMobileMenu);
+      
+      sidebar.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+      });
+    }
+
+    if (mobileThemeToggle) {
+      function updateMobileThemeIcon() {
+        const isDark = document.documentElement.classList.contains('dark');
+        const icon = mobileThemeToggle.querySelector('.material-symbols-outlined');
+        if (icon) {
+          icon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        }
+      }
+      
+      updateMobileThemeIcon();
+      
+      mobileThemeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateMobileThemeIcon();
+        
+        const standardIcon = document.getElementById('theme-toggle-icon');
+        if (standardIcon) {
+          standardIcon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        }
+      });
+      
+      const standardToggle = document.getElementById('theme-toggle');
+      if (standardToggle) {
+        standardToggle.addEventListener('click', () => {
+          setTimeout(updateMobileThemeIcon, 50);
+        });
+      }
+    }
+  })();
+</script>
+
+</body>
+</html>

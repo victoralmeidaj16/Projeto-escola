@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apresentação Comercial & Pedagógica — School Intelligence OS</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fff0f3',
+              100: '#ffe1e6',
+              200: '#ffc7d2',
+              500: '#df005d',
+              600: '#b10048',
+              700: '#900039',
+              900: '#3f0015',
+            },
+            surface: {
+              light: '#fbf9f8',
+              dark: '#0f1012',
+              cardLight: '#ffffff',
+              cardDark: '#18191c',
+              borderLight: '#e4e2e1',
+              borderDark: '#2a2c30'
+            }
+          },
+          fontFamily: {
+            headline: ['Plus Jakarta Sans', 'sans-serif'],
+            body: ['Lexend', 'sans-serif']
+          },
+          borderRadius: {
+            '2xl': '1.5rem',
+            '3xl': '2rem'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Lexend', sans-serif;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, h5, h6, .font-headline {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    
+    .glass-card {
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    
+    .slide {
+      display: none;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.05);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #b10048;
+      border-radius: 99px;
+    }
+    
+    .pulse-glow {
+      box-shadow: 0 0 25px -5px rgba(223, 0, 93, 0.4);
+    }
+  </style>
+</head>
+<body class="bg-surface-light dark:bg-surface-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white transition-colors duration-300">
+
+  <!-- TOP NAVIGATION / HEADER -->
+  <header class="sticky top-0 z-50 border-b border-surface-borderLight dark:border-surface-borderDark bg-surface-light/80 dark:bg-surface-dark/80 glass-card px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
+        <span class="material-symbols-outlined text-2xl">auto_awesome</span>
+      </div>
+      <div>
+        <h1 class="font-headline font-extrabold text-lg leading-tight tracking-tight flex items-center gap-2">
+          School Intelligence OS
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-500 dark:bg-brand-500/20 dark:text-brand-300 border border-brand-500/20">EdTech Suite</span>
+        </h1>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Apresentação para Escolas Privadas da Região</p>
+      </div>
+    </div>
+
+    <!-- Progress Bar & Slide Tracker -->
+    <div class="hidden md:flex items-center gap-4">
+      <div class="flex items-center gap-1.5 bg-slate-200/60 dark:bg-slate-800/60 px-3 py-1.5 rounded-full text-xs font-semibold">
+        <span class="text-brand-500" id="current-slide-num">1</span>
+        <span class="text-slate-400">/</span>
+        <span id="total-slides-num">10</span>
+      </div>
+      <div class="w-48 bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+        <div id="progress-bar" class="bg-gradient-to-r from-brand-600 to-brand-500 h-full w-1/10 transition-all duration-300"></div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex items-center gap-2">
+      <!-- Pitch Roteiro Drawer Toggle Button -->
+      <button onclick="togglePitchDrawer()" class="px-3 h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 font-semibold text-xs flex items-center gap-1.5 hover:bg-amber-500/20 transition-all" title="Ver roteiro da fala do apresentador">
+        <span class="material-symbols-outlined text-base">record_voice_over</span>
+        <span class="hidden sm:inline">Roteiro / Copy</span>
+      </button>
+
+      <!-- Nav Button Previous -->
+      <button onclick="prevSlide()" class="w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-center hover:bg-brand-500/10 hover:text-brand-500 transition-all">
+        <span class="material-symbols-outlined text-xl">arrow_back</span>
+      </button>
+
+      <!-- Nav Button Next -->
+      <button onclick="nextSlide()" class="px-4 h-9 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-medium text-xs tracking-wide flex items-center gap-1.5 shadow-md shadow-brand-600/30 transition-all">
+        <span>Próximo</span>
+        <span class="material-symbols-outlined text-base">arrow_forward</span>
+      </button>
+
+      <!-- Dark Mode Toggle -->
+      <button onclick="toggleDarkMode()" class="w-9 h-9 ml-1 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all" title="Alternar tema">
+        <span class="material-symbols-outlined text-xl dark:hidden">dark_mode</span>
+        <span class="material-symbols-outlined text-xl hidden dark:block text-amber-400">light_mode</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- PITCH / ROTEIRO DRAWER MODAL -->
+  <div id="pitch-drawer" class="fixed inset-y-0 right-0 z-50 w-full sm:w-96 bg-surface-cardLight dark:bg-surface-cardDark border-l border-surface-borderLight dark:border-surface-borderDark shadow-2xl p-6 transform translate-x-full transition-transform duration-300 overflow-y-auto flex flex-col justify-between">
+    <div>
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 mb-4">
+        <div class="flex items-center gap-2 text-amber-500 font-bold text-sm">
+          <span class="material-symbols-outlined">record_voice_over</span>
+          <span>Roteiro de Fala (Copy do Slide)</span>
+        </div>
+        <button onclick="togglePitchDrawer()" class="w-7 h-7 rounded-lg border border-slate-200 dark:border-slate-800 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800">
+          <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Slide Atual:</span>
+          <h4 id="pitch-slide-title" class="font-headline font-bold text-sm text-brand-500">Página 1: Abertura</h4>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-800 dark:text-amber-200 leading-relaxed font-body" id="pitch-slide-script">
+          <!-- Text dynamically loaded via JS -->
+        </div>
+
+        <div class="p-3 rounded-xl bg-slate-100 dark:bg-slate-800/60 text-[11px] text-slate-500 space-y-1">
+          <div class="font-bold text-slate-700 dark:text-slate-300">💡 Dica de Apresentação:</div>
+          <p id="pitch-slide-tip">Foque no benefício de não precisar trocar de ERP e no ganho direto de retenção.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-4 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400 text-center">
+      Pressione <kbd class="px-1 py-0.5 bg-slate-200 dark:bg-slate-800 rounded">P</kbd> para abrir/fechar o roteiro de fala
+    </div>
+  </div>
+
+  <!-- MAIN SLIDES CONTAINER -->
+  <main id="presentation-slides" class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 flex flex-col justify-center">
+
+    <!-- ================= SLIDE 1: COVER / ABERTURA ================= -->
+    <section class="slide active flex-col items-center justify-center text-center py-6 md:py-12">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 text-xs font-semibold mb-6 animate-pulse">
+        <span class="material-symbols-outlined text-base">insights</span>
+        Camada de Inteligência Integrada sobre Sponte, TOTVS e Sophia
+      </div>
+
+      <h1 class="font-headline text-3xl md:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white max-w-4xl leading-tight mb-6">
+        A Solução em IA que Transforma <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 via-rose-500 to-amber-500">Dados Escolares em Retenção e Aprendizagem</span>
+      </h1>
+
+      <p class="text-base md:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mb-10 leading-relaxed font-normal">
+        Conectamos a inteligência pedagógica ao ERP que sua escola já utiliza, atacando a dificuldade do aluno <strong>antes do estudo</strong> e entregando à direção um radar para evitar cancelamentos de rematrícula.
+      </p>
+
+      <!-- 3 Pillar Quick Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl text-left mb-10">
+        <!-- Card 1 -->
+        <div class="p-6 rounded-2xl bg-surface-cardLight dark:bg-surface-cardDark border border-surface-borderLight dark:border-surface-borderDark hover:border-brand-500/40 transition-all group shadow-sm hover:shadow-md">
+          <div class="w-12 h-12 rounded-xl bg-brand-500/10 text-brand-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-2xl">route</span>
+          </div>
+          <h3 class="font-headline font-bold text-lg mb-2">Para o Aluno</h3>
+          <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400">O "Waze da Aprendizagem": foto da questão/apostila, tutor IA socrático 24h, quizzes com ranking e comunidade.</p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="p-6 rounded-2xl bg-surface-cardLight dark:bg-surface-cardDark border border-surface-borderLight dark:border-surface-borderDark hover:border-brand-500/40 transition-all group shadow-sm hover:shadow-md">
+          <div class="w-12 h-12 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-2xl">psychology</span>
+          </div>
+          <h3 class="font-headline font-bold text-lg mb-2">Para o Professor</h3>
+          <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400">Copiloto pedagógico: gerador de provas (A/B/C) em 3s, resumos via foto da apostila, pareceres e ranking da turma.</p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="p-6 rounded-2xl bg-surface-cardLight dark:bg-surface-cardDark border border-surface-borderLight dark:border-surface-borderDark hover:border-brand-500/40 transition-all group shadow-sm hover:shadow-md">
+          <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-2xl">radar</span>
+          </div>
+          <h3 class="font-headline font-bold text-lg mb-2">Para a Direção</h3>
+          <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400">Radar de Saúde da Escola (Score 0-100) e alertas precoces de retenção de matrículas e inadimplência.</p>
+        </div>
+      </div>
+
+      <button onclick="nextSlide()" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-brand-600 to-brand-500 text-white font-headline font-bold text-sm tracking-wide shadow-xl shadow-brand-500/30 hover:scale-105 transition-all flex items-center gap-2">
+        <span>Iniciar Apresentação</span>
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </button>
+    </section>
+
+    <!-- ================= SLIDE 2: TODAS AS FUNCIONALIDADES (PÁGINA 2 COMPLETA SEM BADGES) ================= -->
+    <section class="slide flex-col justify-center py-4">
+      <div class="text-center max-w-3xl mx-auto mb-5">
+        <span class="text-xs font-bold uppercase tracking-wider text-brand-500">Ecossistema Completo da Plataforma</span>
+        <h2 class="font-headline text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-white mt-1">
+          Funcionalidades por Perfil
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          Explore o conjunto de soluções da plataforma para Alunos, Professores e Gestão.
+        </p>
+      </div>
+
+      <!-- Tab Selectors -->
+      <div class="flex items-center justify-center gap-2 mb-4">
+        <button onclick="switchCatalogTab('aluno')" id="tab-btn-aluno" class="px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-brand-600 text-white shadow-md shadow-brand-600/30 transition-all">
+          <span class="material-symbols-outlined text-base">school</span>
+          <span>Módulo Alunos</span>
+        </button>
+        <button onclick="switchCatalogTab('professor')" id="tab-btn-professor" class="px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all">
+          <span class="material-symbols-outlined text-base">psychology</span>
+          <span>Módulo Professores</span>
+        </button>
+        <button onclick="switchCatalogTab('gestor')" id="tab-btn-gestor" class="px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all">
+          <span class="material-symbols-outlined text-base">account_balance</span>
+          <span>Módulo Gestão & Direção</span>
+        </button>
+      </div>
+
+      <!-- Tab Content Container -->
+      <div class="max-w-6xl mx-auto w-full bg-surface-cardLight dark:bg-surface-cardDark p-6 rounded-3xl border border-surface-borderLight dark:border-surface-borderDark flex flex-col justify-between max-h-[520px] overflow-y-auto">
+        
+        <!-- Content Aluno (Todas as 18 Funcionalidades) -->
+        <div id="catalog-tab-aluno" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-brand-600 dark:text-brand-400 font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">photo_camera</span> Foto de Questão (IA Vision)
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Foto da questão no caderno/apostila com explicação socrática passo a passo.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-brand-600 dark:text-brand-400 font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">auto_stories</span> Scanner de Apostila
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Envio de foto de páginas para geração automática de resumos e exercícios.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-brand-600 dark:text-brand-400 font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">leaderboard</span> Resumo Aula & Quiz Ranking
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Resumo da aula ministrada + quiz gamificado com ranking de pontos da turma.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-brand-600 dark:text-brand-400 font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">groups</span> Feed & Comunidade da Turma
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Espaço seguro de colaboração entre colegas para tirar dúvidas e compartilhar notas.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">account_tree</span> Mapa Cognitivo de Lacunas
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Identifica dependências e lacunas de conteúdos aprendidos em anos anteriores.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">psychology</span> Tutor IA Socrático 24/7
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Guia o raciocínio sem entregar a resposta de bandeja, conectado ao material.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">route</span> Plano Diário Guiado
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Calcula o próximo melhor passo de estudos com base nos minutos disponíveis no dia.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">shield</span> Algoritmo Socrático Anti-Cola
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Bloqueio de cópia direta estilo ChatGPT, forçando o aprendizado ativo.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">quiz</span> Simulados Adaptativos por Tópico
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Questões que calibram a dificuldade e estimam o domínio antes da prova oficial.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">style</span> Flashcards com Repetição Espaçada
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Revisão agendada no intervalo ideal de memorização baseado nos erros passados.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">event_busy</span> Modo "Fiquei Ausente"
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Compila resumos e tarefas de aulas perdidas por faltas ou ausências.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">edit_note</span> Laboratório de Redação & Leitura
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Correção instantânea de redações no padrão ENEM e bancas de vestibular.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">sports_esports</span> Contextualizador por Interesse
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Explica conceitos usando games, esportes, música e preferências do aluno.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">calendar_month</span> Agenda Escolar Inteligente
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Organização e distribuição inteligente de prazos de entregas e avaliações.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">timer</span> Estudo Gamificado & Streaks
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Sessões Pomodoro, metas de consistência diária e recompensas visuais.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">lock_open</span> Canal de Dúvidas Sem Julgamento
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Ambiente privado para perguntar dúvidas simples sem constrangimento social.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">calculate</span> Resolução Passo a Passo (Exatas)
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Assistente que ajuda etapa a etapa em cálculos matemáticos e de física.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">work</span> Orientador Vocacional Contínuo
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Mapeamento de vocações e conexão entre disciplinas e profissões no Médio.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content Professor (Todas as 14 Funcionalidades) -->
+        <div id="catalog-tab-professor" class="hidden space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-rose-600 dark:text-rose-400 font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">camera_enhance</span> Gerador via Foto da Apostila
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Foto da página da apostila gera exercícios, listas e provas instantâneas.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-rose-600 dark:text-rose-400 font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">quiz</span> Resumo Aula & Quiz com Ranking
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Gera o resumo da aula + quiz gamificado com ranking de engajamento da turma.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-rose-600 dark:text-rose-400 font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">forum</span> Gestão da Comunidade da Turma
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Canal oficial da matéria para avisos, materiais de apoio e fóruns de discussão.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">edit_document</span> Gerador de Provas (A/B/C)
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Avaliações alinhadas à BNCC em 3s com questões permutadas anti-cola.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">fact_check</span> Gabarito Comentado & Rubrica
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Chave de resposta detalhada e critérios de pontuação para discursivas.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">assignment_ind</span> Pareceres Descritivos
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Geração automática de relatórios individuais de desempenho para boletins.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">radar</span> Diagnostic Radar da Turma
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Mapeamento de competências não consolidadas antes da avaliação oficial.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">menu_book</span> Planejador de Aulas BNCC
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Sequências didáticas, metodologias ativas e materiais por código BNCC.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">accessible</span> Adaptador para Inclusão (PDI/PEI)
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Adaptação automática para alunos com TDAH, Autismo e Dislexia.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">document_scanner</span> Leitor de Provas por Foto (OCR)
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Correção e lançamento instantâneo de notas via foto do gabarito.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">inventory_2</span> Banco de Questões da Escola
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Acervo privado etiquetado por grau de dificuldade e taxa de acerto.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">rate_review</span> Assistente de Feedback de Redação
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Sugestão de comentários marginais detalhados em redações.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">notification_important</span> Alertas de Desengajamento
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Notifica o professor quando um aluno deixa de entregar tarefas.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">hub</span> Projetos Interdisciplinares
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Geração de propostas de projetos unindo 2 ou mais matérias.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content Gestor (Todas as 14 Funcionalidades) -->
+        <div id="catalog-tab-gestor" class="hidden space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-amber-600 dark:text-amber-400 font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">warning_amber</span> Early Warning System
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Radar de Alerta Precoce de evasão, nota baixa e faltas.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-amber-600 dark:text-amber-400 font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">monitoring</span> School Health Score
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Indicador único de saúde geral (0 a 100) da instituição.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-amber-600 dark:text-amber-400 font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">chat</span> Cockpit em Linguagem Natural
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Pergunte por texto ou voz: "Por que a nota do 8º ano caiu?".</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">trending_up</span> Previsor de Rematrículas
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Forecast algorítmico da taxa de renovação anual de alunos.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">price_change</span> Previsão de Inadimplência
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Cruzamento de atrasos financeiros com dados de engajamento.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">record_voice_over</span> Análise da Voz das Famílias
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Leitura via IA de pesquisas e atendimentos para evitar saídas.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">calculate</span> Calculadora de ROI ao Vivo
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Simulador em R$ da receita preservada por retenção de matrículas.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">extension</span> Integrador ERP Plug & Play
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Conecta sobre o ERP existente (Sponte, TOTVS, Sophia) sem migração.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">analytics</span> Benchmarking ENEM & Matrizes
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Análise comparativa do desempenho da escola em matrizes externas.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">family_restroom</span> Relatório Automático p/ Pais
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Envio quinzenal de informes positivos de evolução aos responsáveis.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">badge</span> Substituição de Professores
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Escala substitutos e gera conteúdo emergencial para aulas vagas.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">schedule</span> Otimizador de Grade Horária
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Montagem algorítmica de horários sem choques de salas e docentes.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">compare</span> Análise Comparativa entre Turmas
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Padronização da qualidade pedagógica entre séries e turmas.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <strong class="text-slate-900 dark:text-white font-bold flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-base">verified_user</span> Painel LGPD & Segurança
+              </strong>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">Proteção de dados de menores, logs de acesso e consentimento digital.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
+          <span>Consulte o documento completo em <strong class="text-brand-500">docs/CATALOGO_FUNCIONALIDADES.md</strong></span>
+          <span class="font-bold text-brand-500">Total: 46 Funcionalidades Mapeadas</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SLIDE 3: O DIAGNÓSTICO DO MERCADO ================= -->
+    <section class="slide flex-col justify-center py-4">
+      <div class="text-center max-w-3xl mx-auto mb-8">
+        <span class="text-xs font-bold uppercase tracking-wider text-brand-500">Diagnóstico Real</span>
+        <h2 class="font-headline text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-white mt-1">
+          Por que as Plataformas Educacionais Tradicionais Falham?
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">
+          Muitas EdTechs tentam fazer o aluno "estudar mais". Mas a falha real acontece <strong>antes mesmo do estudo</strong> — e a gestão descobre tarde demais.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl mx-auto">
+        <!-- Dores dos Alunos -->
+        <div class="p-6 rounded-2xl bg-surface-cardLight dark:bg-surface-cardDark border border-surface-borderLight dark:border-surface-borderDark">
+          <div class="flex items-center gap-3 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+            <span class="material-symbols-outlined text-brand-500 text-2xl">warning</span>
+            <h3 class="font-headline font-bold text-lg text-slate-900 dark:text-white">Dores Críticas dos Alunos</h3>
+          </div>
+          <ul class="space-y-3.5 text-xs md:text-sm text-slate-600 dark:text-slate-300">
+            <li class="flex items-start gap-2.5">
+              <span class="material-symbols-outlined text-rose-500 text-base shrink-0 mt-0.5">cancel</span>
+              <span><strong>Lacunas Invisíveis:</strong> Acha que é "ruim em matemática", mas o bloqueio vem de frações aprendidas 2 anos atrás.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="material-symbols-outlined text-rose-500 text-base shrink-0 mt-0.5">cancel</span>
+              <span><strong>"Não sei o que estudar agora":</strong> Excesso de apostilas e PDFs sem priorização inteligente.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="material-symbols-outlined text-rose-500 text-base shrink-0 mt-0.5">cancel</span>
+              <span><strong>Uso Passivo de IA:</strong> Copia respostas prontas do ChatGPT sem realmente compreender o raciocínio.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Dores da Gestão -->
+        <div class="p-6 rounded-2xl bg-surface-cardLight dark:bg-surface-cardDark border border-surface-borderLight dark:border-surface-borderDark">
+          <div class="flex items-center gap-3 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+            <span class="material-symbols-outlined text-amber-500 text-2xl">account_balance</span>
+            <h3 class="font-headline font-bold text-lg text-slate-900 dark:text-white">Dores Críticas dos Diretores</h3>
+          </div>
+          <ul class="space-y-3.5 text-xs md:text-sm text-slate-600 dark:text-slate-300">
+            <li class="flex items-start gap-2.5">
+              <span class="material-symbols-outlined text-rose-500 text-base shrink-0 mt-0.5">cancel</span>
+              <span><strong>Diagnóstico Tarde Demais:</strong> O alerta só chega com a nota baixa da recuperação ou com a reclamação dos pais.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="material-symbols-outlined text-rose-500 text-base shrink-0 mt-0.5">cancel</span>
+              <span><strong>Risco Invisível de Rematrícula:</strong> Desconhecimento da taxa de retenção até o final do ano letivo.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="material-symbols-outlined text-rose-500 text-base shrink-0 mt-0.5">cancel</span>
+              <span><strong>Resistência em Mudar de ERP:</strong> A escola não quer encarar a migração traumática de sistemas como Sponte ou TOTVS.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SLIDE 4: ARQUITETURA DA SOLUÇÃO (INTEGRAÇÃO ERP) ================= -->
+    <section class="slide flex-col justify-center py-4">
+      <div class="text-center max-w-3xl mx-auto mb-8">
+        <span class="text-xs font-bold uppercase tracking-wider text-brand-500">Conceito Estratégico</span>
+        <h2 class="font-headline text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-white mt-1">
+          Não Substitua o ERP da Sua Escola — Potencialize os Dados Dele
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">
+          Uma camada complementar de inteligência artificial que se conecta por API ou importação simples ao seu ERP atual (Sponte, TOTVS, Sophia) sem exigir migração.
+        </p>
+      </div>
+
+      <!-- Interactive Architecture Visual -->
+      <div class="w-full max-w-5xl mx-auto p-6 md:p-8 rounded-3xl bg-surface-cardLight dark:bg-surface-cardDark border border-surface-borderLight dark:border-surface-borderDark relative overflow-hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+          
+          <!-- Column 1: ERPs Existentes -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">1. Sistemas Atuais da Escola</div>
+            <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-blue-500">database</span>
+                <span class="font-bold text-sm">Sponte / TOTVS / Sophia</span>
+              </div>
+              <span class="text-xs px-2 py-0.5 bg-blue-500/10 text-blue-500 rounded font-semibold">ERP Base</span>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-green-500">school</span>
+                <span class="font-bold text-sm">Google Classroom / LMS</span>
+              </div>
+              <span class="text-xs px-2 py-0.5 bg-green-500/10 text-green-500 rounded font-semibold">Ensino</span>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-purple-500">chat</span>
+                <span class="font-bold text-sm">ClassApp / ClipEscola</span>
+              </div>
+              <span class="text-xs px-2 py-0.5 bg-purple-500/10 text-purple-500 rounded font-semibold">Comunicação</span>
+            </div>
+          </div>
+
+          <!-- Column 2: Engine de Inteligência (Center) -->
+          <div class="p-6 rounded-2xl bg-gradient-to-b from-brand-600 to-brand-700 text-white text-center shadow-xl shadow-brand-500/20 relative">
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center mb-3">
+              <span class="material-symbols-outlined text-3xl">memory</span>
+            </div>
+            <h3 class="font-headline font-extrabold text-lg mb-1">Engine School Intelligence OS</h3>
+            <p class="text-xs text-brand-100 mb-4">Processamento contínuo com IA, cruzamento de notas, tarefas, faltas e comportamento.</p>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 rounded-full text-xs font-medium">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              Sincronização 100% Plug & Play
+            </div>
+          </div>
+
+          <!-- Column 3: Entregas nos 3 Pilares -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">2. Resultados Entregues</div>
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center gap-3">
+              <span class="material-symbols-outlined text-brand-500">person</span>
+              <div>
+                <h4 class="font-bold text-xs">Aluno</h4>
+                <p class="text-[11px] text-slate-500">Trilha de Lacunas + Tutor Socrático</p>
+              </div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center gap-3">
+              <span class="material-symbols-outlined text-rose-500">local_library</span>
+              <div>
+                <h4 class="font-bold text-xs">Professor</h4>
+                <p class="text-[11px] text-slate-500">Gerador de Provas & Pareceres</p>
+              </div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center gap-3">
+              <span class="material-symbols-outlined text-amber-500">monitoring</span>
+              <div>
+                <h4 class="font-bold text-xs">Direção</h4>
+                <p class="text-[11px] text-slate-500">Radar de Retenção & Health Score</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SLIDE 5: PILAR 1 — O WAZE DA APRENDIZAGEM (ALUNO) ================= -->
+    <section class="slide flex-col justify-center py-4">
+      <div class="text-center max-w-3xl mx-auto mb-6">
+        <span class="text-xs font-bold uppercase tracking-wider text-brand-500">Pilar 1 — O Aluno</span>
+        <h2 class="font-headline text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-white mt-1">
+          O "Waze da Aprendizagem" & Tutor IA Socrático 24h
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          Foto da questão/apostila com IA Vision, resumo da aula, quizzes com ranking e comunidade da turma.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-6xl mx-auto w-full">
+        <!-- Mapa Cognitivo de Lacunas (Left 5 cols) -->
+        <div class="lg:col-span-5 p-6 rounded-2xl bg-surface-cardLight dark:bg-surface-cardDark border border-surface-borderLight dark:border-surface-borderDark flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-headline font-bold text-base flex items-center gap-2">
+                <span class="material-symbols-outlined text-brand-500">photo_camera</span>
+                IA Vision & Scanner de Apostila
+              </h3>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-brand-500/10 text-brand-500 font-semibold">Câmera Inteligente</span>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-brand-500/10 border border-brand-500/20 mb-3 text-xs">
+              <div class="font-bold text-brand-600 dark:text-brand-300 mb-1 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-base">center_focus_strong</span>
+                Foto da Questão / Apostila:
+              </div>
+              <p class="text-slate-600 dark:text-slate-300 text-[11px]">
+                O aluno fotografa a página da apostila ou a questão no caderno. A IA faz a leitura OCR instantânea e gera a explicação socrática sem dar a resposta pronta.
+              </p>
+            </div>
+
+            <!-- Cognitive Flow Visual -->
+            <div class="space-y-3 relative before:absolute before:left-4 before:top-3 before:bottom-3 before:w-0.5 before:bg-slate-200 dark:before:bg-slate-700">
+              <div class="flex items-center gap-3 relative z-10">
+                <div class="w-8 h-8 rounded-full bg-red-500 text-white font-bold text-xs flex items-center justify-center shrink-0">1</div>
+                <div class="p-2.5 rounded-xl bg-red-500/10 border border-red-500/30 flex-1">
+                  <div class="font-bold text-xs text-red-600 dark:text-red-400">Frações Básicas (6º ano) 🔴</div>
+                  <div class="text-[11px] text-slate-500">Causa Raiz detectada no Scan</div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3 relative z-10">
+                <div class="w-8 h-8 rounded-full bg-amber-500 text-white font-bold text-xs flex items-center justify-center shrink-0">2</div>
+                <div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 flex-1">
+                  <div class="font-bold text-xs text-amber-600 dark:text-amber-400">Quiz com Ranking da Turma 🏆</div>
+                  <div class="text-[11px] text-slate-500">Engajamento gamificado pós-aula</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 p-3 rounded-xl bg-slate-100 dark:bg-slate-800/60 text-xs text-slate-600 dark:text-slate-300">
+            <strong>Comunidade da Turma:</strong> Alunos interagem e tiram dúvidas em grupo.
+          </div>
+        </div>
+
+        <!-- Simulated Socratic Tutor Chat (Right 7 cols) -->
+        <div class="lg:col-span-7 p-6 rounded-2xl bg-surface-cardLight dark:bg-surface-cardDark border border-surface-borderLight dark:border-surface-borderDark flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-lg bg-brand-500 text-white flex items-center justify-center font-bold text-xs">IA</div>
+                <div>
+                  <h4 class="font-bold text-xs">Tutor Socrático — Matemática 8º Ano</h4>
+                  <span class="text-[10px] text-emerald-500 font-medium">● Foto da Apostila Lida com Sucesso</span>
+                </div>
+              </div>
+              <span class="text-[10px] bg-slate-200 dark:bg-slate-800 px-2 py-1 rounded text-slate-500">Sem respostas diretas</span>
+            </div>
+
+            <!-- Chat Messages Area -->
+            <div class="space-y-3 text-xs">
+              <!-- Student Msg -->
+              <div class="flex justify-end">
+                <div class="bg-brand-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[80%]">
+                  📷 <i>[Foto da página 42 da Apostila]</i><br/>
+                  Não entendi a questão 4 sobre frações! Como faz?
+                </div>
+              </div>
+
+              <!-- AI Socratic Reply -->
+              <div class="flex justify-start">
+                <div class="bg-slate-100 dark:bg-slate-800 p-3 rounded-2xl rounded-tl-none max-w-[85%] border border-slate-200 dark:border-slate-700">
+                  <p class="font-semibold text-brand-500 mb-1">Tutor IA Vision:</p>
+                  <p class="text-slate-700 dark:text-slate-300">
+                    Li a foto da sua apostila! 📸 Na questão 4, temos denominadores 4 e 6.<br/>
+                    Em vez de te dar o resultado direto, qual é a primeira coisa que fazemos quando os denominadores são diferentes? Lembra do MMC?
+                  </p>
+                </div>
+              </div>
+
+              <!-- Student Reply -->
+              <div class="flex justify-end">
+                <div class="bg-brand-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[80%]">
+                  Ah! Eu preciso encontrar o mínimo múltiplo comum primeiro?
+                </div>
+              </div>
+
+              <!-- AI Socratic Reply -->
+              <div class="flex justify-start">
+                <div class="bg-slate-100 dark:bg-slate-800 p-3 rounded-2xl rounded-tl-none max-w-[85%] border border-slate-200 dark:border-slate-700">
+                  <p class="font-semibold text-brand-500 mb-1">Tutor IA:</p>
+                  <p class="text-slate-700 dark:text-slate-300">
+                    Exatamente! 🎉 Qual é o menor número que é múltiplo de 4 e 6 ao mesmo tempo?
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-slate-400 text-xs">
+            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">shield</span> Proteção Anti-Cola Ativa</span>
+            <span>24h disponível</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= SLIDE 6: PILAR 2 — COPILOTO DO PROFESSOR ================= -->
+    <section class="slide flex-col justify-center py-4">
+      <div class="text-center max-w-3xl mx-auto mb-6">
+        <span class="text-xs font-bold uppercase tracking-wider text-rose-500">Pilar 2 — O Professor</span>
+        <h2 class="font-headline text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-white mt-1">
+          Copiloto Pedagógico: Economia de +10 Horas Semanais por Docente
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          Geração de atividades via foto da apostila, resumo de aula com quiz/ranking da turma e avaliações A/B/C em 3s.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-6xl mx-auto w-full">
+        <!-- Interactive Exam Generator Form (Left 5 cols) -->
+        <div class="lg:col-span-5 p-6 rounded-2xl bg-surface-cardLight dark:bg-surface-cardDark border border-surface-borderLight dark:border-surface-borderDark">
+          <h3 class="font-headline font-bold text-base mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-rose-500">camera_enhance</span>
+            Gerador via Foto da Apostila & Provas
+          </h3>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block font-semibold mb-1 text-slate-600 dark:text-slate-300">Disciplina & Ano:</label>
+              <select id="exam-subject" class="w-full p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-medium">
+                <option>História — 9º Ano Fundamental</option>
+                <option>Matemática — 8º Ano Fundamental</option>
+                <option>Física — 2º Ano Ensino Médio</option>
+                <option>Biologia — 1º Ano Ensino Médio</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-semibold mb-1 text-slate-600 dark:text-slate-300">Modo de Entrada:</label>
+              <select class="w-full p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-medium">
+                <option>📷 Tirar Foto das Páginas da Apostila</option>
+                <option>✍️ Digitar Tema / Habilidade BNCC</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block font-semibold mb-1 text-slate-600 dark:text-slate-300">Gerar Recurso:</label>
+                <select class="w-full p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-medium">
+                  <option>Prova A/B + Gabarito</option>
+                  <option>Resumo Aula + Quiz Ranking</option>
+                  <option>Pareceres Descritivos</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-semibold mb-1 text-slate-600 dark:text-slate-300">Comunidade Turma:</label>
+                <select class="w-full p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-medium">
+                  <option>Publicar Automático</option>
+                  <option>Rascunho</option>
+                </select>
+              </div>
+            </div>
+
+            <button onclick="generateExamDemo()" class="w-full py-3 mt-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-headline font-bold text-xs tracking-wide shadow-md shadow-rose-600/30 flex items-center justify-center gap-2 transition-all">
+              <span class="material-symbols-outlined text-base">auto_fix_high</span>
+              <span>Gerar Recurso com Gabarito em 3s</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Generated Exam Preview Output (Right 7 cols) -->
+        <div class="lg:col-span-7 p-6 rounded-2xl bg-surface-cardLight dark:bg-surface-cardDark border border-surface-borderLight dark:border-surface-borderDark flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100 dark:border-slate-800">
+              <span class="font-bold text-xs text-rose-500 uppercase tracking-wider">Preview em Tempo Real</span>
+              <span class="text-[10px] bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded font-semibold">Alinhado à BNCC</span>
+            </div>
+
+            <div id="exam-output" class="space-y-3 text-xs">
+              <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                <div class="font-bold text-slate-900 dark:text-white mb-1">COLÉGIO EXCELÊNCIA — RESUMO DA AULA & QUIZ GAMIFICADO</div>
+                <p class="text-slate-500 dark:text-slate-400 text-[11px]">Gerado via Foto da Apostila | Turma: 9º Ano B | Ranking Ativo 🏆</p>
+              </div>
+
+              <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700">
+                <p class="font-semibold text-slate-800 dark:text-slate-200 mb-1.5">Resumo Automático da Aula:</p>
+                <p class="text-slate-600 dark:text-slate-300 text-[11px]">
+                  Os 3 pontos centrais ministrados na aula da página 42 foram extraídos com sucesso e publicados no Feed da Turma.
+                </p>
+                <div class="mt-2 pt-2 border-t border-slate-200 dark:border-slate-700 text-[11px] text-emerald-600 dark:text-emerald-400 font-bold">
+                  🏆 Quiz da Aula Ativo: 1º Lugar Atual — Pedro (950 pts) | 2º Lugar — Sofia (910 pts)
+                </div>
+              </div>
+
+              <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700">
+                <p class="font-semibold text-slate-800 dark:text-slate-200 mb-1">Avaliação Impressa (Versão A + B Anti-Cola):</p>
+                <p class="text-slate-600 dark:text-slate-300 text-[11px]">Gerada com gabarito comentado pronto para exportar em PDF/Word.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
+            <span>Exportação instantânea em PDF, Word e Feed da Turma</span>
+            <span class="font-semibold text-rose-500">Economia de ~3h de trabalho</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= SLIDE 7: PILAR 3 — RADAR DA ESCOLA & DIREÇÃO ================= -->
+    <section class="slide flex-col justify-center py-4">
+      <div class="text-center max-w-3xl mx-auto mb-6">
+        <span class="text-xs font-bold uppercase tracking-wider text-amber-500">Pilar 3 — A Direção</span>
+        <h2 class="font-headline text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-white mt-1">
+          Radar da Escola: O Cockpit Executivo do Diretor
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          Antecipe problemas de evasão, queda de rendimento e insatisfação de famílias com o Early Warning Risk Score e o School Health Score.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-6xl mx-auto w-full">
+        <!-- School Health Score Widget (Left 4 cols) -->
+        <div class="lg:col-span-4 p-6 rounded-2xl bg-surface-cardLight dark:bg-surface-cardDark border border-surface-borderLight dark:border-surface-borderDark flex flex-col justify-between text-center">
+          <div>
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">School Health Score</span>
+            
+            <div class="my-4 relative w-36 h-36 mx-auto flex items-center justify-center">
+              <!-- Radial ring -->
+              <svg class="w-full h-full transform -rotate-90">
+                <circle cx="72" cy="72" r="60" stroke="currentColor" stroke-width="12" class="text-slate-200 dark:text-slate-800" fill="transparent" />
+                <circle cx="72" cy="72" r="60" stroke="currentColor" stroke-width="12" class="text-emerald-500" fill="transparent" stroke-dasharray="377" stroke-dashoffset="65" />
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span class="font-headline text-4xl font-black text-slate-900 dark:text-white">83</span>
+                <span class="text-[10px] font-bold text-emerald-500">Saudável</span>
+              </div>
+            </div>
+
+            <div class="space-y-2 text-xs text-left">
+              <div class="flex justify-between items-center p-2 rounded bg-slate-100 dark:bg-slate-800/60">
+                <span>🟢 Desempenho Acadêmico</span>
+                <span class="font-bold">87/100</span>
+              </div>
+              <div class="flex justify-between items-center p-2 rounded bg-slate-100 dark:bg-slate-800/60">
+                <span>🟢 Retenção Estimada</span>
+                <span class="font-bold">92/100</span>
+              </div>
+              <div class="flex justify-between items-center p-2 rounded bg-slate-100 dark:bg-slate-800/60">
+                <span>🟡 Satisfação Famílias</span>
+                <span class="font-bold">76/100</span>
+              </div>
+              <div class="flex justify-between items-center p-2 rounded bg-slate-100 dark:bg-slate-800/60">
+                <span>🔴 Alertas de Atenção</span>
+                <span class="font-bold text-rose-500">14 alunos</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Early Warning Risk Table (Right 8 cols) -->
+        <div class="lg:col-span-8 p-6 rounded-2xl bg-surface-cardLight dark:bg-surface-cardDark border border-surface-borderLight dark:border-surface-borderDark flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+              <h3 class="font-headline font-bold text-base flex items-center gap-2">
+                <span class="material-symbols-outlined text-amber-500">warning_amber</span>
+                Radar de Alerta Precoce (Alunos em Risco)
+              </h3>
+              <span class="text-xs px-2.5 py-1 bg-rose-500/10 text-rose-500 rounded-full font-semibold">14 Ações Sugeridas</span>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                    <th class="pb-2 font-semibold">Aluno / Turma</th>
+                    <th class="pb-2 font-semibold">Gatilho de Risco</th>
+                    <th class="pb-2 font-semibold">Nível</th>
+                    <th class="pb-2 font-semibold text-right">Ação Sugerida</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
+                  <tr>
+                    <td class="py-3 font-bold">Lucas Mendes (8º A)</td>
+                    <td class="py-3 text-slate-500">Queda de 23% em Matemática + 4 faltas</td>
+                    <td class="py-3"><span class="px-2 py-0.5 rounded bg-red-500/10 text-red-500 font-bold">Alto Risco</span></td>
+                    <td class="py-3 text-right"><button class="px-2.5 py-1 rounded bg-brand-600 text-white font-medium">Ação Pedagógica</button></td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 font-bold">Mariana Costa (9º B)</td>
+                    <td class="py-3 text-slate-500">Reclamação de pai no WhatsApp + nota baixa</td>
+                    <td class="py-3"><span class="px-2 py-0.5 rounded bg-red-500/10 text-red-500 font-bold">Alto Risco</span></td>
+                    <td class="py-3 text-right"><button class="px-2.5 py-1 rounded bg-brand-600 text-white font-medium">Contatar Família</button></td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 font-bold">Enzo Gabriel (1º EM)</td>
+                    <td class="py-3 text-slate-500">Atraso na entrega de 5 trabalhos seguidos</td>
+                    <td class="py-3"><span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-500 font-bold">Médio Risco</span></td>
+                    <td class="py-3 text-right"><button class="px-2.5 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium">Ver Histórico</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
+            <span>IA analisa sinais comportamentais, pedagógicos e financeiros</span>
+            <span class="font-bold text-emerald-500">Prevenção antes do cancelamento</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= SLIDE 8: CALCULADORA DE ROI INTERATIVA ================= -->
+    <section class="slide flex-col justify-center py-4">
+      <div class="text-center max-w-3xl mx-auto mb-6">
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-500">Retorno Financeiro</span>
+        <h2 class="font-headline text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-white mt-1">
+          Quanto Custará NÃO Ter uma Inteligência de Retenção?
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          Prevenir a evasão de apenas 2 a 3 alunos por ano paga 100% do investimento anual da instituição na plataforma.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-5xl mx-auto w-full">
+        <!-- Input Form (Left 5 cols) -->
+        <div class="lg:col-span-5 p-6 rounded-2xl bg-surface-cardLight dark:bg-surface-cardDark border border-surface-borderLight dark:border-surface-borderDark space-y-4">
+          <h3 class="font-headline font-bold text-base mb-2">Simule o Impacto na Sua Escola</h3>
+
+          <div>
+            <label class="block font-semibold text-xs mb-1">Total de Alunos da Escola:</label>
+            <input type="number" id="roi-students" value="600" oninput="calculateROI()" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-base text-brand-500"/>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-xs mb-1">Mensalidade Média (R$):</label>
+            <input type="number" id="roi-tuition" value="1400" oninput="calculateROI()" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-base text-brand-500"/>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-xs mb-1">Metas de Alunos Retidos pela IA (Evasão Evitada):</label>
+            <select id="roi-retention-rate" onchange="calculateROI()" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-xs">
+              <option value="0.01">1% dos alunos (6 alunos salvos)</option>
+              <option value="0.02" selected>2% dos alunos (12 alunos salvos)</option>
+              <option value="0.03">3% dos alunos (18 alunos salvos)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ROI Results Display (Right 7 cols) -->
+        <div class="lg:col-span-7 p-6 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 text-white border border-slate-800 flex flex-col justify-between relative overflow-hidden pulse-glow">
+          <div class="absolute top-0 right-0 p-8 opacity-10">
+            <span class="material-symbols-outlined text-9xl">payments</span>
+          </div>
+
+          <div>
+            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Resultado Estimado Anual</span>
+            <h3 class="text-xs text-slate-400 mt-1">Receita Anual Preservada com a Plataforma:</h3>
+            <div id="roi-total-saved" class="font-headline text-4xl md:text-5xl font-black text-emerald-400 my-4">
+              R$ 201.600 /ano
+            </div>
+
+            <div class="space-y-2 text-xs text-slate-300 border-t border-slate-800 pt-4">
+              <div class="flex justify-between">
+                <span>Alunos Adicionais Retidos:</span>
+                <strong id="roi-saved-students-count" class="text-white">12 Alunos</strong>
+              </div>
+              <div class="flex justify-between">
+                <span>Receita por Aluno (12 meses + Rematrícula):</span>
+                <strong id="roi-revenue-per-student" class="text-white">R$ 16.800 /ano</strong>
+              </div>
+              <div class="flex justify-between">
+                <span>Investimento Estimado na Plataforma:</span>
+                <strong id="roi-platform-cost" class="text-emerald-400">~R$ 3.900 /mês</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-300 flex items-center gap-2">
+            <span class="material-symbols-outlined text-base shrink-0">check_circle</span>
+            <span><strong>Retorno Imediato:</strong> Reter apenas 3 alunos no ano inteiro já paga 100% do sistema!</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= SLIDE 9: TABELA COMPARATIVA DE MERCADO ================= -->
+    <section class="slide flex-col justify-center py-4">
+      <div class="text-center max-w-3xl mx-auto mb-6">
+        <span class="text-xs font-bold uppercase tracking-wider text-brand-500">Diferencial Único</span>
+        <h2 class="font-headline text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-white mt-1">
+          Por Que a Nossa Abordagem É Vencedora?
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          Uma comparação clara entre manter apenas o ERP tradicional, contratar bancos de conteúdo genéricos ou adotar o School Intelligence OS.
+        </p>
+      </div>
+
+      <div class="max-w-5xl mx-auto w-full overflow-x-auto">
+        <table class="w-full text-xs text-left border-collapse">
+          <thead>
+            <tr class="border-b border-slate-200 dark:border-slate-800 text-slate-400">
+              <th class="p-3 font-semibold">Critério de Decisão</th>
+              <th class="p-3 font-semibold">ERP Tradicional (Sponte/TOTVS)</th>
+              <th class="p-3 font-semibold">EdTech Genérica (Vídeos/PDFs)</th>
+              <th class="p-3 font-semibold bg-brand-500/10 text-brand-500 dark:text-brand-300 rounded-t-xl">School Intelligence OS</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
+            <tr>
+              <td class="p-3 font-bold text-slate-900 dark:text-white">Papel Principal</td>
+              <td class="p-3 text-slate-500">Registro burocrático de notas e boletos</td>
+              <td class="p-3 text-slate-500">Repositório passivo de conteúdo</td>
+              <td class="p-3 font-bold text-brand-600 dark:text-brand-400 bg-brand-500/5">Diagnóstico preventivo & Retenção</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-bold text-slate-900 dark:text-white">Identificação de Falhas</td>
+              <td class="p-3 text-slate-500">Reativa (após o boletim gerado)</td>
+              <td class="p-3 text-slate-500">Nula</td>
+              <td class="p-3 font-bold text-brand-600 dark:text-brand-400 bg-brand-500/5">Preventiva (semanas antes do erro)</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-bold text-slate-900 dark:text-white">Suporte ao Estudante</td>
+              <td class="p-3 text-slate-500">Nenhum</td>
+              <td class="p-3 text-slate-500">ChatGPT genérico (cola/resposta pronta)</td>
+              <td class="p-3 font-bold text-brand-600 dark:text-brand-400 bg-brand-500/5">Tutor Socrático 24h ligado ao currículo</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-bold text-slate-900 dark:text-white">Apoio ao Professor</td>
+              <td class="p-3 text-slate-500">Apenas diário de classe digital</td>
+              <td class="p-3 text-slate-500">Sem ferramentas de apoio</td>
+              <td class="p-3 font-bold text-brand-600 dark:text-brand-400 bg-brand-500/5">Gerador de provas A/B/C e pareceres em 3s</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-bold text-slate-900 dark:text-white">Fricção de Implantação</td>
+              <td class="p-3 text-slate-500">Altíssima (migração demorada)</td>
+              <td class="p-3 text-slate-500">Média</td>
+              <td class="p-3 font-bold text-brand-600 dark:text-brand-400 bg-brand-500/5">Zero (Conecta sobre o ERP existente)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= SLIDE 10: MODELO PILOTO & CALL TO ACTION ================= -->
+    <section class="slide flex-col justify-center text-center py-6">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-semibold mb-4">
+        <span class="material-symbols-outlined text-base">verified</span>
+        Proposta de Parceria Sem Risco para Escolas Privadas
+      </div>
+
+      <h2 class="font-headline text-3xl md:text-5xl font-black text-slate-900 dark:text-white max-w-3xl mx-auto leading-tight mb-4">
+        Diagnóstico Piloto de 30 Dias Gratuito e Sem Risco
+      </h2>
+
+      <p class="text-sm md:text-base text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mb-8">
+        Testamos a plataforma em 2 a 3 turmas selecionadas sem custo de setup e sem alterar nada no seu ERP atual.
+      </p>
+
+      <!-- 4-Step Onboarding Timeline -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-5xl mx-auto w-full text-left mb-10">
+        <div class="p-4 rounded-2xl bg-surface-cardLight dark:bg-surface-cardDark border border-surface-borderLight dark:border-surface-borderDark">
+          <div class="text-brand-500 font-headline font-black text-xl mb-1">Passo 1</div>
+          <h4 class="font-bold text-xs mb-1">Conexão de Dados</h4>
+          <p class="text-[11px] text-slate-500">Conexão via API ou planilha em 48h sem custo de setup.</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-surface-cardLight dark:bg-surface-cardDark border border-surface-borderLight dark:border-surface-borderDark">
+          <div class="text-brand-500 font-headline font-black text-xl mb-1">Passo 2</div>
+          <h4 class="font-bold text-xs mb-1">Onboarding das Turmas</h4>
+          <p class="text-[11px] text-slate-500">Ativação do Waze da Aprendizagem e Tutor Socrático 24h.</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-surface-cardLight dark:bg-surface-cardDark border border-surface-borderLight dark:border-surface-borderDark">
+          <div class="text-brand-500 font-headline font-black text-xl mb-1">Passo 3</div>
+          <h4 class="font-bold text-xs mb-1">Uso pelos Professores</h4>
+          <p class="text-[11px] text-slate-500">Geração instantânea de provas e pareceres.</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-surface-cardLight dark:bg-surface-cardDark border border-surface-borderLight dark:border-surface-borderDark">
+          <div class="text-brand-500 font-headline font-black text-xl mb-1">Passo 4</div>
+          <h4 class="font-bold text-xs mb-1">Relatório de Saúde</h4>
+          <p class="text-[11px] text-slate-500">Entrega do Cockpit de Retenção para a Direção.</p>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="mailto:contato@schooldata.com.br" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-brand-600 to-brand-500 text-white font-headline font-bold text-sm tracking-wide shadow-xl shadow-brand-500/30 hover:scale-105 transition-all flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined">calendar_today</span>
+          <span>Agendar Diagnóstico Piloto Gratuito</span>
+        </a>
+        <button onclick="goToSlide(0)" class="w-full sm:w-auto px-6 py-4 rounded-2xl border border-slate-300 dark:border-slate-700 font-headline font-bold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+          Reiniciar Apresentação
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM SLIDE FOOTER NAV -->
+  <footer class="border-t border-surface-borderLight dark:border-surface-borderDark bg-surface-light/80 dark:bg-surface-dark/80 glass-card px-6 py-3 flex items-center justify-between text-xs text-slate-500">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-brand-500"></span>
+      <span>School Intelligence OS — Todos os direitos reservados</span>
+    </div>
+
+    <!-- Navigation dots -->
+    <div class="flex items-center gap-1.5" id="slide-dots">
+      <!-- Generated via JS -->
+    </div>
+
+    <div class="hidden sm:block text-[11px] text-slate-400">
+      Use as setas <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800">←</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800">→</kbd> ou aperte <kbd class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-500 font-bold">P</kbd> para o Roteiro
+    </div>
+  </footer>
+
+  <!-- SCRIPT DE NAVEGAÇÃO, PITCH SCRIPT & LÓGICA DA APRESENTAÇÃO -->
+  <script>
+    const presentationData = [
+      { label: 'Página 1 — Abertura', icon: 'visibility', title: 'Faça as famílias perceberem tudo o que sua escola já faz — e tudo o que passou a fazer por cada aluno.', body: ['O valor de uma escola não está apenas no que ela entrega. Está no que cada família consegue perceber.', 'Uma escola pode ter professores excelentes, uma proposta pedagógica consistente e uma equipe profundamente comprometida. Mas, se a família só recebe notas, cobranças, avisos e contatos quando surge um problema, grande parte desse valor permanece invisível.', 'E aquilo que não é percebido dificilmente é lembrado no momento da rematrícula.'], tip: 'Abra a conversa com a diferença entre entregar valor e fazê-lo ser percebido.' },
+      { label: 'Página 2 — Entrega e percepção', icon: 'compare_arrows', title: 'Talvez sua escola entregue mais valor do que as famílias conseguem enxergar.', body: ['Todos os dias, professores identificam dificuldades, adaptam explicações, preparam atividades e acompanham alunos. A coordenação observa turmas, orienta professores e conversa com famílias. A direção investe em formação, materiais, tecnologia e processos.', 'Mas quanto desse trabalho chega aos pais de forma concreta?', 'O desafio não é somente entregar uma educação melhor. É fazer com que essa qualidade seja percebida na experiência cotidiana.'], bullets: ['a nota do filho', 'a quantidade de tarefas', 'o retorno dado a uma mensagem', 'um problema específico', 'o valor da mensalidade'], tip: 'Mostre que, sem evidências, a família avalia a escola apenas pelo que consegue observar.' },
+      { label: 'Página 3 — Reputação', icon: 'favorite', title: 'A reputação da escola é construída entre uma reunião e outra.', body: ['Ela se forma quando a família percebe que a escola:'], bullets: ['conhece o aluno', 'identifica uma dificuldade antes da prova', 'entra em contato antes da reclamação', 'demonstra o que está sendo aprendido', 'explica quais ações foram realizadas', 'apresenta evolução, não apenas resultados', 'oferece suporte também fora da sala de aula'], footer: 'A percepção de valor não nasce de uma grande apresentação anual. Ela é construída por pequenas evidências recorrentes de acompanhamento, cuidado e competência.', tip: 'Conecte valor percebido a sinais recorrentes, não a uma única comunicação institucional.' },
+      { label: 'Página 4 — Experiência do aluno', icon: 'school', title: 'O aluno leva para casa a percepção que a família terá da escola.', body: ['Quando ele diz “não estou entendendo nada”, a família sente que a escola não está conseguindo alcançá-lo. Quando precisa procurar uma explicação genérica na internet, o suporte da escola parece terminar junto com a aula.', 'Com o tutor socrático, o aluno pode fotografar uma questão ou uma página da apostila e receber uma explicação baseada no conteúdo adotado pela própria escola.', 'Ele não recebe simplesmente a resposta. Recebe perguntas, pistas e orientação passo a passo para construir o raciocínio.'], quote: '“Mesmo quando meu filho estuda sozinho, ele continua sendo acompanhado pela escola.”', tip: 'Apresente o tutor como continuidade do acompanhamento da escola fora da sala de aula.' },
+      { label: 'Página 5 — Aprendizagem visível', icon: 'analytics', title: 'A nota mostra o resultado. O acompanhamento mostra o valor da escola.', body: ['Entre uma avaliação e outra, a plataforma registra:'], bullets: ['conteúdos estudados', 'dificuldades identificadas', 'habilidades desenvolvidas', 'revisões realizadas', 'evolução por tópico', 'frequência e consistência de estudo', 'intervenções recomendadas'], footer: 'A família deixa de enxergar apenas um número no boletim. Passa a compreender o percurso do aluno, onde ele avançou, onde ainda precisa de apoio e o que a escola está fazendo a respeito.', tip: 'Destaque a passagem de uma nota isolada para um percurso que a família consegue compreender.' },
+      { label: 'Página 6 — Personalização', icon: 'account_tree', title: 'Toda escola afirma que acompanha cada aluno. Poucas conseguem demonstrar como.', body: ['O mapa cognitivo identifica a origem das dificuldades e conecta o erro atual às habilidades anteriores que ainda não foram consolidadas.', 'Assim, a escola pode mostrar que não está apenas oferecendo uma recuperação genérica. Está compreendendo por que aquele aluno encontrou dificuldade e qual caminho pode ajudá-lo a avançar.'], quote: 'De “meu filho tirou uma nota baixa” para “a escola sabe onde ele precisa de ajuda.”', tip: 'Demonstre que personalização é entendimento da causa, não somente uma recuperação genérica.' },
+      { label: 'Página 7 — Professor', icon: 'psychology', title: 'A tecnologia ganha valor quando faz o professor parecer mais humano, não mais distante.', body: ['Grande parte do tempo do professor é consumida na preparação de atividades, provas, correções, pareceres e adaptações.', 'O Copiloto Pedagógico reduz esse trabalho repetitivo e apoia a criação de:'], bullets: ['atividades baseadas na apostila', 'provas em versões diferentes', 'gabaritos comentados', 'resumos e quizzes', 'planos alinhados à BNCC', 'adaptações para diferentes necessidades', 'pareceres individuais', 'feedbacks de redação'], footer: 'O ganho mais importante não é produzir mais documentos. É devolver ao professor tempo e informação para acompanhar melhor os alunos.', tip: 'Associe eficiência a mais presença e acompanhamento individualizado.' },
+      { label: 'Página 8 — Comunicação', icon: 'forum', title: 'Quando a escola só se comunica diante de um problema, a família passa a associá-la aos problemas.', body: ['O relatório preventivo transforma dados acadêmicos em uma comunicação clara e recorrente.', 'A cada período, a família pode receber informações como:'], bullets: ['o que foi trabalhado', 'como o aluno participou', 'quais habilidades desenvolveu', 'onde encontrou dificuldade', 'quais ações foram realizadas', 'como pode apoiá-lo em casa'], footer: 'Sem depender de o professor produzir dezenas de mensagens manualmente. A comunicação deixa de ser apenas operacional. Passa a demonstrar presença.', tip: 'Foque na comunicação recorrente que evidencia cuidado, sem ampliar a carga de trabalho docente.' },
+      { label: 'Página 9 — Momento certo', icon: 'radar', title: 'O valor da intervenção depende do momento em que ela acontece.', body: ['Entrar em contato depois de uma nota baixa demonstra reação. Entrar em contato quando os primeiros sinais aparecem demonstra acompanhamento.', 'O radar de alerta precoce combina mudanças em frequência, desempenho, entregas e engajamento para indicar quais alunos merecem atenção.', 'Isso permite que a escola se aproxime antes que a família precise procurá-la.'], quote: '“Eles perceberam antes de precisarmos pedir ajuda.”', tip: 'Contraste reação após a nota com acompanhamento diante dos primeiros sinais.' },
+      { label: 'Página 10 — Coerência', icon: 'groups', title: 'A marca da escola é testada em cada sala de aula.', body: ['A família não vivencia o planejamento estratégico da instituição. Ela vivencia o professor, as atividades, os retornos e a evolução do filho.', 'Diferenças excessivas entre turmas podem fazer com que a qualidade da escola pareça depender de quem está conduzindo aquela sala.', 'A análise comparativa ajuda a direção a identificar diferenças de ritmo, aprendizagem e engajamento, oferecendo suporte às equipes antes que elas se tornem diferenças perceptíveis para as famílias.'], footer: 'A proposta pedagógica deixa de existir apenas no discurso institucional. Passa a ser reconhecida na experiência do aluno.', tip: 'Mostre como a direção protege a consistência da experiência em todas as turmas.' },
+      { label: 'Página 11 — Escuta', icon: 'hearing', title: 'A família se sente valorizada quando percebe que a escola não apenas responde, mas aprende com o que escuta.', body: ['Comentários, pesquisas, mensagens e reclamações contêm sinais importantes sobre a experiência das famílias. Quando essas manifestações permanecem espalhadas, a escola resolve situações individuais, mas pode deixar de perceber padrões.', 'A análise da voz das famílias organiza os principais temas, identifica recorrências e mostra mudanças de percepção ao longo do tempo.'], footer: 'A direção compreende não apenas o que as famílias disseram. Compreende o que está começando a afetar a confiança delas.', tip: 'Posicione a escuta como inteligência sobre tendências, além da resolução de casos isolados.' },
+      { label: 'Página 12 — Mensalidade', icon: 'payments', title: 'A comparação por preço cresce quando a diferença entre as escolas parece pequena.', body: ['Quando a família enxerga apenas estrutura, apostila, carga horária e atividades, a mensalidade ocupa o centro da decisão.', 'Mas, quando ela percebe acompanhamento individual, intervenção antecipada, comunicação recorrente e apoio contínuo ao aluno, a comparação muda.'], quote: 'De “Quanto custa estudar aqui?” para “O que meu filho deixaria de receber se saísse daqui?”', footer: 'A percepção de valor não serve apenas para justificar a mensalidade. Ela reduz a facilidade com que a escola pode ser substituída.', tip: 'Evite discutir preço isoladamente; direcione a conversa para o que a família perde ao trocar de escola.' },
+      { label: 'Página 13 — Rematrícula', icon: 'autorenew', title: 'A decisão de permanecer é construída muito antes da campanha de rematrícula.', body: ['Famílias não renovam apenas por causa do desempenho final. Elas renovam quando acumulam evidências de que a escola:'], bullets: ['conhece seu filho', 'acompanha seu desenvolvimento', 'age quando algo muda', 'comunica o que está fazendo', 'oferece recursos que ele não encontraria facilmente em outro lugar'], footer: 'O previsor de rematrículas identifica sinais de distanciamento antes que eles se transformem em uma decisão definitiva. A escola ganha tempo para recuperar não apenas o aluno, mas também a percepção da família sobre o valor que recebe.', tip: 'Enquadre a rematrícula como consequência de evidências acumuladas durante todo o ano.' },
+      { label: 'Página 14 — Integração', icon: 'hub', title: 'Mais valor para a família sem criar mais complexidade para a escola.', body: ['O School Intelligence OS funciona sobre os sistemas que a instituição já utiliza, conectando-se a ERPs como Sponte, TOTVS e Sophia.', 'Notas, frequência, engajamento, comunicação e indicadores deixam de permanecer isolados. A direção passa a compreender a experiência completa do aluno e a transformar dados existentes em ações perceptíveis.'], footer: 'A escola não precisa substituir sua operação. Precisa tornar mais inteligente — e mais visível — o valor que ela já produz.', tip: 'Elimine a objeção de ruptura: a solução se conecta à operação atual.' },
+      { label: 'Página 15 — Fechamento', icon: 'auto_awesome', title: 'Uma boa escola entrega educação. Uma escola percebida como indispensável demonstra, continuamente, o impacto dessa educação sobre cada aluno.', body: ['O School Intelligence OS conecta aluno, professor, coordenação, direção e família para transformar trabalho pedagógico em uma experiência que pode ser vista, compreendida e valorizada.', 'Não se trata de parecer melhor do que a escola realmente é. Trata-se de impedir que tudo o que ela faz permaneça invisível.'], quote: 'Se uma família fosse questionada hoje sobre tudo o que sua escola fez pelo desenvolvimento do filho nos últimos 30 dias, o que ela conseguiria mencionar?', footer: 'A resposta revela não apenas quanto valor a escola entrega. Revela quanto desse valor está sendo percebido.', tip: 'Feche com a pergunta e dê espaço para o decisor refletir sobre a experiência atual das famílias.' }
+    ];
+
+    const slideMarkup = presentationData.map((slide, index) => {
+      const paragraphs = slide.body.map(text => `<p class="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed">${text}</p>`).join('');
+      const bullets = slide.bullets ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">${slide.bullets.map(item => `<div class="flex items-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800/60 px-3 py-2.5 text-xs md:text-sm text-slate-700 dark:text-slate-200"><span class="material-symbols-outlined text-brand-500 text-base">check_circle</span>${item}</div>`).join('')}</div>` : '';
+      const quote = slide.quote ? `<blockquote class="border-l-4 border-brand-500 bg-brand-500/5 dark:bg-brand-500/10 rounded-r-2xl px-5 py-4 font-headline text-base md:text-xl font-bold text-slate-800 dark:text-white">${slide.quote}</blockquote>` : '';
+      const footer = slide.footer ? `<p class="text-sm md:text-base text-slate-500 dark:text-slate-400 leading-relaxed border-t border-surface-borderLight dark:border-surface-borderDark pt-5">${slide.footer}</p>` : '';
+      return `<section class="slide ${index === 0 ? 'active' : ''} flex-col justify-center py-5 md:py-10"><div class="max-w-5xl mx-auto w-full"><div class="flex items-center gap-3 mb-6"><div class="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-500 flex items-center justify-center"><span class="material-symbols-outlined text-2xl">${slide.icon}</span></div><span class="text-xs font-bold uppercase tracking-wider text-brand-500">${slide.label}</span></div><div class="rounded-3xl bg-surface-cardLight dark:bg-surface-cardDark border border-surface-borderLight dark:border-surface-borderDark p-6 md:p-10 shadow-sm"><h2 class="font-headline text-2xl md:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight mb-7">${slide.title}</h2><div class="space-y-5">${paragraphs}${bullets}${quote}${footer}</div></div></div></section>`;
+    }).join('');
+    document.getElementById('presentation-slides').innerHTML = slideMarkup;
+
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+
+    // Copies / Roteiros para cada slide
+    const pitchScripts = [
+      {
+        title: "Página 1: Abertura & Posicionamento",
+        script: `"Diretor(a), as escolas privadas da nossa região enfrentam dois grandes desafios invisíveis: o aluno que não entende a aula e acumula dúvidas em silêncio, e a direção que só descobre o problema quando a nota cai ou no cancelamento. Nós não viemos vender mais um app de vídeos ou propor a troca dolorosa do seu ERP (Sponte/TOTVS). Construímos o School Intelligence OS: uma camada de inteligência que atua no aluno, no professor e na gestão."`,
+        tip: "Foque no benefício de não precisar trocar de ERP e no ganho direto de retenção."
+      },
+      {
+        title: "Página 2: Funcionalidades por Perfil",
+        script: `"A nossa plataforma possui um ecossistema completo de funcionalidades desenhadas sob medida para cada ator do colégio. Para os ALUNOS: foto da questão com IA Vision, scanner de apostila, resumo de aula com quiz/ranking e comunidade da turma. Para os PROFESSORES: gerador via foto da apostila, pareceres descritivos e provas em 3s. E para a DIREÇÃO: o Cockpit de Retenção com Early Warning Risk Score."`,
+        tip: "Navegue entre as abas para mostrar aos diretores a amplitude do sistema."
+      },
+      {
+        title: "Página 3: O Diagnóstico do Mercado",
+        script: `"Hoje, quando um aluno tira nota 4 em Matemática, a escola diz: 'ele precisa estudar mais equações'. Mas o diagnóstico real é que ele travou em frações ensinadas no 6º ano. Enquanto o aluno guarda a dúvida por vergonha, a insatisfação da família vai acumulando. No final do 3º trimestre, o resultado é a perda imprevisível da rematrícula. O problema é que os dados estão soltos no ERP sem inteligência preventiva."`,
+        tip: "Destaque a diferença entre atacar 'estudar mais' versus identificar onde o aluno travou antes do estudo."
+      },
+      {
+        title: "Página 4: A Solução de Engenharia",
+        script: `"Nós sabemos o quão doloroso e arriscado é trocar o ERP de um colégio. Por isso, a nossa plataforma NÃO substitui o seu ERP. Atuamos como a Camada de Inteligência sobre ele. Nos conectamos ao Sponte, TOTVS ou às planilhas da escola, capturamos as notas e faltas, e entregamos diagnósticos em tempo real para o Aluno, o Professor e a Direção."`,
+        tip: "Elimine 100% da objeção de migração ou trabalho para a secretaria da escola."
+      },
+      {
+        title: "Página 5: Pilar 1 — O Aluno",
+        script: `"Para o estudante, a plataforma aceita fotos da apostila ou do caderno! A IA lê a imagem da questão e explica socraticamente como resolver. Além disso, as aulas viram resumos automáticos com quizzes gamificados e ranking de pontos da turma, além de uma comunidade oficial para os alunos interagirem de forma segura."`,
+        tip: "Mostre o exemplo do aluno mandando a foto da página 42 da apostila no chat do Tutor IA."
+      },
+      {
+        title: "Página 6: Pilar 2 — O Professor",
+        script: `"O professor pode simplesmente fotografar a página do livro didático para a IA gerar automaticamente exercícios adaptados, resumos de aula e provas A/B/C com gabaritos. Também pode disparar um quiz com ranking instantâneo para a turma engajar pós-aula."`,
+        tip: "Clique no botão 'Gerar Recurso' para demonstrar a agilidade em tempo real ao vivo."
+      },
+      {
+        title: "Página 7: Pilar 3 — A Direção",
+        script: `"Ao abrir o sistema pela manhã, o diretor vê o School Health Score (nota de 0 a 100) e o Radar de Alerta Precoce. O sistema avisa: '14 alunos exigem atenção esta semana. 4 com alto risco de perda de rematrícula'. A coordenação recebe a sugestão de intervenção precisa SEMANAS ANTES de o problema virar um cancelamento."`,
+        tip: "Mostre como a gestão deixa de ser reativa e passa a ser preventiva."
+      },
+      {
+        title: "Página 8: O Caso Financeiro (Calculadora de ROI)",
+        script: `"Se a sua instituição possui 600 alunos e mensalidade de R$ 1.400, cada aluno retido representa R$ 16.800/ano preservados. Se a nossa inteligência evitar a evasão de apenas 2% dos alunos (12 alunos salvos), sua escola preserva R$ 201.600 por ano. O investimento na plataforma é de ~R$ 3.900/mês. Reter apenas 3 alunos no ano inteiro já paga 100% do sistema!"`,
+        tip: "Altere os campos da calculadora ao vivo com o número real de alunos do colégio dele."
+      },
+      {
+        title: "Página 9: Matriz Comparativa de Mercado",
+        script: `"Compare a nossa abordagem: o ERP tradicional só registra a nota depois que ela caiu. As EdTechs de conteúdo só entregam vídeos genéricos. Nós somos a única plataforma focada no diagnóstico preventivo de lacunas, no apoio total ao professor e na retenção de receita para o diretor."`,
+        tip: "Passe item por item da tabela mostrando a superioridade da nossa proposta."
+      },
+      {
+        title: "Página 10: Fechamento & Piloto Gratuito",
+        script: `"Diretor(a), queremos propor um Diagnóstico Piloto de 30 Dias Gratuito. Selecionamos 2 ou 3 turmas do Fundamental II ou Médio, conectamos os dados sem custo de setup e colocamos o sistema para rodar. No final de 30 dias, entregamos o primeiro Relatório de Saúde da Escola. Vamos agendar o início do piloto para a próxima semana?"`,
+        tip: "Faça o fechamento direto convidando para agendar a data do teste nas turmas piloto."
+      }
+    ];
+
+    const updatedPitchScripts = presentationData.map(slide => ({
+      title: slide.label,
+      script: [...slide.body, ...(slide.bullets ? ['Pontos a reforçar: ' + slide.bullets.join('; ') + '.'] : []), ...(slide.quote ? [slide.quote] : []), ...(slide.footer ? [slide.footer] : [])].join(' '),
+      tip: slide.tip
+    }));
+
+    document.getElementById('total-slides-num').textContent = totalSlides;
+
+    function initDots() {
+      const dotsContainer = document.getElementById('slide-dots');
+      dotsContainer.innerHTML = '';
+      slides.forEach((_, idx) => {
+        const dot = document.createElement('button');
+        dot.className = `w-2.5 h-2.5 rounded-full transition-all ${idx === 0 ? 'bg-brand-500 w-6' : 'bg-slate-300 dark:bg-slate-700'}`;
+        dot.onclick = () => goToSlide(idx);
+        dotsContainer.appendChild(dot);
+      });
+    }
+
+    function updateSlideUI() {
+      slides.forEach((slide, idx) => {
+        if (idx === currentSlide) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+        }
+      });
+
+      document.getElementById('current-slide-num').textContent = currentSlide + 1;
+      document.getElementById('progress-bar').style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+
+      // Update dots
+      const dots = document.querySelectorAll('#slide-dots button');
+      dots.forEach((dot, idx) => {
+        if (idx === currentSlide) {
+          dot.className = 'w-6 h-2.5 rounded-full bg-brand-500 transition-all';
+        } else {
+          dot.className = 'w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all';
+        }
+      });
+
+      // Update Pitch script content
+      const pitch = updatedPitchScripts[currentSlide] || updatedPitchScripts[0];
+      document.getElementById('pitch-slide-title').textContent = pitch.title;
+      document.getElementById('pitch-slide-script').textContent = pitch.script;
+      document.getElementById('pitch-slide-tip').textContent = pitch.tip;
+    }
+
+    function goToSlide(index) {
+      if (index >= 0 && index < totalSlides) {
+        currentSlide = index;
+        updateSlideUI();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides - 1) {
+        goToSlide(currentSlide + 1);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        goToSlide(currentSlide - 1);
+      }
+    }
+
+    function togglePitchDrawer() {
+      const drawer = document.getElementById('pitch-drawer');
+      drawer.classList.toggle('translate-x-full');
+    }
+
+    // Catalog Tab Switcher
+    function switchCatalogTab(tabName) {
+      const tabAluno = document.getElementById('catalog-tab-aluno');
+      const tabProf = document.getElementById('catalog-tab-professor');
+      const tabGestor = document.getElementById('catalog-tab-gestor');
+
+      const btnAluno = document.getElementById('tab-btn-aluno');
+      const btnProf = document.getElementById('tab-btn-professor');
+      const btnGestor = document.getElementById('tab-btn-gestor');
+
+      // Reset tabs
+      tabAluno.classList.add('hidden');
+      tabProf.classList.add('hidden');
+      tabGestor.classList.add('hidden');
+
+      // Reset buttons
+      [btnAluno, btnProf, btnGestor].forEach(btn => {
+        btn.className = 'px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all';
+      });
+
+      if (tabName === 'aluno') {
+        tabAluno.classList.remove('hidden');
+        btnAluno.className = 'px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-brand-600 text-white shadow-md shadow-brand-600/30 transition-all';
+      } else if (tabName === 'professor') {
+        tabProf.classList.remove('hidden');
+        btnProf.className = 'px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-rose-600 text-white shadow-md shadow-rose-600/30 transition-all';
+      } else if (tabName === 'gestor') {
+        tabGestor.classList.remove('hidden');
+        btnGestor.className = 'px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-amber-600 text-white shadow-md shadow-amber-600/30 transition-all';
+      }
+    }
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key === 'p' || e.key === 'P') {
+        togglePitchDrawer();
+      }
+    });
+
+    // Dark Mode Toggle
+    function toggleDarkMode() {
+      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    // ROI Calculator Function
+    function calculateROI() {
+      const students = parseFloat(document.getElementById('roi-students').value) || 0;
+      const tuition = parseFloat(document.getElementById('roi-tuition').value) || 0;
+      const retentionRate = parseFloat(document.getElementById('roi-retention-rate').value) || 0.02;
+
+      const savedStudents = Math.round(students * retentionRate);
+      const revenuePerStudentYear = tuition * 12; // 12 mensalidades
+      const totalRevenueSaved = savedStudents * revenuePerStudentYear;
+
+      // Estimated cost
+      const platformMonthlyCost = students < 300 ? students * 8 : (students < 800 ? students * 6.5 : students * 5);
+
+      document.getElementById('roi-total-saved').textContent = `R$ ${totalRevenueSaved.toLocaleString('pt-BR')} /ano`;
+      document.getElementById('roi-saved-students-count').textContent = `${savedStudents} Alunos`;
+      document.getElementById('roi-revenue-per-student').textContent = `R$ ${revenuePerStudentYear.toLocaleString('pt-BR')} /ano`;
+      document.getElementById('roi-platform-cost').textContent = `~R$ ${Math.round(platformMonthlyCost).toLocaleString('pt-BR')} /mês`;
+    }
+
+    // Interactive Exam Generator Demo
+    function generateExamDemo() {
+      const subject = document.getElementById('exam-subject').value;
+      const outputArea = document.getElementById('exam-output');
+      outputArea.innerHTML = `
+        <div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 font-semibold animate-pulse">
+          ⚡ Processando imagem da apostila & gerando recursos com IA...
+        </div>
+      `;
+
+      setTimeout(() => {
+        outputArea.innerHTML = `
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+            <div class="font-bold text-slate-900 dark:text-white mb-1">RECURSO GERADO VIA FOTO DA APOSTILA — ${subject.toUpperCase()}</div>
+            <p class="text-slate-500 dark:text-slate-400 text-[11px]">Resumo + Quiz Gamificado + Prova Versão A & B</p>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700">
+            <p class="font-semibold text-slate-800 dark:text-slate-200 mb-1.5">Resumo da Aula (Postado na Comunidade da Turma):</p>
+            <p class="text-slate-600 dark:text-slate-300 text-[11px]">
+              "A leitura das fotos das páginas 42-45 identificou 3 tópicos centrais. Resumo e mapa mental enviados ao Feed da Turma."
+            </p>
+            <div class="mt-2 pt-2 border-t border-slate-200 dark:border-slate-700 text-[11px] text-emerald-600 dark:text-emerald-400 font-bold">
+              🏆 Quiz da Aula Ativo: 1º Lugar — Pedro (950 pts) | 2º Lugar — Sofia (910 pts)
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700">
+            <p class="font-semibold text-slate-800 dark:text-slate-200 mb-1">Avaliação Impressa (Versão A + B Anti-Cola):</p>
+            <p class="text-slate-600 dark:text-slate-300 text-[11px]">Gerada com gabarito comentado pronto para exportar em PDF/Word.</p>
+          </div>
+        `;
+      }, 700);
+    }
+
+    // Init
+    initDots();
+    calculateROI();
+    updateSlideUI();
+  </script>
+</body>
+</html>

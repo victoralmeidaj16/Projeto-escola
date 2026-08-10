@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>School Intelligence OS - Biblioteca</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&amp;family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#bc004d",
+                        "primary": "#b10048",
+                        "inverse-on-surface": "#f3f0f0",
+                        "surface-dim": "#dcd9d9",
+                        "primary-container": "#df005d",
+                        "on-secondary-container": "#fffbff",
+                        "on-primary-fixed": "#3f0015",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#cf316c",
+                        "outline-variant": "#e4bdc2",
+                        "background": "#fbf9f8",
+                        "on-background": "#1b1c1c",
+                        "surface-container": "#f0eded",
+                        "on-surface": "#1b1c1c",
+                        "on-secondary-fixed": "#410004",
+                        "on-primary-container": "#fff4f4",
+                        "tertiary-fixed": "#ffd9e0",
+                        "surface": "#fbf9f8",
+                        "on-tertiary-container": "#fff5f5",
+                        "on-primary-fixed-variant": "#900039",
+                        "primary-fixed-dim": "#ffb2bf",
+                        "on-surface-variant": "#5c3f44",
+                        "inverse-surface": "#303030",
+                        "surface-variant": "#e4e2e1",
+                        "secondary-fixed-dim": "#ffb3ad",
+                        "secondary-fixed": "#ffdad7",
+                        "secondary": "#bb001b",
+                        "primary-fixed": "#ffd9de",
+                        "inverse-primary": "#ffb2bf",
+                        "secondary-container": "#e02830",
+                        "surface-container-low": "#f6f3f2",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#fbf9f8",
+                        "outline": "#906f73",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#930013",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb1c3",
+                        "on-tertiary-fixed": "#3f0019",
+                        "error": "#ba1a1a",
+                        "on-primary": "#ffffff",
+                        "surface-container-highest": "#e4e2e1",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#8f0042",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#ad1054",
+                        "surface-container-high": "#eae8e7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {},
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Lexend"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+  /* Mobile Responsive Overrides */
+  @media (max-width: 767px) {
+    main.app-main-offset,
+    .app-main-offset {
+      margin-left: 0 !important;
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+      padding-top: 1.5rem !important;
+      width: 100% !important;
+    }
+    
+    header.app-main-offset {
+      display: none !important; /* Hide desktop header on mobile */
+    }
+    
+    /* Force grids to single column on mobile */
+    .grid:not(.grid-cols-3):not(.grid-cols-4):not(.flex) {
+      grid-template-columns: 1fr !important;
+    }
+    
+    /* Make sure form layout works on mobile */
+    #project-form, #planner-form, form {
+      padding: 1.25rem !important;
+      border-radius: 1.5rem !important;
+    }
+    
+    /* Sidebar as mobile drawer */
+    .standard-sidebar {
+      display: flex !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      height: 100vh !important;
+      width: 280px !important;
+      transform: translateX(-100%) !important;
+      transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+      z-index: 9999 !important;
+      box-shadow: 20px 0 50px rgba(0, 0, 0, 0.15) !important;
+      border-radius: 0 2rem 2rem 0 !important;
+    }
+    
+    .standard-sidebar.mobile-open {
+      transform: translateX(0) !important;
+    }
+    
+    /* Hide standard desktop toggle button on mobile */
+    #standard-sidebar-toggle,
+    .standard-sidebar-toggle {
+      display: none !important;
+    }
+    
+    /* Prevent iOS auto-zoom on form inputs */
+    .input-field, select, textarea, input {
+      font-size: 16px !important;
+    }
+  }
+
+        @layer utilities {
+            .glass-panel {
+                @apply bg-surface/80 backdrop-blur-xl border border-outline-variant/15;
+            }
+            .smooth-shadow {
+                @apply shadow-[0_20px_40px_-15px_rgba(0,0,0,0.06)];
+            }
+        }
+    
+        .standard-sidebar,
+        .standard-sidebar-toggle,
+        .app-main-offset {
+            transition: margin-left 260ms ease, transform 260ms ease, left 260ms ease, width 260ms ease, opacity 160ms ease;
+        }
+        .standard-nav-link.active {
+            background: #ffffff;
+            color: #b10048;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+        }
+        .standard-nav-link.active .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1;
+        }
+        @media (min-width: 768px) {
+            .app-main-offset {
+                margin-left: 16rem !important;
+                width: calc(100% - 16rem) !important;
+            }
+            body.sidebar-collapsed .standard-sidebar {
+                transform: translateX(-100%);
+            }
+            body.sidebar-collapsed .app-main-offset {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+            body.sidebar-collapsed .standard-sidebar-toggle {
+                left: 0.75rem;
+                opacity: 0.55;
+            }
+            body.sidebar-collapsed .standard-sidebar-toggle-icon {
+                transform: rotate(180deg);
+            }
+        }
+        .standard-sidebar-toggle-icon {
+            transition: transform 260ms ease;
+        }
+
+        body {
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 180ms ease, transform 180ms ease;
+        }
+        body.page-ready {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        body.page-leaving {
+            opacity: 0;
+            transform: translateY(4px);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            body,
+            body.page-ready,
+            body.page-leaving {
+                opacity: 1;
+                transform: none;
+                transition: none;
+            }
+        }
+</style>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased selection:bg-primary-container selection:text-white overflow-x-hidden min-h-screen flex flex-col md:flex-row">
+
+<!-- Mobile Navigation Header -->
+<header id="mobile-navigation-bar" class="md:hidden sticky top-0 z-50 flex items-center justify-between px-5 py-3.5 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/50 dark:border-zinc-800/50">
+  <div class="flex items-center gap-3">
+    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white font-bold shadow-sm">
+      <span class="material-symbols-outlined text-lg">auto_awesome</span>
+    </div>
+    <div>
+      <h1 class="text-sm font-bold text-primary font-headline tracking-tight">School Intelligence OS</h1>
+      <p class="text-[9px] text-on-surface-variant font-medium">EdTech Suite</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <button id="mobile-theme-toggle" class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors" aria-label="Alternar tema">
+      <span class="material-symbols-outlined text-xl">dark_mode</span>
+    </button>
+    <button id="mobile-menu-toggle" class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors" aria-label="Abrir menu">
+      <span class="material-symbols-outlined text-2xl">menu</span>
+    </button>
+  </div>
+</header>
+<div id="sidebar-backdrop" class="fixed inset-0 bg-black/40 z-[9990] hidden opacity-0 transition-opacity duration-300"></div>
+
+
+<!-- Mobile Top App Bar (Hidden on md+) -->
+<header class="md:hidden flex justify-between items-center w-full px-8 py-4 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl z-50 sticky top-0 border-b border-surface-container-high/50 shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">book_4</span>
+<span class="text-2xl font-black text-zinc-900 font-headline tracking-tight">School Intelligence OS</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:scale-105 hover:text-primary transition-all text-zinc-500 scale-95 active:opacity-80">
+<span class="material-symbols-outlined text-2xl">notifications</span>
+</button>
+<button class="hover:scale-105 hover:text-primary transition-all text-zinc-500 scale-95 active:opacity-80">
+<span class="material-symbols-outlined text-2xl">favorite</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border-2 border-white smooth-shadow">
+<img alt="Perfil do Usuário" class="w-full h-full object-cover" data-alt="Retrato de uma jovem profissional sorrindo suavemente sob luz natural quente" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCM7CShuCC7cozjgY-dxnz5sQR1SCoQNfGn7XZfMT6BDE5B67zXPjfAiKjSi4-KTGZEEkDMyNwY0BT8TTpdSdOYFQgp_o6BMS6cnvnzSU-2Lxw83j27MWZzUhq3eN5tQYXu_ZgXdIZa5SNlTToDfWvv7_q-GOlH2-fb-Qfn8DSn3l1sXjul3AN3wKtSwxZFzdMyrD7eEmcozf4nOxqq9A9VgYtFyFJ13F_t7jLi7kjwP2EW-eEBV-KiCmdrJFMszyq2Bqb9BaFcBzk"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+
+<!-- Standard Side Navigation (Web) -->
+<nav id="standard-sidebar" class="standard-sidebar hidden md:flex fixed left-0 top-0 w-64 h-full flex-col py-8 bg-zinc-50 dark:bg-zinc-900 rounded-r-[3rem] overflow-hidden z-40">
+<div class="px-8 mb-12 flex items-center gap-4">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white font-bold shadow-md">
+  <span class="material-symbols-outlined text-xl">auto_awesome</span>
+</div>
+<div>
+<h1 class="text-lg font-bold text-primary font-headline tracking-tight">School Intelligence OS</h1>
+<p class="text-xs text-on-surface-variant font-medium">EdTech Suite</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 flex-grow px-4 font-['Lexend'] font-medium overflow-y-auto scrollbar-hide">
+<a data-nav-target="student_dashboard_1/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../student_dashboard_1/code.html">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span>Painel</span>
+</a>
+<a data-nav-target="gerador_projetos/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../gerador_projetos/code.html">
+      <span class="material-symbols-outlined text-xl">account_tree</span><span>Projeto BNCC Integrado</span>
+    </a>
+<a data-nav-target="chat/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../chat/code.html">
+<span class="material-symbols-outlined text-xl">psychology</span>
+<span>Chat IA</span>
+</a>
+<a data-nav-target="criador_posts/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../criador_posts/code.html">
+<span class="material-symbols-outlined text-xl">campaign</span>
+<span>Criador de Posts</span>
+</a>
+<a data-nav-target="pareceres_relatorios/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../pareceres_relatorios/code.html">
+<span class="material-symbols-outlined text-xl">assignment</span>
+<span>Pareceres</span>
+</a>
+<a data-nav-target="comunicados_familia/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../comunicados_familia/code.html">
+<span class="material-symbols-outlined text-xl">forum</span>
+<span>Comunicados</span>
+</a>
+<a data-nav-target="turma_alfabetizacao/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../turma_alfabetizacao/code.html">
+<span class="material-symbols-outlined text-xl">groups</span>
+<span>Turma</span>
+</a>
+
+<a data-nav-target="resource_library/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../resource_library/code.html">
+<span class="material-symbols-outlined text-xl">book_4</span>
+<span>Coleções</span>
+</a>
+
+
+
+</div>
+<div class="px-6 mt-auto">
+<div class="p-6 rounded-3xl bg-gradient-to-br from-tertiary-fixed to-primary-fixed relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
+<h3 class="font-headline font-bold text-on-surface mb-2 relative z-10">Vá Mais Longe</h3>
+<p class="text-sm text-on-surface-variant mb-4 relative z-10 font-body">Desbloqueie todos os recursos premium.</p>
+<button class="w-full py-3 px-4 bg-primary text-white rounded-full font-semibold text-sm hover:bg-primary-container transition-colors shadow-lg shadow-primary/20 relative z-10">
+Atualizar para Pro
+</button>
+</div>
+</div>
+</nav>
+<button id="standard-sidebar-toggle" aria-label="Esconder menu lateral" aria-expanded="true" class="standard-sidebar-toggle hidden md:flex fixed left-[15.25rem] top-24 z-50 h-8 w-8 items-center justify-center rounded-full bg-white/80 text-zinc-500 shadow-sm border border-zinc-200 hover:bg-white hover:text-primary hover:opacity-100 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px] standard-sidebar-toggle-icon">chevron_left</span>
+</button>
+<main class="app-main-offset flex-1 w-full md:ml-64 pb-24 md:pb-12 min-h-screen flex flex-col bg-surface relative z-10">
+<!-- Header & Search -->
+<div class="px-6 md:px-12 pt-8 md:pt-16 pb-8 bg-gradient-to-b from-surface-container-low to-surface">
+<div class="max-w-6xl mx-auto w-full flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h1 class="font-headline text-4xl md:text-display-lg font-extrabold text-on-surface tracking-tight mb-2 leading-tight">
+                        A Biblioteca
+                    </h1>
+<p class="font-body text-on-surface-variant text-lg max-w-xl">
+                        Explorar coleções selecionadas de recursos criativos, escolhidos para acompanhar sua jornada.
+                    </p>
+</div>
+<!-- Large Search Bar -->
+<div class="relative w-full md:w-[400px] shrink-0 group">
+<div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-primary/70 text-xl group-focus-within:text-primary transition-colors">search</span>
+</div>
+<input class="w-full pl-14 pr-6 py-5 bg-surface-container-lowest border border-outline-variant/30 rounded-[2rem] text-on-surface placeholder-on-surface-variant/60 focus:outline-none focus:ring-0 focus:border-primary/30 transition-all shadow-sm font-body text-base hover:shadow-md focus:bg-surface-bright" placeholder="Buscar nos arquivos..." type="text"/>
+<div class="absolute inset-y-0 right-2 flex items-center">
+<button class="p-3 bg-surface-container-low text-on-surface-variant rounded-full hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-sm">tune</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-1 max-w-6xl w-full mx-auto px-6 md:px-12 flex flex-col gap-12 pb-16">
+<!-- Categories -->
+<section class="w-full overflow-hidden">
+<div class="flex gap-3 overflow-x-auto pb-4 scrollbar-hide -mx-6 px-6 md:mx-0 md:px-0">
+<button class="shrink-0 px-6 py-3 bg-primary-container text-white rounded-full font-body font-medium shadow-md shadow-primary-container/20 transition-transform hover:scale-[1.02]">
+                        Todos os Recursos
+                    </button>
+<button class="shrink-0 px-6 py-3 bg-surface-container-lowest text-on-surface border border-outline-variant/15 rounded-full font-body font-medium hover:bg-surface-container-low hover:border-outline-variant/30 transition-all smooth-shadow">
+                        Alfabetização
+                    </button>
+<button class="shrink-0 px-6 py-3 bg-surface-container-lowest text-on-surface border border-outline-variant/15 rounded-full font-body font-medium hover:bg-surface-container-low hover:border-outline-variant/30 transition-all smooth-shadow">
+                        Matemática
+                    </button>
+<button class="shrink-0 px-6 py-3 bg-surface-container-lowest text-on-surface border border-outline-variant/15 rounded-full font-body font-medium hover:bg-surface-container-low hover:border-outline-variant/30 transition-all smooth-shadow">
+                        Ciências
+                    </button>
+<button class="shrink-0 px-6 py-3 bg-surface-container-lowest text-on-surface border border-outline-variant/15 rounded-full font-body font-medium hover:bg-surface-container-low hover:border-outline-variant/30 transition-all smooth-shadow">
+                        Planners &amp; Organização
+                    </button>
+<button class="shrink-0 px-6 py-3 bg-surface-container-lowest text-on-surface border border-outline-variant/15 rounded-full font-body font-medium hover:bg-surface-container-low hover:border-outline-variant/30 transition-all smooth-shadow">
+                        Artes &amp; Projetos
+                    </button>
+</div>
+</section>
+<!-- Grid Layout -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Resource Card 1 -->
+<div class="group flex flex-col bg-surface-container-lowest rounded-[2rem] p-4 hover:-translate-y-2 transition-all duration-300 smooth-shadow relative overflow-hidden">
+<div class="relative w-full aspect-[4/3] rounded-[1.5rem] overflow-hidden mb-5">
+<img alt="Planner Pedagógico 2026" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="planner_2026_cover.png"/>
+<!-- Badge Overlapping -->
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">description</span>
+<span class="text-xs font-bold text-on-surface font-headline tracking-wide uppercase">PDF / Planner</span>
+</div>
+</div>
+<div class="px-2 flex-1 flex flex-col">
+<div class="flex items-center gap-2 mb-2">
+<span class="px-2.5 py-1 bg-tertiary-fixed text-on-tertiary-fixed rounded-full text-[10px] font-bold uppercase tracking-wider">Planners &amp; Organização</span>
+<span class="text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">menu_book</span> 160 págs</span>
+</div>
+<h3 class="font-headline font-bold text-xl text-on-surface mb-2 leading-tight group-hover:text-primary transition-colors">Planner Pedagógico 2026</h3>
+<p class="font-body text-sm text-on-surface-variant line-clamp-2 mb-4 flex-1">O planner definitivo para organizar suas aulas, rotinas de alfabetização, calendários e registros alinhados à BNCC.</p>
+<div class="flex items-center justify-between pt-4 border-t border-surface-container-high/50 mt-auto">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold font-headline">
+SI
+</div>
+<span class="text-sm font-medium text-on-surface">School Intelligence OS</span>
+</div>
+<button class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface hover:bg-primary-container hover:text-white transition-colors">
+<span class="material-symbols-outlined text-lg">download</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Resource Card 2 -->
+<div class="group flex flex-col bg-surface-container-lowest rounded-[2rem] p-4 hover:-translate-y-2 transition-all duration-300 smooth-shadow relative overflow-hidden">
+<div class="relative w-full aspect-[4/3] rounded-[1.5rem] overflow-hidden mb-5">
+<img alt="Caligrafia Artística e Coordenação" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="resource_caligrafia.png"/>
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[14px] text-tertiary" style="font-variation-settings: 'FILL' 1;">edit</span>
+<span class="text-xs font-bold text-on-surface font-headline tracking-wide uppercase">Atividade / PDF</span>
+</div>
+</div>
+<div class="px-2 flex-1 flex flex-col">
+<div class="flex items-center gap-2 mb-2">
+<span class="px-2.5 py-1 bg-secondary-fixed text-on-secondary-fixed rounded-full text-[10px] font-bold uppercase tracking-wider">Alfabetização</span>
+<span class="text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">menu_book</span> 45 págs</span>
+</div>
+<h3 class="font-headline font-bold text-xl text-on-surface mb-2 leading-tight group-hover:text-primary transition-colors">Caligrafia e Coordenação</h3>
+<p class="font-body text-sm text-on-surface-variant line-clamp-2 mb-4 flex-1">Atividades lúdicas focadas em coordenação motora fina e no traçado correto das letras cursivas e bastão.</p>
+<div class="flex items-center justify-between pt-4 border-t border-surface-container-high/50 mt-auto">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden flex items-center justify-center bg-[#bb001b] text-white text-xs font-bold font-headline">
+K
+</div>
+<span class="text-sm font-medium text-on-surface">Profª. Katiusa</span>
+</div>
+<button class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface hover:bg-primary-container hover:text-white transition-colors">
+<span class="material-symbols-outlined text-lg">download</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Resource Card 3 -->
+<div class="group flex flex-col bg-surface-container-lowest rounded-[2rem] p-4 hover:-translate-y-2 transition-all duration-300 smooth-shadow relative overflow-hidden">
+<div class="relative w-full aspect-[4/3] rounded-[1.5rem] overflow-hidden mb-5">
+<img alt="Trilha Matemática Divertida" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="resource_trilha_matematica.png"/>
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[14px] text-surface-tint" style="font-variation-settings: 'FILL' 1;">casino</span>
+<span class="text-xs font-bold text-on-surface font-headline tracking-wide uppercase">Jogo Pedagógico</span>
+</div>
+</div>
+<div class="px-2 flex-1 flex flex-col">
+<div class="flex items-center gap-2 mb-2">
+<span class="px-2.5 py-1 bg-surface-variant text-on-surface rounded-full text-[10px] font-bold uppercase tracking-wider">Matemática</span>
+<span class="text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">extension</span> Jogo Completo</span>
+</div>
+<h3 class="font-headline font-bold text-xl text-on-surface mb-2 leading-tight group-hover:text-primary transition-colors">Trilha Matemática Divertida</h3>
+<p class="font-body text-sm text-on-surface-variant line-clamp-2 mb-4 flex-1">Jogo de tabuleiro para imprimir e montar que estimula o raciocínio lógico, soma e subtração de forma lúdica.</p>
+<div class="flex items-center justify-between pt-4 border-t border-surface-container-high/50 mt-auto">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold">
+SI
+</div>
+<span class="text-sm font-medium text-on-surface">School Intelligence OS</span>
+</div>
+<button class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface hover:bg-primary-container hover:text-white transition-colors">
+<span class="material-symbols-outlined text-lg">download</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Resource Card 4 -->
+<div class="group flex flex-col bg-surface-container-lowest rounded-[2rem] p-4 hover:-translate-y-2 transition-all duration-300 smooth-shadow relative overflow-hidden md:col-span-2 lg:col-span-2">
+<div class="flex flex-col md:flex-row h-full gap-6">
+<div class="relative w-full md:w-1/2 aspect-[16/9] md:aspect-auto md:h-full rounded-[1.5rem] overflow-hidden shrink-0">
+<img alt="Sistema Solar e Astros" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="resource_sistema_solar.png"/>
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold text-on-surface font-headline tracking-wide uppercase">Kit Completo</span>
+</div>
+</div>
+<div class="px-2 py-4 flex-1 flex flex-col justify-center">
+<div class="flex items-center gap-2 mb-4">
+<span class="px-3 py-1.5 bg-primary-container/10 text-primary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Ciências</span>
+<span class="text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">format_list_bulleted</span> 18 Recursos</span>
+</div>
+<h3 class="font-headline font-extrabold text-2xl md:text-3xl text-on-surface mb-3 leading-tight group-hover:text-primary transition-colors">Kit Pedagógico: Sistema Solar &amp; Astros</h3>
+<p class="font-body text-base text-on-surface-variant mb-6 line-clamp-3">Um kit interdisciplinar completo com flashcards, maquete de recortar, textos informativos e caderno de atividades científicas para ensinar astronomia engajando os alunos.</p>
+<div class="flex items-center gap-4 mt-auto">
+<button class="px-6 py-3 bg-on-surface text-surface rounded-full font-semibold text-sm hover:bg-primary-container hover:text-white transition-colors">
+                                    Baixar Kit Completo
+                                </button>
+<button class="w-12 h-12 rounded-full border-2 border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:border-primary/50 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">bookmark_add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Resource Card 5 -->
+<div class="group flex flex-col bg-surface-container-lowest rounded-[2rem] p-4 hover:-translate-y-2 transition-all duration-300 smooth-shadow relative overflow-hidden">
+<div class="relative w-full aspect-[4/3] rounded-[1.5rem] overflow-hidden mb-5 bg-tertiary-fixed">
+<div class="w-full h-full bg-gradient-to-br from-tertiary-fixed to-primary-fixed-dim p-6 flex flex-col justify-between">
+<span class="material-symbols-outlined text-4xl text-primary opacity-50" style="font-variation-settings: 'FILL' 1;">format_quote</span>
+<h4 class="font-headline font-bold text-lg text-on-tertiary-fixed leading-snug">"Ensinar não é transferir conhecimento, mas criar as possibilidades para a sua própria produção ou a sua construção."</h4>
+<p class="font-body text-sm font-medium text-on-tertiary-fixed/70">— Paulo Freire</p>
+</div>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
+<span class="text-xs font-bold text-on-surface font-headline tracking-wide uppercase">Citação</span>
+</div>
+</div>
+<div class="px-2 flex-1 flex flex-col">
+<h3 class="font-headline font-bold text-xl text-on-surface mb-2 leading-tight">Inspiração Pedagógica</h3>
+<p class="font-body text-sm text-on-surface-variant mb-4 flex-1">Uma dose extra de reflexão pedagógica para começar o seu planejamento escolar com carinho e propósito.</p>
+</div>
+</div>
+</section>
+<!-- Load More -->
+<div class="flex justify-center mt-8">
+<button class="px-8 py-4 bg-surface-container-low text-on-surface rounded-full font-headline font-bold text-sm hover:bg-surface-container-highest transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">refresh</span>
+                    Carregar Mais Recursos
+                </button>
+</div>
+</div>
+</main>
+<!-- Mobile Bottom Nav Bar (Hidden on md+) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 h-20 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-lg docked bottom-0 rounded-t-[2.5rem] border-t-0 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] bg-gradient-to-t from-zinc-100 dark:from-zinc-900 font-['Lexend'] text-[10px] font-semibold">
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 hover:text-[#DF005D] scale-110 duration-300 ease-out" href="../student_dashboard_1/code.html">
+<span class="material-symbols-outlined text-2xl mb-1">home</span>
+<span>Início</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#DF005D] text-white rounded-full w-14 h-14 -translate-y-4 shadow-lg shadow-[#DF005D]/30 scale-110 duration-300 ease-out" href="./code.html">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">import_contacts</span>
+<span class="sr-only">Biblioteca</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 hover:text-[#DF005D] scale-110 duration-300 ease-out" href="../kits_pedag_gicos_foco_em_cole_es/code.html">
+<span class="material-symbols-outlined text-2xl mb-1">bookmark</span>
+<span>Salvos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 hover:text-[#DF005D] scale-110 duration-300 ease-out" href="../student_dashboard_1/code.html">
+<span class="material-symbols-outlined text-2xl mb-1">person</span>
+<span>Perfil</span>
+</a>
+</nav>
+
+<script>
+        const standardSidebarToggle = document.getElementById('standard-sidebar-toggle');
+        standardSidebarToggle?.addEventListener('click', () => {
+            const collapsed = document.body.classList.toggle('sidebar-collapsed');
+            standardSidebarToggle.setAttribute('aria-expanded', String(!collapsed));
+            standardSidebarToggle.setAttribute('aria-label', collapsed ? 'Mostrar menu lateral' : 'Esconder menu lateral');
+        });
+
+        const currentPath = decodeURIComponent(window.location.pathname).replace(/\\/g, '/');
+        document.querySelectorAll('[data-nav-target]').forEach((link) => {
+            if (currentPath.endsWith(link.getAttribute('data-nav-target'))) {
+                link.classList.add('active');
+            }
+        });
+</script>
+
+
+<script>
+        window.addEventListener('pageshow', () => {
+            document.body.classList.remove('page-leaving');
+            requestAnimationFrame(() => document.body.classList.add('page-ready'));
+        });
+
+        document.addEventListener('click', (event) => {
+            const link = event.target.closest('a[href]');
+            if (!link) return;
+
+            const href = link.getAttribute('href');
+            if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto:') || link.target === '_blank') return;
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+            event.preventDefault();
+            document.body.classList.add('page-leaving');
+            setTimeout(() => {
+                window.location.href = link.href;
+            }, 160);
+        });
+</script>
+
+
+
+<script id="mobile-responsive-script">
+  (function() {
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+    const sidebar = document.getElementById('standard-sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    
+    if (mobileMenuToggle && sidebar && backdrop) {
+      function openMobileMenu() {
+        sidebar.classList.add('mobile-open');
+        backdrop.classList.remove('hidden');
+        setTimeout(() => {
+          backdrop.classList.add('opacity-100');
+        }, 10);
+      }
+      
+      function closeMobileMenu() {
+        sidebar.classList.remove('mobile-open');
+        backdrop.classList.remove('opacity-100');
+        setTimeout(() => {
+          backdrop.classList.add('hidden');
+        }, 300);
+      }
+      
+      mobileMenuToggle.addEventListener('click', openMobileMenu);
+      backdrop.addEventListener('click', closeMobileMenu);
+      
+      sidebar.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+      });
+    }
+
+    if (mobileThemeToggle) {
+      function updateMobileThemeIcon() {
+        const isDark = document.documentElement.classList.contains('dark');
+        const icon = mobileThemeToggle.querySelector('.material-symbols-outlined');
+        if (icon) {
+          icon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        }
+      }
+      
+      updateMobileThemeIcon();
+      
+      mobileThemeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateMobileThemeIcon();
+        
+        const standardIcon = document.getElementById('theme-toggle-icon');
+        if (standardIcon) {
+          standardIcon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        }
+      });
+      
+      const standardToggle = document.getElementById('theme-toggle');
+      if (standardToggle) {
+        standardToggle.addEventListener('click', () => {
+          setTimeout(updateMobileThemeIcon, 50);
+        });
+      }
+    }
+  })();
+</script>
+
+</body></html>

@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel de Turma — Hipóteses de Escrita | School Intelligence OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../creative_pedagogy/design-system.css" />
+  <style>
+  /* Mobile Responsive Overrides */
+  @media (max-width: 767px) {
+    main.app-main-offset,
+    .app-main-offset {
+      margin-left: 0 !important;
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+      padding-top: 1.5rem !important;
+      width: 100% !important;
+    }
+    
+    header.app-main-offset {
+      display: none !important; /* Hide desktop header on mobile */
+    }
+    
+    /* Force grids to single column on mobile */
+    .grid:not(.grid-cols-3):not(.grid-cols-4):not(.flex) {
+      grid-template-columns: 1fr !important;
+    }
+    
+    /* Make sure form layout works on mobile */
+    #project-form, #planner-form, form {
+      padding: 1.25rem !important;
+      border-radius: 1.5rem !important;
+    }
+    
+    /* Sidebar as mobile drawer */
+    .standard-sidebar {
+      display: flex !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      height: 100vh !important;
+      width: 280px !important;
+      transform: translateX(-100%) !important;
+      transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+      z-index: 9999 !important;
+      box-shadow: 20px 0 50px rgba(0, 0, 0, 0.15) !important;
+      border-radius: 0 2rem 2rem 0 !important;
+    }
+    
+    .standard-sidebar.mobile-open {
+      transform: translateX(0) !important;
+    }
+    
+    /* Hide standard desktop toggle button on mobile */
+    #standard-sidebar-toggle,
+    .standard-sidebar-toggle {
+      display: none !important;
+    }
+    
+    /* Prevent iOS auto-zoom on form inputs */
+    .input-field, select, textarea, input {
+      font-size: 16px !important;
+    }
+  }
+
+    body { font-family: 'Lexend', sans-serif; background-color: #fdf6f0; color: #1a1a1a; }
+    h1, h2, h3, h4, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+    /* ── Hipótese colour palette ── */
+    :root {
+      --pre-bg: #fef9c3; --pre-border: #fbbf24; --pre-text: #92400e; --pre-badge: #f59e0b;
+      --sv-bg: #fce7f3;  --sv-border: #f472b6; --sv-text: #831843;  --sv-badge: #ec4899;
+      --cv-bg: #ede9fe;  --cv-border: #a78bfa; --cv-text: #4c1d95;  --cv-badge: #8b5cf6;
+      --sa-bg: #d1fae5;  --sa-border: #34d399; --sa-text: #065f46;  --sa-badge: #10b981;
+      --al-bg: #dbeafe;  --al-border: #60a5fa; --al-text: #1e3a8a;  --al-badge: #3b82f6;
+    }
+
+    .hip-col { min-height: 200px; transition: background 0.15s; }
+    .hip-col.drag-over { filter: brightness(0.95); outline: 2px dashed #b10048; outline-offset: -4px; border-radius: 1rem; }
+
+    .aluno-card {
+      background: #fff;
+      border-radius: 0.75rem;
+      padding: 0.6rem 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      cursor: grab;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      transition: box-shadow 0.15s, transform 0.15s;
+      margin-bottom: 0.5rem;
+      user-select: none;
+    }
+    .aluno-card:active { cursor: grabbing; transform: scale(1.02); box-shadow: 0 4px 12px rgba(0,0,0,0.18); }
+    .aluno-card.dragging { opacity: 0.4; }
+
+    .aluno-name { font-size: 0.82rem; font-weight: 600; flex: 1; line-height: 1.2; }
+    .aluno-meta { font-size: 0.7rem; color: #888; margin-top: 1px; }
+
+    .btn-avancar {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #b10048;
+      padding: 2px;
+      border-radius: 0.375rem;
+      display: flex;
+      align-items: center;
+      transition: background 0.1s;
+    }
+    .btn-avancar:hover { background: #fce7f0; }
+
+    /* Setup screen */
+    #setup-screen { animation: fadeIn 0.3s ease; }
+    #kanban-screen { display: none; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Column headers */
+    .col-header { border-radius: 0.75rem 0.75rem 0 0; padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between; }
+    .col-count { font-size: 0.75rem; font-weight: 700; border-radius: 9999px; padding: 2px 8px; min-width: 24px; text-align: center; }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100; padding: 1rem;
+    }
+    .modal-box { background: #fff; border-radius: 1.5rem; padding: 2rem; max-width: 420px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+
+    /* Print */
+    @media print {
+      body { background: #fff !important; }
+      #kanban-screen { display: block !important; }
+      #setup-screen { display: none !important; }
+      .no-print { display: none !important; }
+      #print-report { display: block !important; }
+      #kanban-view { display: none !important; }
+      .print-turma-name { display: block !important; }
+    }
+    #print-report { display: none; }
+
+    /* Sidebar nav */
+    .standard-sidebar,
+    .standard-sidebar-toggle,
+    .app-main-offset {
+      transition: margin-left 260ms ease, transform 260ms ease, left 260ms ease, width 260ms ease, opacity 160ms ease;
+    }
+    .standard-nav-link.active {
+      background: #ffffff;
+      color: #b10048;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+    .standard-nav-link.active .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
+    @media (min-width: 768px) {
+      .app-main-offset {
+        margin-left: 16rem !important;
+        width: calc(100% - 16rem) !important;
+      }
+      body.sidebar-collapsed .standard-sidebar { transform: translateX(-100%); }
+      body.sidebar-collapsed .app-main-offset {
+        margin-left: 0 !important;
+        width: 100% !important;
+      }
+      body.sidebar-collapsed .standard-sidebar-toggle {
+        left: 0.75rem;
+        opacity: 0.55;
+      }
+      body.sidebar-collapsed .standard-sidebar-toggle-icon { transform: rotate(180deg); }
+    }
+    .standard-sidebar-toggle-icon { transition: transform 260ms ease; }
+    body {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+    body.page-leaving {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+
+    /* Grade setup chips */
+    .grade-chip input { display: none; }
+    .grade-chip span {
+      display: inline-block; padding: 0.4rem 0.9rem; border-radius: 9999px;
+      border: 1.5px solid #e5e7eb; cursor: pointer; font-size: 0.82rem;
+      transition: all 0.15s; background: #fff; color: #374151;
+    }
+    .grade-chip input:checked + span { background: #b10048; border-color: #b10048; color: #fff; font-weight: 600; }
+  </style>
+</head>
+<body class="min-h-screen">
+
+<!-- Mobile Navigation Header -->
+<header id="mobile-navigation-bar" class="md:hidden sticky top-0 z-50 flex items-center justify-between px-5 py-3.5 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/50 dark:border-zinc-800/50">
+  <div class="flex items-center gap-3">
+    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white font-bold shadow-sm">
+      <span class="material-symbols-outlined text-lg">auto_awesome</span>
+    </div>
+    <div>
+      <h1 class="text-sm font-bold text-primary font-headline tracking-tight">School Intelligence OS</h1>
+      <p class="text-[9px] text-on-surface-variant font-medium">EdTech Suite</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <button id="mobile-theme-toggle" class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors" aria-label="Alternar tema">
+      <span class="material-symbols-outlined text-xl">dark_mode</span>
+    </button>
+    <button id="mobile-menu-toggle" class="p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors" aria-label="Abrir menu">
+      <span class="material-symbols-outlined text-2xl">menu</span>
+    </button>
+  </div>
+</header>
+<div id="sidebar-backdrop" class="fixed inset-0 bg-black/40 z-[9990] hidden opacity-0 transition-opacity duration-300"></div>
+
+
+
+  <!-- ───────── PRINT REPORT (hidden on screen) ───────── -->
+  <div id="print-report"></div>
+
+  <div class="flex min-h-screen">
+
+    <!-- Standard Side Navigation (Web) -->
+    <nav id="standard-sidebar" class="standard-sidebar hidden md:flex fixed left-0 top-0 w-64 h-full flex-col py-8 bg-zinc-50 dark:bg-zinc-900 rounded-r-[3rem] overflow-hidden z-40 no-print">
+      <div class="px-8 mb-12 flex items-center gap-4">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white font-bold shadow-md">
+          <span class="material-symbols-outlined text-xl">auto_awesome</span>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-primary font-headline tracking-tight">School Intelligence OS</h1>
+          <p class="text-xs text-on-surface-variant font-medium">EdTech Suite</p>
+        </div>
+      </div>
+      <div class="flex flex-col gap-2 flex-grow px-4 font-['Lexend'] font-medium overflow-y-auto scrollbar-hide">
+        <a data-nav-target="student_dashboard_1/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../student_dashboard_1/code.html">
+          <span class="material-symbols-outlined text-xl">dashboard</span>
+          <span>Painel</span>
+        </a>
+        <a data-nav-target="gerador_projetos/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../gerador_projetos/code.html">
+      <span class="material-symbols-outlined text-xl">account_tree</span><span>Projeto BNCC Integrado</span>
+    </a>
+        <a data-nav-target="chat/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../chat/code.html">
+          <span class="material-symbols-outlined text-xl">psychology</span>
+          <span>Chat IA</span>
+        </a>
+        <a data-nav-target="criador_posts/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../criador_posts/code.html">
+          <span class="material-symbols-outlined text-xl">campaign</span>
+          <span>Criador de Posts</span>
+        </a>
+        <a data-nav-target="pareceres_relatorios/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../pareceres_relatorios/code.html">
+          <span class="material-symbols-outlined text-xl">assignment</span>
+          <span>Pareceres</span>
+        </a>
+        <a data-nav-target="comunicados_familia/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../comunicados_familia/code.html">
+          <span class="material-symbols-outlined text-xl">forum</span>
+          <span>Comunicados</span>
+        </a>
+        <a data-nav-target="turma_alfabetizacao/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../turma_alfabetizacao/code.html">
+          <span class="material-symbols-outlined text-xl">groups</span>
+          <span>Turma</span>
+        </a>
+        
+        <a data-nav-target="resource_library/code.html" class="standard-nav-link flex items-center gap-4 text-zinc-600 dark:text-zinc-400 px-6 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full mx-2" href="../resource_library/code.html">
+          <span class="material-symbols-outlined text-xl">book_4</span>
+          <span>Coleções</span>
+        </a>
+        
+        
+        
+      </div>
+      <div class="px-6 mt-auto">
+        <div class="p-6 rounded-3xl bg-gradient-to-br from-tertiary-fixed to-primary-fixed relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+          <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
+          <h3 class="font-headline font-bold text-on-surface mb-2 relative z-10 text-sm">Vá Mais Longe</h3>
+          <p class="text-xs text-on-surface-variant mb-4 relative z-10 font-body">Desbloqueie todos os recursos premium.</p>
+          <button class="w-full py-3 px-4 bg-primary text-white rounded-full font-semibold text-xs hover:bg-primary-container transition-colors shadow-lg shadow-primary/20 relative z-10">
+            Atualizar para Pro
+          </button>
+        </div>
+      </div>
+    </nav>
+    <button id="standard-sidebar-toggle" aria-label="Esconder menu lateral" aria-expanded="true" class="standard-sidebar-toggle hidden md:flex fixed left-[15.25rem] top-24 z-50 h-8 w-8 items-center justify-center rounded-full bg-white/80 text-zinc-500 shadow-sm border border-zinc-200 hover:bg-white hover:text-primary hover:opacity-100 active:scale-95 transition-all no-print">
+      <span class="material-symbols-outlined text-[18px] standard-sidebar-toggle-icon">chevron_left</span>
+    </button>
+
+    <!-- ═══ MAIN CONTENT ═══ -->
+    <main class="app-main-offset flex-1 overflow-x-hidden">
+
+      <!-- ─── SETUP SCREEN ─── -->
+      <div id="setup-screen" class="p-6 max-w-2xl mx-auto">
+        <div class="mb-6">
+          <h1 class="font-headline font-bold text-2xl text-gray-800 mb-1">Painel de Turma</h1>
+          <p class="text-gray-500 text-sm">Configure sua turma uma vez. O painel salva o estado automaticamente.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 soft-shadow space-y-5">
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Nome da turma</label>
+            <input id="turma-nome" type="text" placeholder="Ex: 1º A – Tarde" class="input-field w-full" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Ano / Série</label>
+            <div class="flex flex-wrap gap-2">
+              <label class="grade-chip"><input type="radio" name="turma-grade" value="1º ano" /><span>1º ano</span></label>
+              <label class="grade-chip"><input type="radio" name="turma-grade" value="2º ano" /><span>2º ano</span></label>
+              <label class="grade-chip"><input type="radio" name="turma-grade" value="3º ano" /><span>3º ano</span></label>
+              <label class="grade-chip"><input type="radio" name="turma-grade" value="4º ano" /><span>4º ano</span></label>
+              <label class="grade-chip"><input type="radio" name="turma-grade" value="5º ano" /><span>5º ano</span></label>
+              <label class="grade-chip"><input type="radio" name="turma-grade" value="Ed. Infantil" /><span>Ed. Infantil</span></label>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Lista de alunos</label>
+            <p class="text-xs text-gray-400 mb-1">Cole os nomes, um por linha. Você poderá ajustar as hipóteses depois.</p>
+            <textarea id="setup-alunos" rows="10" placeholder="Ana Clara&#10;Bruno Silva&#10;Carla Pereira&#10;..." class="input-field w-full font-mono text-sm resize-y" style="min-height:200px;"></textarea>
+          </div>
+
+          <button onclick="criarTurma()" class="w-full py-3 rounded-xl font-headline font-bold text-white text-base transition" style="background:#b10048;" onmouseover="this.style.background='#8f003a'" onmouseout="this.style.background='#b10048'">
+            <span class="material-symbols-outlined align-middle mr-1" style="font-size:1.1rem;">groups</span>
+            Criar Turma
+          </button>
+        </div>
+      </div>
+
+      <!-- ─── KANBAN SCREEN ─── -->
+      <div id="kanban-screen" class="flex flex-col h-screen">
+
+        <!-- Top bar -->
+        <div class="bg-white border-b border-gray-100 px-5 py-3 flex items-center justify-between no-print gap-3 flex-wrap">
+          <div>
+            <h1 id="kb-turma-title" class="font-headline font-bold text-lg text-gray-800"></h1>
+            <p id="kb-turma-sub" class="text-xs text-gray-400"></p>
+          </div>
+          <div class="flex gap-2 flex-wrap">
+            <button onclick="gerarPareceres()" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-semibold border transition" style="border-color:#b10048;color:#b10048;" onmouseover="this.style.background='#fce7f0'" onmouseout="this.style.background='transparent'">
+              <span class="material-symbols-outlined" style="font-size:1rem;">description</span>Gerar Pareceres
+            </button>
+            <button onclick="imprimirRelatorio()" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-semibold border border-gray-300 text-gray-600 hover:bg-gray-50 transition">
+              <span class="material-symbols-outlined" style="font-size:1rem;">print</span>Relatório
+            </button>
+            <button onclick="resetarTurma()" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-semibold border border-gray-200 text-gray-400 hover:bg-gray-50 transition">
+              <span class="material-symbols-outlined" style="font-size:1rem;">restart_alt</span>Nova turma
+            </button>
+          </div>
+        </div>
+
+        <!-- Legend bar -->
+        <div class="bg-white border-b border-gray-100 px-5 py-2 flex items-center gap-3 text-xs text-gray-500 no-print overflow-x-auto">
+          <span class="font-semibold text-gray-600">Hipóteses de escrita (Psicogênese):</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-yellow-400 inline-block"></span>Pré-Silábico</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-pink-400 inline-block"></span>Silábico s/ valor sonoro</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-violet-400 inline-block"></span>Silábico c/ valor sonoro</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>Silábico-Alfabético</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-400 inline-block"></span>Alfabético</span>
+        </div>
+
+        <!-- Kanban board -->
+        <div id="kanban-view" class="flex-1 overflow-x-auto overflow-y-hidden p-4">
+          <div class="flex gap-3 h-full" style="min-width:900px;">
+
+            <!-- PRÉ-SILÁBICO -->
+            <div class="flex flex-col flex-1 rounded-2xl overflow-hidden" style="background:var(--pre-bg);">
+              <div class="col-header" style="background:var(--pre-border);background:linear-gradient(135deg,#fde68a,#fbbf24);">
+                <div>
+                  <p class="font-headline font-bold text-xs" style="color:var(--pre-text);">Pré-Silábico</p>
+                  <p class="text-xs opacity-70" style="color:var(--pre-text);">Sem relação som/letra</p>
+                </div>
+                <span id="count-pre" class="col-count" style="background:var(--pre-badge);color:#fff;">0</span>
+              </div>
+              <div id="col-pre" class="hip-col flex-1 p-2 overflow-y-auto" data-hip="pre-silabico"
+                   ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'pre-silabico')">
+              </div>
+              <div class="p-2 no-print">
+                <button onclick="gerarAtividade('pre-silabico')" class="w-full py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition" style="background:rgba(251,191,36,0.2);color:var(--pre-text);" onmouseover="this.style.background='rgba(251,191,36,0.35)'" onmouseout="this.style.background='rgba(251,191,36,0.2)'">
+                  <span class="material-symbols-outlined" style="font-size:0.9rem;">quiz</span>Gerar atividade para esta fase
+                </button>
+              </div>
+            </div>
+
+            <!-- SILÁBICO S/ VALOR -->
+            <div class="flex flex-col flex-1 rounded-2xl overflow-hidden" style="background:var(--sv-bg);">
+              <div class="col-header" style="background:linear-gradient(135deg,#fbcfe8,#f472b6);">
+                <div>
+                  <p class="font-headline font-bold text-xs" style="color:var(--sv-text);">Silábico s/ valor</p>
+                  <p class="text-xs opacity-70" style="color:var(--sv-text);">Uma letra por sílaba</p>
+                </div>
+                <span id="count-sv" class="col-count" style="background:var(--sv-badge);color:#fff;">0</span>
+              </div>
+              <div id="col-sv" class="hip-col flex-1 p-2 overflow-y-auto" data-hip="silabico-sem-valor"
+                   ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'silabico-sem-valor')">
+              </div>
+              <div class="p-2 no-print">
+                <button onclick="gerarAtividade('silabico-sem-valor')" class="w-full py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition" style="background:rgba(244,114,182,0.2);color:var(--sv-text);" onmouseover="this.style.background='rgba(244,114,182,0.35)'" onmouseout="this.style.background='rgba(244,114,182,0.2)'">
+                  <span class="material-symbols-outlined" style="font-size:0.9rem;">quiz</span>Gerar atividade para esta fase
+                </button>
+              </div>
+            </div>
+
+            <!-- SILÁBICO C/ VALOR -->
+            <div class="flex flex-col flex-1 rounded-2xl overflow-hidden" style="background:var(--cv-bg);">
+              <div class="col-header" style="background:linear-gradient(135deg,#ddd6fe,#a78bfa);">
+                <div>
+                  <p class="font-headline font-bold text-xs" style="color:var(--cv-text);">Silábico c/ valor</p>
+                  <p class="text-xs opacity-70" style="color:var(--cv-text);">Letras com som correto</p>
+                </div>
+                <span id="count-cv" class="col-count" style="background:var(--cv-badge);color:#fff;">0</span>
+              </div>
+              <div id="col-cv" class="hip-col flex-1 p-2 overflow-y-auto" data-hip="silabico-com-valor"
+                   ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'silabico-com-valor')">
+              </div>
+              <div class="p-2 no-print">
+                <button onclick="gerarAtividade('silabico-com-valor')" class="w-full py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition" style="background:rgba(167,139,250,0.2);color:var(--cv-text);" onmouseover="this.style.background='rgba(167,139,250,0.35)'" onmouseout="this.style.background='rgba(167,139,250,0.2)'">
+                  <span class="material-symbols-outlined" style="font-size:0.9rem;">quiz</span>Gerar atividade para esta fase
+                </button>
+              </div>
+            </div>
+
+            <!-- SILÁBICO-ALFABÉTICO -->
+            <div class="flex flex-col flex-1 rounded-2xl overflow-hidden" style="background:var(--sa-bg);">
+              <div class="col-header" style="background:linear-gradient(135deg,#a7f3d0,#34d399);">
+                <div>
+                  <p class="font-headline font-bold text-xs" style="color:var(--sa-text);">Silábico-Alfabético</p>
+                  <p class="text-xs opacity-70" style="color:var(--sa-text);">Em transição</p>
+                </div>
+                <span id="count-sa" class="col-count" style="background:var(--sa-badge);color:#fff;">0</span>
+              </div>
+              <div id="col-sa" class="hip-col flex-1 p-2 overflow-y-auto" data-hip="silabico-alfabetico"
+                   ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'silabico-alfabetico')">
+              </div>
+              <div class="p-2 no-print">
+                <button onclick="gerarAtividade('silabico-alfabetico')" class="w-full py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition" style="background:rgba(52,211,153,0.2);color:var(--sa-text);" onmouseover="this.style.background='rgba(52,211,153,0.35)'" onmouseout="this.style.background='rgba(52,211,153,0.2)'">
+                  <span class="material-symbols-outlined" style="font-size:0.9rem;">quiz</span>Gerar atividade para esta fase
+                </button>
+              </div>
+            </div>
+
+            <!-- ALFABÉTICO -->
+            <div class="flex flex-col flex-1 rounded-2xl overflow-hidden" style="background:var(--al-bg);">
+              <div class="col-header" style="background:linear-gradient(135deg,#bfdbfe,#60a5fa);">
+                <div>
+                  <p class="font-headline font-bold text-xs" style="color:var(--al-text);">Alfabético</p>
+                  <p class="text-xs opacity-70" style="color:var(--al-text);">Escrita convencional</p>
+                </div>
+                <span id="count-al" class="col-count" style="background:var(--al-badge);color:#fff;">0</span>
+              </div>
+              <div id="col-al" class="hip-col flex-1 p-2 overflow-y-auto" data-hip="alfabetico"
+                   ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'alfabetico')">
+              </div>
+              <div class="p-2 no-print">
+                <button onclick="gerarAtividade('alfabetico')" class="w-full py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition" style="background:rgba(96,165,250,0.2);color:var(--al-text);" onmouseover="this.style.background='rgba(96,165,250,0.35)'" onmouseout="this.style.background='rgba(96,165,250,0.2)'">
+                  <span class="material-symbols-outlined" style="font-size:0.9rem;">quiz</span>Gerar atividade para esta fase
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ═══ AVANÇO MODAL ═══ -->
+  <div id="avanco-modal" class="modal-overlay" style="display:none;" onclick="fecharAvancoModal(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <h3 class="font-headline font-bold text-lg text-gray-800 mb-1">Registrar Avanço</h3>
+      <p id="avanco-aluno-nome" class="text-sm text-gray-500 mb-4"></p>
+      <label class="block text-sm font-semibold text-gray-700 mb-1">Observação (opcional)</label>
+      <textarea id="avanco-obs" rows="3" placeholder="Ex: reconhece as vogais, faz pareamento silábico com apoio..." class="input-field w-full mb-4 resize-none"></textarea>
+      <p class="text-xs text-gray-400 mb-4 flex items-start gap-1"><span class="material-symbols-outlined text-yellow-500" style="font-size:0.9rem;">info</span>O aluno será movido para a próxima hipótese automaticamente.</p>
+      <div class="flex gap-2">
+        <button onclick="confirmarAvanco()" class="flex-1 py-2 rounded-xl font-bold text-white text-sm transition" style="background:#b10048;" onmouseover="this.style.background='#8f003a'" onmouseout="this.style.background='#b10048'">
+          <span class="material-symbols-outlined align-middle mr-1" style="font-size:1rem;">arrow_forward</span>Avançar hipótese
+        </button>
+        <button onclick="fecharAvancoModal()" class="px-4 py-2 rounded-xl text-sm font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const TURMA_KEY = 'turma_ativa';
+    const HIP_ORDER = ['pre-silabico', 'silabico-sem-valor', 'silabico-com-valor', 'silabico-alfabetico', 'alfabetico'];
+    const HIP_LABELS = {
+      'pre-silabico':        'Pré-Silábico',
+      'silabico-sem-valor':  'Silábico s/ valor sonoro',
+      'silabico-com-valor':  'Silábico c/ valor sonoro',
+      'silabico-alfabetico': 'Silábico-Alfabético',
+      'alfabetico':          'Alfabético'
+    };
+    const HIP_SLUG = {
+      'pre-silabico':        'pre-silabico',
+      'silabico-sem-valor':  'silabico-sem-valor',
+      'silabico-com-valor':  'silabico-com-valor',
+      'silabico-alfabetico': 'silabico-alfabetico',
+      'alfabetico':          'alfabetico'
+    };
+    const COL_IDS = {
+      'pre-silabico': 'col-pre',
+      'silabico-sem-valor': 'col-sv',
+      'silabico-com-valor': 'col-cv',
+      'silabico-alfabetico': 'col-sa',
+      'alfabetico': 'col-al'
+    };
+    const COUNT_IDS = {
+      'pre-silabico': 'count-pre',
+      'silabico-sem-valor': 'count-sv',
+      'silabico-com-valor': 'count-cv',
+      'silabico-alfabetico': 'count-sa',
+      'alfabetico': 'count-al'
+    };
+
+    let turma = null; // { nome, grade, alunos: [{id, nome, hipotese, historico:[{de,para,obs,ts}]}] }
+    let draggingId = null;
+    let avancoTargetId = null;
+
+    // ── Init ──
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem(TURMA_KEY);
+      if (saved) {
+        try {
+          turma = JSON.parse(saved);
+          mostrarKanban();
+        } catch(e) { localStorage.removeItem(TURMA_KEY); }
+      }
+    });
+
+    // ── Setup ──
+    function criarTurma() {
+      const nome = document.getElementById('turma-nome').value.trim();
+      const gradeEl = document.querySelector('input[name="turma-grade"]:checked');
+      const rawAlunos = document.getElementById('setup-alunos').value;
+
+      if (!nome) { alert('Informe o nome da turma.'); return; }
+      if (!gradeEl) { alert('Selecione o ano/série.'); return; }
+      const nomes = rawAlunos.split('\n').map(n => n.trim()).filter(Boolean);
+      if (nomes.length === 0) { alert('Adicione ao menos um aluno.'); return; }
+
+      turma = {
+        nome,
+        grade: gradeEl.value,
+        criadoEm: new Date().toISOString(),
+        alunos: nomes.map((n, i) => ({
+          id: `a${Date.now()}_${i}`,
+          nome: n,
+          hipotese: 'pre-silabico',
+          historico: []
+        }))
+      };
+      salvarTurma();
+      mostrarKanban();
+    }
+
+    function salvarTurma() {
+      localStorage.setItem(TURMA_KEY, JSON.stringify(turma));
+    }
+
+    // ── Kanban ──
+    function mostrarKanban() {
+      document.getElementById('setup-screen').style.display = 'none';
+      const ks = document.getElementById('kanban-screen');
+      ks.style.display = 'flex';
+      document.getElementById('kb-turma-title').textContent = turma.nome;
+      document.getElementById('kb-turma-sub').textContent = `${turma.grade} · ${turma.alunos.length} alunos`;
+      renderKanban();
+    }
+
+    function renderKanban() {
+      // Clear columns
+      HIP_ORDER.forEach(h => {
+        document.getElementById(COL_IDS[h]).innerHTML = '';
+        document.getElementById(COUNT_IDS[h]).textContent = '0';
+      });
+
+      // Place cards
+      const counts = {};
+      HIP_ORDER.forEach(h => counts[h] = 0);
+
+      turma.alunos.forEach(aluno => {
+        const hip = aluno.hipotese || 'pre-silabico';
+        counts[hip]++;
+        const col = document.getElementById(COL_IDS[hip]);
+        if (col) col.appendChild(criarCard(aluno));
+      });
+
+      HIP_ORDER.forEach(h => {
+        document.getElementById(COUNT_IDS[h]).textContent = counts[h];
+      });
+    }
+
+    function criarCard(aluno) {
+      const div = document.createElement('div');
+      div.className = 'aluno-card';
+      div.draggable = true;
+      div.dataset.id = aluno.id;
+
+      const lastMove = aluno.historico.length > 0
+        ? aluno.historico[aluno.historico.length - 1]
+        : null;
+
+      div.innerHTML = `
+        <div class="flex-1 min-w-0">
+          <p class="aluno-name truncate">${escapeHtml(aluno.nome)}</p>
+          ${lastMove ? `<p class="aluno-meta">↑ ${formatDate(lastMove.ts)}</p>` : ''}
+        </div>
+        <button class="btn-avancar" title="Registrar avanço" onclick="abrirAvancoModal('${aluno.id}')">
+          <span class="material-symbols-outlined" style="font-size:1.1rem;">trending_up</span>
+        </button>
+      `;
+
+      div.addEventListener('dragstart', e => {
+        draggingId = aluno.id;
+        div.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      div.addEventListener('dragend', () => {
+        div.classList.remove('dragging');
+        draggingId = null;
+      });
+
+      return div;
+    }
+
+    // ── Drag & Drop ──
+    function onDragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      e.currentTarget.classList.add('drag-over');
+    }
+    function onDragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+    function onDrop(e, newHip) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+      if (!draggingId) return;
+
+      const aluno = turma.alunos.find(a => a.id === draggingId);
+      if (!aluno || aluno.hipotese === newHip) return;
+
+      const deHip = aluno.hipotese;
+      aluno.historico.push({ de: deHip, para: newHip, obs: '', ts: new Date().toISOString() });
+      aluno.hipotese = newHip;
+      salvarTurma();
+      renderKanban();
+    }
+
+    // ── Avanço modal ──
+    function abrirAvancoModal(id) {
+      avancoTargetId = id;
+      const aluno = turma.alunos.find(a => a.id === id);
+      if (!aluno) return;
+
+      const currentIdx = HIP_ORDER.indexOf(aluno.hipotese);
+      if (currentIdx >= HIP_ORDER.length - 1) {
+        alert(`${aluno.nome} já está na fase Alfabético — a mais avançada!`);
+        return;
+      }
+
+      document.getElementById('avanco-aluno-nome').textContent =
+        `${aluno.nome} · ${HIP_LABELS[aluno.hipotese]} → ${HIP_LABELS[HIP_ORDER[currentIdx + 1]]}`;
+      document.getElementById('avanco-obs').value = '';
+      document.getElementById('avanco-modal').style.display = 'flex';
+    }
+
+    function fecharAvancoModal(e) {
+      if (e && e.target !== document.getElementById('avanco-modal')) return;
+      document.getElementById('avanco-modal').style.display = 'none';
+      avancoTargetId = null;
+    }
+    document.getElementById('avanco-modal').addEventListener('click', e => {
+      if (e.target === document.getElementById('avanco-modal')) {
+        document.getElementById('avanco-modal').style.display = 'none';
+      }
+    });
+
+    function confirmarAvanco() {
+      if (!avancoTargetId) return;
+      const aluno = turma.alunos.find(a => a.id === avancoTargetId);
+      if (!aluno) return;
+
+      const currentIdx = HIP_ORDER.indexOf(aluno.hipotese);
+      const nextHip = HIP_ORDER[currentIdx + 1];
+      const obs = document.getElementById('avanco-obs').value.trim();
+
+      aluno.historico.push({
+        de: aluno.hipotese,
+        para: nextHip,
+        obs,
+        ts: new Date().toISOString()
+      });
+      aluno.hipotese = nextHip;
+      salvarTurma();
+      renderKanban();
+      document.getElementById('avanco-modal').style.display = 'none';
+      avancoTargetId = null;
+    }
+
+    // ── Deep links ──
+    function gerarAtividade(hip) {
+      const grade = encodeURIComponent(turma.grade || '');
+      const hipSlug = encodeURIComponent(hip);
+      window.open(`../gerador_projetos/code.html?grade=${grade}&hipotese=${hipSlug}`, '_blank');
+    }
+
+    function gerarPareceres() {
+      const nomes = turma.alunos.map(a => a.nome).join('\n');
+      sessionStorage.setItem('cp_batch_students', nomes);
+      sessionStorage.setItem('cp_batch_grade', turma.grade || '');
+      window.open('../pareceres_relatorios/code.html?modo=turma', '_blank');
+    }
+
+    // ── Reset ──
+    function resetarTurma() {
+      if (!confirm('Isso apagará a turma atual e todo o histórico. Tem certeza?')) return;
+      localStorage.removeItem(TURMA_KEY);
+      turma = null;
+      document.getElementById('kanban-screen').style.display = 'none';
+      document.getElementById('setup-screen').style.display = 'block';
+      document.getElementById('turma-nome').value = '';
+      document.getElementById('setup-alunos').value = '';
+      document.querySelectorAll('input[name="turma-grade"]').forEach(r => r.checked = false);
+    }
+
+    // ── Print report ──
+    function imprimirRelatorio() {
+      if (!turma) return;
+
+      const counts = {};
+      HIP_ORDER.forEach(h => counts[h] = turma.alunos.filter(a => a.hipotese === h).length);
+
+      const totalMoves = turma.alunos.reduce((acc, a) => acc + a.historico.length, 0);
+
+      let html = `
+        <div style="font-family:'Lexend',sans-serif;max-width:900px;margin:0 auto;padding:20px;">
+          <div style="border-bottom:3px solid #b10048;padding-bottom:12px;margin-bottom:20px;">
+            <h1 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;color:#b10048;margin:0;">${escapeHtml(turma.nome)}</h1>
+            <p style="color:#555;font-size:13px;margin:4px 0 0;">Relatório de Hipóteses de Escrita · ${turma.grade} · Gerado em ${new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'long',year:'numeric'})}</p>
+          </div>
+
+          <h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;color:#374151;margin:0 0 10px;">Distribuição atual (${turma.alunos.length} alunos · ${totalMoves} avanços registrados)</h2>
+          <table style="width:100%;border-collapse:collapse;margin-bottom:24px;font-size:13px;">
+            <tr style="background:#f9fafb;">
+              <th style="text-align:left;padding:8px 10px;border:1px solid #e5e7eb;">Hipótese</th>
+              <th style="text-align:center;padding:8px 10px;border:1px solid #e5e7eb;">Alunos</th>
+              <th style="text-align:left;padding:8px 10px;border:1px solid #e5e7eb;">Nomes</th>
+            </tr>
+            ${HIP_ORDER.map(h => `
+              <tr>
+                <td style="padding:8px 10px;border:1px solid #e5e7eb;font-weight:600;">${HIP_LABELS[h]}</td>
+                <td style="padding:8px 10px;border:1px solid #e5e7eb;text-align:center;">${counts[h]}</td>
+                <td style="padding:8px 10px;border:1px solid #e5e7eb;color:#555;">
+                  ${turma.alunos.filter(a => a.hipotese === h).map(a => escapeHtml(a.nome)).join(', ') || '—'}
+                </td>
+              </tr>
+            `).join('')}
+          </table>
+
+          <h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;color:#374151;margin:0 0 10px;">Histórico de avanços por aluno</h2>
+          <table style="width:100%;border-collapse:collapse;font-size:12px;">
+            <tr style="background:#f9fafb;">
+              <th style="text-align:left;padding:7px 10px;border:1px solid #e5e7eb;">Aluno</th>
+              <th style="text-align:left;padding:7px 10px;border:1px solid #e5e7eb;">Data</th>
+              <th style="text-align:left;padding:7px 10px;border:1px solid #e5e7eb;">De → Para</th>
+              <th style="text-align:left;padding:7px 10px;border:1px solid #e5e7eb;">Observação</th>
+            </tr>
+            ${turma.alunos.flatMap(a =>
+              a.historico.map(h => `
+                <tr>
+                  <td style="padding:6px 10px;border:1px solid #e5e7eb;">${escapeHtml(a.nome)}</td>
+                  <td style="padding:6px 10px;border:1px solid #e5e7eb;white-space:nowrap;">${formatDate(h.ts)}</td>
+                  <td style="padding:6px 10px;border:1px solid #e5e7eb;">${HIP_LABELS[h.de] || h.de} → ${HIP_LABELS[h.para] || h.para}</td>
+                  <td style="padding:6px 10px;border:1px solid #e5e7eb;color:#555;">${escapeHtml(h.obs) || '—'}</td>
+                </tr>
+              `)
+            ).join('') || '<tr><td colspan="4" style="padding:10px;text-align:center;color:#999;">Nenhum avanço registrado ainda.</td></tr>'}
+          </table>
+        </div>
+      `;
+
+      document.getElementById('print-report').innerHTML = html;
+      window.print();
+    }
+
+    // ── Helpers ──
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function formatDate(iso) {
+      if (!iso) return '';
+      try {
+        return new Date(iso).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' });
+      } catch(e) { return ''; }
+    }
+
+    const standardSidebarToggle = document.getElementById('standard-sidebar-toggle');
+    standardSidebarToggle?.addEventListener('click', () => {
+        const collapsed = document.body.classList.toggle('sidebar-collapsed');
+        standardSidebarToggle.setAttribute('aria-expanded', String(!collapsed));
+        standardSidebarToggle.setAttribute('aria-label', collapsed ? 'Mostrar menu lateral' : 'Esconder menu lateral');
+    });
+
+    const currentPath = decodeURIComponent(window.location.pathname).replace(/\\/g, '/');
+    document.querySelectorAll('[data-nav-target]').forEach((link) => {
+        if (currentPath.endsWith(link.getAttribute('data-nav-target'))) {
+            link.classList.add('active');
+        }
+    });
+
+    window.addEventListener('pageshow', () => {
+        document.body.classList.remove('page-leaving');
+        requestAnimationFrame(() => document.body.classList.add('page-ready'));
+    });
+
+    document.addEventListener('click', (event) => {
+        const link = event.target.closest('a[href]');
+        if (!link) return;
+
+        const href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto:') || link.target === '_blank') return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        event.preventDefault();
+        document.body.classList.add('page-leaving');
+        setTimeout(() => {
+            window.location.href = link.href;
+        }, 160);
+    });
+  </script>
+
+
+<script id="mobile-responsive-script">
+  (function() {
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+    const sidebar = document.getElementById('standard-sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    
+    if (mobileMenuToggle && sidebar && backdrop) {
+      function openMobileMenu() {
+        sidebar.classList.add('mobile-open');
+        backdrop.classList.remove('hidden');
+        setTimeout(() => {
+          backdrop.classList.add('opacity-100');
+        }, 10);
+      }
+      
+      function closeMobileMenu() {
+        sidebar.classList.remove('mobile-open');
+        backdrop.classList.remove('opacity-100');
+        setTimeout(() => {
+          backdrop.classList.add('hidden');
+        }, 300);
+      }
+      
+      mobileMenuToggle.addEventListener('click', openMobileMenu);
+      backdrop.addEventListener('click', closeMobileMenu);
+      
+      sidebar.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+      });
+    }
+
+    if (mobileThemeToggle) {
+      function updateMobileThemeIcon() {
+        const isDark = document.documentElement.classList.contains('dark');
+        const icon = mobileThemeToggle.querySelector('.material-symbols-outlined');
+        if (icon) {
+          icon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        }
+      }
+      
+      updateMobileThemeIcon();
+      
+      mobileThemeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateMobileThemeIcon();
+        
+        const standardIcon = document.getElementById('theme-toggle-icon');
+        if (standardIcon) {
+          standardIcon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        }
+      });
+      
+      const standardToggle = document.getElementById('theme-toggle');
+      if (standardToggle) {
+        standardToggle.addEventListener('click', () => {
+          setTimeout(updateMobileThemeIcon, 50);
+        });
+      }
+    }
+  })();
+</script>
+
+</body>
+</html>
