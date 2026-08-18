@@ -11,9 +11,13 @@
 - **A03: Resumo da Aula & Quizzes com Ranking da Turma** — Transforma o conteúdo da aula em resumo + quiz com ranking gamificado da turma.
 - **A04: Comunidade e Feed da Turma** — Espaço seguro de colaboração entre colegas da turma para compartilhamento de dúvidas e estudos.
 - **A05: Mapa Cognitivo de Lacunas (Diagnóstico Raiz)** — Rastreia dependências prévias (ex: errou Equação no 8º ano por conta de Fração no 6º ano).
+
 - **A06: Tutor IA Socrático 24/7** — Explica sem dar resposta pronta, ligado ao material da escola.
+
 - **A07: Plano Diário Guiado ("O Que Estudar Hoje")** — Calcula a próxima ação com base no tempo livre do aluno.
+
 - **A08: Algoritmo Socrático Anti-Cola** — Bloqueia respostas copiadas do ChatGPT.
+
 - **A09: Simulados Adaptativos por Tópico** — Questões que calibram a dificuldade e prevêem a nota.
 - **A10: Flashcards Inteligentes de Repetição Espaçada** — Revisão agendada no intervalo ideal de memorização.
 - **A11: Modo "Fiquei Ausente"** — Compila resumos de aulas perdidas por falta.
